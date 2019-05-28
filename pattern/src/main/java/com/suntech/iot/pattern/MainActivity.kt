@@ -1113,7 +1113,7 @@ class MainActivity : BaseActivity() {
             "code" to "start",
             "mac_addr" to AppGlobal.instance.getMACAddress(),
 //            "didx" to AppGlobal.instance.get_design_info_idx(),
-            "didx" to "0",
+            "didx" to "1001",
             "sdate" to dt.toString("yyyy-MM-dd"),
             "stime" to dt.toString("HH:mm:ss"),
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
@@ -1130,7 +1130,7 @@ class MainActivity : BaseActivity() {
                 AppGlobal.instance.set_downtime_idx(idx)
 
 //                val didx = AppGlobal.instance.get_design_info_idx()
-                val didx = "0"
+                val didx = "1001"
                 val work_info = AppGlobal.instance.get_current_shift_time()
                 val shift_idx = work_info?.getString("shift_idx") ?: ""
                 val shift_name = work_info?.getString("shift_name") ?: ""
@@ -1266,7 +1266,7 @@ class MainActivity : BaseActivity() {
         val uri = "/senddata1.php"
         var params = listOf(
             "mac_addr" to AppGlobal.instance.getMACAddress(),
-            "didx" to "0",
+            "didx" to "1001",
             "count" to inc_count.toString(),
             "total_count" to actual,
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),

@@ -68,6 +68,9 @@ class CountViewFragment : BaseFragment() {
         if ((activity as MainActivity).countViewType == 1) {
             ll_total_count.visibility = View.VISIBLE
             ll_component_count.visibility = View.GONE
+
+            tv_wos_name.text = AppGlobal.instance.get_wos_name() + " NO :  "    // 하단 WOS name 변경
+
         } else {
             ll_total_count.visibility = View.GONE
             ll_component_count.visibility = View.VISIBLE
@@ -230,7 +233,6 @@ class CountViewFragment : BaseFragment() {
     fun viewWosData() {
         // WOS INFO
         // 하단 bottom
-        tv_wos_name.text = AppGlobal.instance.get_wos_name() + " NO :  "
         tv_wosno.text = AppGlobal.instance.get_compo_wos()
         tv_model.text = AppGlobal.instance.get_compo_model()
         tv_component.text = AppGlobal.instance.get_compo_component()

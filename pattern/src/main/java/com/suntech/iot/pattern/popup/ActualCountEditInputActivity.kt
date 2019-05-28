@@ -91,7 +91,7 @@ class ActualCountEditInputActivity : BaseActivity() {
             val uri = "/senddata1.php"
             var params = listOf(
                 "mac_addr" to AppGlobal.instance.getMACAddress(),
-                "didx" to "0",
+                "didx" to "1001",
                 "count" to inc_count.toString(),
                 "total_count" to new_actual,
                 "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),

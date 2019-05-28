@@ -42,6 +42,8 @@
     <string name="label_server_ip">SERVER IP</string>
     <string name="label_server_port">PORT</string>
     <string name="label_wos_name">WOS name to display</string>
+    <string name="label_count_trim_qty">Piece(s)</string>
+    <string name="label_count_trim_pairs">Pair(s)</string>
 
     <!-- COMPONENT 화면 -->
     <string name="label_wos">WOS</string>
@@ -142,6 +144,7 @@
     <string name="msg_has_not_server_info">Cannot find server</string>
     <string name="msg_no_downtime">Downtime message not found</string>
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
+    <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
 
     <string name="msg_exit_automatically">Workday ends automatically</string>
 
