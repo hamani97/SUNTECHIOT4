@@ -71,6 +71,9 @@ class CountViewFragment : BaseFragment() {
 
             tv_wos_name.text = AppGlobal.instance.get_wos_name() + " NO :  "    // 하단 WOS name 변경
 
+            tv_kind_qty.text = "" + (activity as MainActivity).trim_qty
+            tv_kind_pairs.text = "" + (activity as MainActivity).trim_pairs
+
         } else {
             ll_total_count.visibility = View.GONE
             ll_component_count.visibility = View.VISIBLE
@@ -448,6 +451,9 @@ class CountViewFragment : BaseFragment() {
     var _current_compo_actual_count = -1
 
     private fun updateView() {
+
+        tv_kind_qty.text = "" + (activity as MainActivity).trim_qty
+        tv_kind_pairs.text = "" + (activity as MainActivity).trim_pairs
 
         countTarget()
 

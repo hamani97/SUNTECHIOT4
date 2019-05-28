@@ -132,10 +132,43 @@
                                 android:textSize="26sp"
                                 android:textColor="#fff" />
 
+                        <LinearLayout android:layout_width="0dp"
+                                      android:layout_height="wrap_content"
+                                      android:layout_weight="1"
+                                      android:orientation="horizontal"
+                                      android:gravity="center"
+                                      android:layout_gravity="center">
+                            <TextView
+                                    android:id="@+id/tv_kind_qty"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
+                                    android:text="0"
+                                    android:textSize="26sp"
+                                    android:textColor="@color/colorWhite" />
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
+                                    android:text="  /  "
+                                    android:textSize="26sp"
+                                    android:textColor="@color/colorWhite" />
+                            <TextView
+                                    android:id="@+id/tv_kind_pairs"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
+                                    android:text="0"
+                                    android:textSize="26sp"
+                                    android:textColor="@color/colorWhite" />
+                        </LinearLayout>
+
                         <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:gravity="right">
 
                             <!--<Button-->
@@ -153,9 +186,9 @@
                             <Button
                                     android:id="@+id/btn_exit"
                                     style="@style/btn_default"
-                                    android:layout_width="220dp"
+                                    android:layout_width="120dp"
                                     android:stateListAnimator="@null"
-                                    android:text="MANAGER CALL" />
+                                    android:text="CALL" />
 
                         </LinearLayout>
 

@@ -51,6 +51,7 @@
     <string name="label_size">SIZE</string>
     <string name="label_layer">LAYER</string>
     <string name="label_layers">LAYER(S)</string>
+    <string name="label_pairs">PAIR(S)</string>
     <string name="label_model2">MODEL</string>
     <string name="label_style">STYLE</string>
     <string name="label_target">TARGET</string>

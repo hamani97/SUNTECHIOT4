@@ -938,13 +938,15 @@ class MainActivity : BaseActivity() {
         }
         return true
     }
+
+    var trim_qty = 0
+    var trim_pairs = 0
+
     private fun saveRowData(cmd: String, value: JsonElement) {
 
-        if (cmd=="count") {
-            var db = DBHelperForComponent(this)
-//          var db = SimpleDatabaseHelper(this)
+        if (AppGlobal.instance.get_sound_at_count()) AppGlobal.instance.playSound(this)
 
-            if (AppGlobal.instance.get_sound_at_count()) AppGlobal.instance.playSound(this)
+        if (cmd == "T" || cmd == "count") {
 
             // 작업 시간인지 확인
             val cur_shift: JSONObject?= AppGlobal.instance.get_current_shift_time()
@@ -952,58 +954,76 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.msg_not_start_work), Toast.LENGTH_SHORT).show()
                 return
             }
-
-            val shift_idx = cur_shift["shift_idx"]      // 현재 작업중인 Shift
-            var inc_count = 1
-
+            // Operator 선택 확인
+            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+                Toast.makeText(this, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show(); return
+            }
             // 콤포넌트 선택되어야만 실행되는 경우
+            val work_idx = AppGlobal.instance.get_work_idx()
             if (AppGlobal.instance.get_without_component() == false) {
-
                 // 선택한 Component 제품이 있는지 확인
-                val work_idx = AppGlobal.instance.get_work_idx()
                 if (work_idx == "") {
                     Toast.makeText(this, getString(R.string.msg_select_component), Toast.LENGTH_SHORT).show(); return
                 }
-
                 // Pairs 선택 확인
-                val layer_value = AppGlobal.instance.get_compo_pairs()
-                if (layer_value == "") {
+                if (AppGlobal.instance.get_compo_pairs() == "") {
                     Toast.makeText(this, getString(R.string.msg_layer_not_selected), Toast.LENGTH_SHORT).show(); return
                 }
+            }
 
-                // Operator 선택 확인
-                if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
-                    Toast.makeText(this, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show(); return
-                }
+            val shift_idx = cur_shift["shift_idx"]      // 현재 작업중인 Shift
+            var inc_count = value.toString().toInt()
 
-                if (layer_value == "0.5") {
-                    if ((AppGlobal.instance.get_accumulated_count()+1) <= 1) {
-                        AppGlobal.instance.set_accumulated_count(1); return
-                    } else {
-                        AppGlobal.instance.set_accumulated_count(0)
-                    }
-                } else {
-                    inc_count = layer_value.toInt()
-                }
+            val qty = AppGlobal.instance.get_trim_qty()
+            val pairs = AppGlobal.instance.get_trim_pairs()
+            var pairs_int = 1
+            when (pairs) {
+                "1/2" -> pairs_int = 2
+                "1/4" -> pairs_int = 4
+                "1/8" -> pairs_int = 8
+            }
 
+            trim_pairs += inc_count
+
+            while (trim_pairs >= pairs_int) {
+                trim_qty++
+                trim_pairs -= pairs_int
+            }
+
+            inc_count = 0
+
+            while (trim_qty >= qty.toInt()) {
+                trim_qty -= qty.toInt()
+                inc_count++
+            }
+
+            if (inc_count <= 0) return
+
+            // total count
+            val cnt = AppGlobal.instance.get_current_shift_actual_cnt() + inc_count
+            AppGlobal.instance.set_current_shift_actual_cnt(cnt)
+
+            // 콤포넌트 선택인 경우
+            if (AppGlobal.instance.get_without_component() == false) {
                 // component total count
+                var db = DBHelperForComponent(this)
                 val row = db.get(work_idx)
                 if (row != null) {
                     val actual = (row!!["actual"].toString().toInt() + inc_count)
                     db.updateWorkActual(work_idx, actual)
+                    sendCountData(value.toString(), inc_count, actual)  // 서버에 카운트 정보 전송
+                } else {
+                    sendCountData(value.toString(), inc_count, inc_count)  // 서버에 카운트 정보 전송
                 }
+            } else {
+                sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
             }
-
-            // total count
-            var cnt = AppGlobal.instance.get_current_shift_actual_cnt() + inc_count
-            AppGlobal.instance.set_current_shift_actual_cnt(cnt)
 
             _last_count_received_time = DateTime()      // downtime 시간 초기화
 
-            sendCountData(value.toString(), inc_count)  // 서버에 카운트 정보 전송
-
 //            _stitch_db.add(work_idx, value.toString())
 
+            // Production Report를 위한 DB저장
             //val now = DateTime()
             val now = cur_shift["date"]
             val date = now.toString()
@@ -1018,6 +1038,48 @@ class MainActivity : BaseActivity() {
                 _report_db.updateActual(idx, actual)
             }
         }
+    }
+
+    private fun sendCountData(count:String, inc_count:Int, sum_count:Int) {
+        if (AppGlobal.instance.get_server_ip()=="") return
+
+//        val work_idx = AppGlobal.instance.get_work_idx()
+//        if (work_idx == "") return
+
+        var shift_idx = AppGlobal.instance.get_current_shift_idx()
+        if (shift_idx == "") shift_idx = "0"
+
+//        var db = DBHelperForComponent(this)
+//        val row = db.get(work_idx)
+//        val actual = row!!["actual"].toString().toInt()
+//        val seq = row!!["seq"].toString().toInt()
+
+        val seq = "1"
+
+        val uri = "/senddata1.php"
+        var params = listOf(
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "didx" to "1001",
+            "count" to inc_count.toString(),
+            "total_count" to sum_count,
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
+            "shift_idx" to  shift_idx,
+            "seq" to seq,
+            "wos" to AppGlobal.instance.get_compo_wos(),
+            "comp" to AppGlobal.instance.get_compo_component_idx(),
+            "size" to AppGlobal.instance.get_compo_size(),
+            "max_rpm" to "",
+            "avr_rpm" to "")
+//Log.e("params", params.toString())
+        request(this, uri, true,false, params, { result ->
+            var code = result.getString("code")
+            var msg = result.getString("msg")
+            if(code != "00") {
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
@@ -1246,47 +1308,6 @@ class MainActivity : BaseActivity() {
         this.sendBroadcast(br_intent)
         val intent = Intent(this, DownTimeActivity::class.java)
         startActivity(intent)
-    }
-
-    private fun sendCountData(count:String, inc_count:Int) {
-        if (AppGlobal.instance.get_server_ip()=="") return
-
-        val work_idx = AppGlobal.instance.get_work_idx()
-        if (work_idx == "") return
-
-        var shift_idx = AppGlobal.instance.get_current_shift_idx()
-        if (shift_idx == "") shift_idx = "0"
-
-        var db = DBHelperForComponent(this)
-        val row = db.get(work_idx)
-        val actual = row!!["actual"].toString().toInt()
-//        val seq = row!!["seq"].toString().toInt()
-        val seq = "1"
-
-        val uri = "/senddata1.php"
-        var params = listOf(
-            "mac_addr" to AppGlobal.instance.getMACAddress(),
-            "didx" to "1001",
-            "count" to inc_count.toString(),
-            "total_count" to actual,
-            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-            "factory_idx" to AppGlobal.instance.get_room_idx(),
-            "line_idx" to AppGlobal.instance.get_line_idx(),
-            "shift_idx" to  shift_idx,
-            "seq" to seq,
-            "wos" to AppGlobal.instance.get_compo_wos(),
-            "comp" to AppGlobal.instance.get_compo_component_idx(),
-            "size" to AppGlobal.instance.get_compo_size(),
-            "max_rpm" to "",
-            "avr_rpm" to "")
-//Log.e("params", params.toString())
-        request(this, uri, true,false, params, { result ->
-            var code = result.getString("code")
-            var msg = result.getString("msg")
-            if(code != "00") {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private class TabAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {

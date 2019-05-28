@@ -13,13 +13,10 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import android.widget.Toast
-import com.suntech.iot.pattern.PopupSelectList
-import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForComponent
 import com.suntech.iot.pattern.util.OEEUtil
-import com.suntech.iot.pattern.util.UtilString.addPairText
 import kotlinx.android.synthetic.main.activity_component_info.*
 import kotlinx.android.synthetic.main.layout_top_menu_2.*
 import org.json.JSONObject
@@ -30,9 +27,6 @@ class ComponentInfoActivity : BaseActivity() {
     private var _selected_wos_idx : String = ""
     private var _selected_component_idx : String = ""
     private var _selected_component_code : String = ""
-//    private var _selected_size_idx : String = ""
-
-//    private var _selected_layer_no : String = ""
     private var _selected_pair_info : String = ""
 
     private var _list_for_wos_adapter: ListWosAdapter? = null

@@ -82,7 +82,7 @@
                             <TextView
                                     style="@style/table_row_title"
                                     android:layout_width="120dp"
-                                    android:text="@string/label_layers" />
+                                    android:text="@string/label_pairs" />
                             <TextView
                                     android:id="@+id/tv_compo_layer"
                                     style="@style/table_row_data_selector"
