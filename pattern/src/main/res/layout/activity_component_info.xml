@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context=".ComponentInfoActivity">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorBackground">
+
+        <include layout="@layout/layout_top_menu_component"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="32dp"
+                android:gravity="center_horizontal"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="1080dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                <!-- SELECT COMPONENT -->
+                <TextView style="@style/table_title2" android:text="@string/title_select_component" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal">
+                    <LinearLayout
+                            android:layout_width="500dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="20dp"
+                            android:orientation="vertical">
+                        <!-- WOS -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    android:id="@+id/tv_wos_name"
+                                    style="@style/table_row_title"
+                                    android:layout_width="200dp"
+                                    android:text="@string/label_wos" />
+                            <TextView
+                                    android:id="@+id/tv_compo_wos"
+                                    style="@style/table_row_data_selector"
+                                    android:gravity="center" />
+                        </LinearLayout>
+                        <!-- COMPONENT -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    style="@style/table_row_title"
+                                    android:layout_width="200dp"
+                                    android:text="@string/label_component" />
+                            <TextView
+                                    android:id="@+id/tv_compo_component"
+                                    style="@style/table_row_data_selector"
+                                    android:gravity="center" />
+                        </LinearLayout>
+                        <!-- SIZE & Layer -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    style="@style/table_row_title"
+                                    android:layout_width="100dp"
+                                    android:text="@string/label_size" />
+                            <TextView
+                                    android:id="@+id/tv_compo_size"
+                                    style="@style/table_row_data_selector"
+                                    android:gravity="center"
+                                    android:layout_width="92dp"
+                                    android:layout_marginRight="8dp" />
+                            <TextView
+                                    style="@style/table_row_title"
+                                    android:layout_width="120dp"
+                                    android:text="@string/label_layers" />
+                            <TextView
+                                    android:id="@+id/tv_compo_layer"
+                                    style="@style/table_row_data_selector"
+                                    android:gravity="center"
+                                    android:layout_width="92dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="560dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                        <!-- MODEL -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    android:layout_width="200dp"
+                                    style="@style/table_row_title"
+                                    android:text="@string/label_model2" />
+                            <TextView
+                                    android:id="@+id/tv_compo_model"
+                                    style="@style/table_row_data_readonly"
+                                    android:gravity="center" />
+                        </LinearLayout>
+                        <!-- STYLE -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    android:layout_width="200dp"
+                                    style="@style/table_row_title"
+                                    android:text="@string/label_style" />
+                            <TextView
+                                    android:id="@+id/tv_compo_style"
+                                    style="@style/table_row_data_readonly"
+                                    android:gravity="center" />
+                        </LinearLayout>
+                        <!-- TARGET & ACTUAL -->
+                        <LinearLayout style="@style/table_row">
+                            <TextView
+                                    android:layout_width="130dp"
+                                    style="@style/table_row_title"
+                                    android:text="@string/label_target" />
+                            <TextView
+                                    android:id="@+id/tv_compo_target"
+                                    style="@style/table_row_data_readonly"
+                                    android:layout_width="130dp"
+                                    android:layout_marginRight="8dp"
+                                    android:gravity="center" />
+                            <TextView
+                                    android:layout_width="140dp"
+                                    style="@style/table_row_title"
+                                    android:text="@string/label_actual" />
+                            <TextView
+                                    android:id="@+id/tv_compo_actual"
+                                    style="@style/table_row_data_readonly2"
+                                    android:gravity="center" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout style="@style/grid_header">
+                    <TextView
+                            android:id="@+id/tv_wos_name2"
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:text="@string/list_item_wos" />
+                    <TextView
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="7"
+                            android:text="@string/list_item_model" />
+                    <TextView
+                            android:id="@+id/tv_btn_size"
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:text="@string/list_item_size" />
+                    <TextView
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:text="@string/list_item_target" />
+                    <TextView
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:text="@string/list_item_actual" />
+                    <TextView
+                            android:id="@+id/tv_btn_balance"
+                            style="@style/grid_header_text"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:text="@string/list_item_balance" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="#000">
+
+                    <ListView
+                            android:id="@+id/lv_wos_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:divider="@color/list_item_bg_color"
+                            android:dividerHeight="0dp"
+                            android:background="@color/list_item_bg_color"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="1080dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/btn_setting_cancel"
+                    style="@style/btn_cancel"
+                    android:stateListAnimator="@null"
+                    android:text="@string/cancel" />
+
+            <Button
+                    android:id="@+id/btn_setting_confirm"
+                    style="@style/btn_orange"
+                    android:stateListAnimator="@null"
+                    android:text="@string/save" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

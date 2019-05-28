@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">SUNTECH IoT-Pattern</string>
+
+    <!-- 타이틀 -->
+    <string name="title_select_component">SELECT COMPONENT</string>
+    <string name="title_available_info">AVAILABLE INFO</string>
+    <string name="title_operator_info">OPERATOR INFO</string>
+    <string name="title_last_worker">LAST WORKER</string>
+    <string name="title_setting">SETTING</string>
+    <string name="title_counter_device_info">COUNTER DEVICE INFO</string>
+    <string name="title_server_info">SERVER INFO</string>
+    <string name="title_etc">ETC</string>
+    <string name="title_count_info">COUNT INFO</string>
+    <string name="title_target_type">TARGET TYPE</string>
+    <string name="title_design_info">DESIGN INFO</string>
+
+    <string name="title_push_info">PUSH INFO</string>
+
+    <!-- 카운트화면 -->
+    <string name="bottom_label_pieces">Pieces : \u0020</string>
+    <string name="bottom_label_cycle_time">Cycle Time : \u0020</string>
+    <string name="bottom_label_article">Article : \u0020</string>
+    <string name="bottom_label_model">Model : \u0020</string>
+    <string name="bottom_label_material">Material : \u0020</string>
+    <string name="bottom_label_component">Component : \u0020</string>
+
+    <string name="button_total_count_view">Total Count View</string>
+    <string name="button_component_count_view">Component Count View</string>
+    <string name="button_select_component">Select Component</string>
+
+
+    <!-- SETTING 화면 -->
+    <string name="label_wifi">WiFi</string>
+    <string name="label_ip">IP</string>
+    <string name="label_mac">MAC</string>
+    <string name="label_factory">FACTORY</string>
+    <string name="label_room">ZONE</string>
+    <string name="label_line">LINE</string>
+    <string name="label_mc_no">M/C No</string>
+    <string name="label_mc_model">MC MODEL</string>
+    <string name="label_mc_serial">MC SERIAL</string>
+    <string name="label_server_ip">SERVER IP</string>
+    <string name="label_server_port">PORT</string>
+    <string name="label_wos_name">WOS name to display</string>
+
+    <!-- COMPONENT 화면 -->
+    <string name="label_wos">WOS</string>
+    <string name="label_component">COMPONENT</string>
+    <string name="label_size">SIZE</string>
+    <string name="label_layer">LAYER</string>
+    <string name="label_layers">LAYER(S)</string>
+    <string name="label_model2">MODEL</string>
+    <string name="label_style">STYLE</string>
+    <string name="label_target">TARGET</string>
+    <string name="label_actual">ACTUAL</string>
+    <string name="label_rate">RATE</string>
+    <string name="label_from_server">FROM SERVER</string>
+    <string name="label_from_device">FROM DEVICE</string>
+
+    <!-- 액츄얼카운트화면 -->
+    <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>
+    <string name="title_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
+    <string name="label_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
+
+    <!-- 디펙티브 화면-->
+    <string name="title_defective_input">Defective input</string>
+    <string name="label_defective_input_qty">Defective Q\'ty</string>
+    <string name="label_defective_input_list">Defective List</string>
+
+    <!-- 다운타임화면 -->
+    <string name="title_down_time_info">Down Time Info</string>
+    <string name="title_down_time_input">Down Time Input</string>
+    <string name="title_down_time_list">Down Time Input</string>
+    <string name="msg_has_notcompleted">Info not complete</string>
+
+    <!-- 제품목록화면 -->
+    <string name="title_product_list">Product List</string>
+
+    <!-- 홈화면 -->
+    <string name="bottom_label_machine_info">MACHINE INFO</string>
+    <string name="bottom_label_operator_info">OPERATOR INFO</string>
+    <string name="bottom_label_employee_number">Employee Number : \u0020</string>
+    <string name="bottom_label_employee_name">Name : \u0020</string>
+    <string name="bottom_label_factory">FACTORY : \u0020</string>
+    <string name="bottom_label_room">ZONE : \u0020</string>
+    <string name="bottom_label_line">LINE : \u0020</string>
+    <string name="bottom_label_number">M/C NUMBER : \u0020</string>
+    <string name="bottom_label_mc_model">MODEL : \u0020</string>
+
+    <!-- Common -->
+    <string name="server">SERVER</string>
+    <string name="manual">Manual</string>
+    <string name="confirm">Confirm</string>
+    <string name="save">Save</string>
+    <string name="exit">Exit</string>
+    <string name="cancel">Cancel</string>
+    <string name="check">Check</string>
+    <string name="search">SEARCH</string>
+    <string name="notice">Notice</string>
+
+    <string name="list_item_wos">WOS</string>
+    <string name="list_item_model">MODEL</string>
+    <string name="list_item_size">SIZE</string>
+    <string name="list_item_target">TARGET</string>
+    <string name="list_item_actual">ACTUAL</string>
+    <string name="list_item_balance">BALANCE</string>
+
+    <string name="list_item_shift">SHIFT</string>
+    <string name="list_item_work_time">WORK TIME</string>
+    <string name="list_item_planned_time1">PLANNED TIME1</string>
+    <string name="list_item_planned_time2">PLANNED TIME2</string>
+
+    <string name="list_item_employee_number">EMPLOYEE NUMBER</string>
+    <string name="list_item_name">NAME</string>
+
+    <string name="list_item_design_idx">DESIGN IDX</string>
+    <string name="list_item_product_rate">PRODUCT RATE</string>
+    <string name="list_item_defective">DEFECTIVE</string>
+    <string name="list_item_qualti_rate">QUALLTY RATE</string>
+
+    <string name="list_item_start_time">Start Time</string>
+    <string name="list_item_end_time">End Time</string>
+    <string name="list_item_down_time">DownTime</string>
+    <string name="list_item_completed">Completed</string>
+    <string name="list_item_list">List</string>
+    <string name="list_item_total">TOTAL</string>
+
+    <!-- Message -->
+    <string name="msg_no_operator">Operator not found</string>
+    <string name="msg_require_info">Info not complete</string>
+    <string name="msg_select_layer1">Please select layer1 value</string>
+    <string name="msg_select_component">Please select a component</string>
+    <string name="msg_require_target_quantity">Please enter a target quantity</string>
+    <string name="msg_layer_not_selected">Work info not selected</string>
+    <string name="msg_no_setting">Setting not found</string>
+    <string name="msg_data_not_found">Data not found</string>
+    <string name="msg_connection_fail">The connection to the server failed.</string>
+    <string name="msg_cannot_input_wos">Cannot input WOS</string>
+    <string name="msg_has_notselected">Nothing Selected</string>
+    <string name="msg_not_start_work">Checking Working Time</string>
+    <string name="msg_exit_shift">Do you want to exit?</string>
+    <string name="msg_has_not_server_info">Cannot find server</string>
+    <string name="msg_no_downtime">Downtime message not found</string>
+    <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
+
+    <string name="msg_exit_automatically">Workday ends automatically</string>
+
+</resources>

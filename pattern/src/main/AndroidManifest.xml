@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.suntech.iot.pattern">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <uses-feature
+            android:name="android.hardware.usb.host"
+            android:required="true" />
+
+    <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:screenOrientation="landscape"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme.NoActionBar.Fullscreen">
+        <activity android:name=".IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".MainActivity"
+                android:launchMode="singleTask"
+                android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                    android:resource="@xml/usb_device_filter" />
+        </activity>
+        <service
+                android:name=".service.UsbService"
+                android:enabled="true" />
+
+        <activity android:name=".ComponentInfoActivity" android:screenOrientation="landscape" />
+        <activity android:name=".WorkInfoActivity" android:screenOrientation="landscape" />
+        <activity android:name=".SettingActivity" android:screenOrientation="landscape" />
+        <activity android:name=".ProductionReportActivity" android:screenOrientation="landscape" />
+        <activity android:name=".PopupSelectList" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.PushActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.ActualCountEditActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.ActualCountEditInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DownTimeActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DownTimeInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DefectiveActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DefectiveInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
+    </application>
+
+</manifest>

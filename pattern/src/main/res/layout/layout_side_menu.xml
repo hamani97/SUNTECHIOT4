@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="90dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:background="@color/colorBackgroundSide">
+
+        <ImageButton
+                android:id="@+id/btn_home"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/btn_side_icon_home_on" />
+
+        <ImageButton
+                android:id="@+id/btn_push_to_app"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/btn_side_icon_push" />
+
+        <ImageButton
+                android:id="@+id/btn_actual_count_edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/btn_side_icon_actual_count_edit" />
+
+        <ImageButton
+                android:id="@+id/btn_downtime"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="50dp"
+                android:visibility="gone"
+                android:background="@drawable/btn_side_icon_downtime" />
+
+        <ImageButton
+                android:id="@+id/btn_defective_info"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="70dp"
+                android:visibility="gone"
+                android:background="@drawable/btn_side_icon_defective_info" />
+
+        <ImageButton
+                android:id="@+id/btn_production_report"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="70dp"
+                android:background="@drawable/btn_side_icon_worksheet" />
+
+    </LinearLayout>
+</LinearLayout>
