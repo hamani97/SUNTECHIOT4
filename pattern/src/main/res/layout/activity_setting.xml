@@ -489,7 +489,7 @@
                                 android:orientation="horizontal">
                             <LinearLayout style="@style/table_row">
                                 <TextView style="@style/table_row_title" android:text="2 Shift" />
-                                <EditText android:id="@+id/tv_shift_2" style="@style/table_row_data_editor1" android:singleLine="true" android:inputType="number" />
+                                <EditText android:id="@+id/tv_shift_2" style="@style/table_row_data_editor1" android:text="0" android:singleLine="true" android:inputType="number" />
                             </LinearLayout>
                         </LinearLayout>
                         <LinearLayout
@@ -498,7 +498,7 @@
                                 android:orientation="horizontal">
                             <LinearLayout style="@style/table_row">
                                 <TextView style="@style/table_row_title" android:text="3 Shift" />
-                                <EditText android:id="@+id/tv_shift_3" style="@style/table_row_data_editor1" android:singleLine="true" android:inputType="number" />
+                                <EditText android:id="@+id/tv_shift_3" style="@style/table_row_data_editor1" android:text="0" android:singleLine="true" android:inputType="number" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
