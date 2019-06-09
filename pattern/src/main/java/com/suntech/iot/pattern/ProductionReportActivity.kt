@@ -107,8 +107,8 @@ class ProductionReportActivity : BaseActivity() {
         onlineCheck()
         val row1 = _target_db.gets()
         Log.e("DB", row1.toString())
-        val row = _report_db.gets()
-        Log.e("DB", row.toString())
+//        val row = _report_db.gets()
+//        Log.e("DB", row.toString())
         var current_dt = _current_time.toString("yyyy-MM-dd")
 //        var current_tommorow_dt = _current_time.plusDays(1).toString("yyyy-MM-dd")
 
