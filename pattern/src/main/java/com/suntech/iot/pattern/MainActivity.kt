@@ -1127,9 +1127,11 @@ class MainActivity : BaseActivity() {
 
         // 작업시작할때 현재 쉬프트의 날짜를 기록해놓음
         val current = AppGlobal.instance.get_current_work_time()
-        val shift = current.getJSONObject(0)
-        var shift_stime = OEEUtil.parseDateTime(shift["work_stime"].toString())
-        AppGlobal.instance.set_current_work_day(shift_stime.toString("yyyy-MM-dd"))
+        if (current.length() > 0) {
+            val shift = current.getJSONObject(0)
+            var shift_stime = OEEUtil.parseDateTime(shift["work_stime"].toString())
+            AppGlobal.instance.set_current_work_day(shift_stime.toString("yyyy-MM-dd"))
+        }
 
         // downtime sec 초기화
         // 새로 선택한 상품이 있으므로 이 값을 초기화 한다. 기존에 없던 부분
