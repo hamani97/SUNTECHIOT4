@@ -177,7 +177,19 @@ open class BaseActivity : AppCompatActivity() {
 
     private fun handle_network_error(context: Context, error:String) {
         Log.e("BaseActivity", error)
-        Toast.makeText(context, R.string.msg_connection_fail, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, R.string.msg_connection_fail, Toast.LENGTH_SHORT).show()
+        ToastOut(context, R.string.msg_connection_fail)
         hideProgressDialog()
+    }
+
+    fun ToastOut(context: Context, msg: String) {
+        if (AppGlobal.instance.get_message_enable()) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+    fun ToastOut(context: Context, msg: Int) {
+        if (AppGlobal.instance.get_message_enable()) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 }

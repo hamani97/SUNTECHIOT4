@@ -59,6 +59,9 @@ class AppGlobal private constructor() {
     fun set_long_touch(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_long_touch", state) }
     fun get_long_touch() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_long_touch") }
 
+    fun set_message_enable(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_msg_enable", state) }
+    fun get_message_enable() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_msg_enable") }
+
     fun set_sound_at_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_sound_count", state) }
     fun get_sound_at_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_sound_count") }
 

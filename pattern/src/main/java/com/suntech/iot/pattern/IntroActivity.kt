@@ -51,7 +51,7 @@ class IntroActivity : BaseActivity() {
             var code = result.getString("code")
             var msg = result.getString("msg")
             if(code != "00"){
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, msg)
             }
             moveToNext()
         }, {

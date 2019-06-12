@@ -394,12 +394,11 @@ class WorkInfoActivity : BaseActivity() {
         val uri = "/ping.php"
         request(this, uri, false, false, null, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 btn_server_state.isSelected = true
                 AppGlobal.instance._server_state = true
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"))
             }
         }, {
             btn_server_state.isSelected = false

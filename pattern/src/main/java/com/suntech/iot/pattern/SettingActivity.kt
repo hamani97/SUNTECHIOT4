@@ -93,6 +93,7 @@ class SettingActivity : BaseActivity() {
         et_setting_wos_name.setText(AppGlobal.instance.get_wos_name())
 
         sw_long_touch.isChecked = AppGlobal.instance.get_long_touch()
+        sw_message_enable.isChecked = AppGlobal.instance.get_message_enable()
         sw_sound_at_count.isChecked = AppGlobal.instance.get_sound_at_count()
         sw_without_component.isChecked = AppGlobal.instance.get_without_component()
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
@@ -250,6 +251,7 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_server_ip(et_setting_server_ip.text.toString())
         AppGlobal.instance.set_server_port(et_setting_port.text.toString())
         AppGlobal.instance.set_long_touch(sw_long_touch.isChecked)
+        AppGlobal.instance.set_message_enable(sw_message_enable.isChecked)
         AppGlobal.instance.set_sound_at_count(sw_sound_at_count.isChecked)
         AppGlobal.instance.set_without_component(sw_without_component.isChecked)
 
@@ -285,10 +287,12 @@ class SettingActivity : BaseActivity() {
         )
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
-            Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             if(code == "00") {
+                ToastOut(this, result.getString("msg"))
                 sendAppStartTime()      // 앱 시작을 알림. 결과에 상관없이 종료
                 finish()
+            } else {
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
         })
     }

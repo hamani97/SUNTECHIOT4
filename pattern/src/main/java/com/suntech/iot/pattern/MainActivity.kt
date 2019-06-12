@@ -611,7 +611,6 @@ class MainActivity : BaseActivity() {
             val millis = currentTimeMillisEnd - currentTimeMillisStart
 
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 btn_server_state.isSelected = true
                 AppGlobal.instance._server_state = true
@@ -621,7 +620,7 @@ class MainActivity : BaseActivity() {
                 br_intent.putExtra("state", "Y")
                 this.sendBroadcast(br_intent)
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"))
             }
         }, {
             btn_server_state.isSelected = false
@@ -762,7 +761,7 @@ class MainActivity : BaseActivity() {
         var db4 = DBHelperForComponent(this)
         db4.delete()
 
-        Toast.makeText(this, getString(R.string.msg_exit_automatically), Toast.LENGTH_SHORT).show()
+        ToastOut(this, R.string.msg_exit_automatically)
     }
 
     /*
@@ -858,15 +857,15 @@ class MainActivity : BaseActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 UsbService.ACTION_USB_PERMISSION_GRANTED // USB PERMISSION GRANTED
-                -> Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show()
+                -> ToastOut(context, "USB Ready")
                 UsbService.ACTION_USB_PERMISSION_NOT_GRANTED // USB PERMISSION NOT GRANTED
-                -> Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show()
+                -> ToastOut(context, "USB Permission not granted")
                 UsbService.ACTION_NO_USB // NO USB CONNECTED
-                -> Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show()
+                -> ToastOut(context, "No USB connected")
                 UsbService.ACTION_USB_DISCONNECTED // USB DISCONNECTED
-                -> Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show()
+                -> ToastOut(context, "USB disconnected")
                 UsbService.ACTION_USB_NOT_SUPPORTED // USB NOT SUPPORTED
-                -> Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show()
+                -> ToastOut(context, "USB device not supported")
             }
         }
     }
@@ -930,11 +929,12 @@ class MainActivity : BaseActivity() {
             val cmd = element.asJsonObject.get("cmd").asString
             val value = element.asJsonObject.get("value")
 
-            Toast.makeText(this, element.toString(), Toast.LENGTH_SHORT).show()
+            ToastOut(this, element.toString())
             Log.w("test", "usb = " + recvBuffer)
 
             saveRowData(cmd, value)
         } else {
+            ToastOut(this, "usb parsing error! = " + recvBuffer)
             Log.e("test", "usb parsing error! = " + recvBuffer)
         }
     }

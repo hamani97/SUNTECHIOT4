@@ -476,7 +476,7 @@ class ComponentInfoActivity : BaseActivity() {
                 btn_server_state.isSelected = true
                 AppGlobal.instance._server_state = true
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, msg)
             }
         }, {
             btn_server_state.isSelected = false
