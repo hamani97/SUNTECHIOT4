@@ -45,6 +45,7 @@
                 android:name=".service.UsbService"
                 android:enabled="true" />
 
+        <activity android:name=".DesignInfoActivity" android:screenOrientation="landscape" />
         <activity android:name=".ComponentInfoActivity" android:screenOrientation="landscape" />
         <activity android:name=".WorkInfoActivity" android:screenOrientation="landscape" />
         <activity android:name=".SettingActivity" android:screenOrientation="landscape" />

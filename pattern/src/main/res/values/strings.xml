@@ -12,7 +12,6 @@
     <string name="title_etc">ETC</string>
     <string name="title_count_info">COUNT INFO</string>
     <string name="title_target_type">TARGET TYPE</string>
-    <string name="title_design_info">DESIGN INFO</string>
 
     <string name="title_push_info">PUSH INFO</string>
 
@@ -59,6 +58,18 @@
     <string name="label_rate">RATE</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
+
+    <!-- 디자인인포화면  -->
+    <string name="title_design_info">DESIGN INFO</string>
+    <string name="title_pieces_info">PIECES INFO</string>
+    <string name="list_header_idx">IDX</string>
+    <string name="list_header_model">Model</string>
+    <string name="list_header_article">Article</string>
+    <string name="list_header_material">Material</string>
+    <string name="list_header_component">Component</string>
+    <string name="list_header_cycle_time">Cycle Time</string>
+    <string name="label_pieces">Pieces</string>
+    <string name="guide_pieces">= 1 Count</string>
 
     <!-- 액츄얼카운트화면 -->
     <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>

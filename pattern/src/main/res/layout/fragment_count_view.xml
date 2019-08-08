@@ -177,12 +177,12 @@
                                     <!--android:layout_width="180dp"-->
                                     <!--android:stateListAnimator="@null"-->
                                     <!--android:text="START" />-->
-                            <Button
-                                    android:id="@+id/btn_init_actual"
-                                    style="@style/btn_default"
-                                    android:layout_width="130dp"
-                                    android:stateListAnimator="@null"
-                                    android:text="RESET" />
+                            <!--<Button-->
+                                    <!--android:id="@+id/btn_init_actual"-->
+                                    <!--style="@style/btn_default"-->
+                                    <!--android:layout_width="130dp"-->
+                                    <!--android:stateListAnimator="@null"-->
+                                    <!--android:text="RESET" />-->
                             <Button
                                     android:id="@+id/btn_exit"
                                     style="@style/btn_default"

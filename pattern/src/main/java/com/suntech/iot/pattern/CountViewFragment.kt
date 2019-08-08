@@ -69,7 +69,7 @@ class CountViewFragment : BaseFragment() {
             ll_total_count.visibility = View.VISIBLE
             ll_component_count.visibility = View.GONE
 
-            tv_wos_name.text = AppGlobal.instance.get_wos_name() + " NO :  "    // 하단 WOS name 변경
+//            tv_wos_name.text = AppGlobal.instance.get_wos_name() + " NO :  "    // 하단 WOS name 변경
 
             tv_kind_qty.text = "" + (activity as MainActivity).trim_qty
             tv_kind_pairs.text = "" + (activity as MainActivity).trim_pairs
@@ -161,27 +161,27 @@ class CountViewFragment : BaseFragment() {
 //            alertDialog.show()
         }
 
-        btn_init_actual.setOnClickListener {
-            val work_idx = "" + AppGlobal.instance.get_work_idx()
-            if (work_idx == "") {
-                Toast.makeText(activity, getString(R.string.msg_not_start_work), Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            val alertDialogBuilder = AlertDialog.Builder(activity)
-            alertDialogBuilder.setTitle(getString(R.string.notice))
-            alertDialogBuilder
-                .setMessage("Reset Actual?")
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, id ->
-                    AppGlobal.instance.set_current_shift_actual_cnt(0)
-                    updateView()
-                })
-                .setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, id ->
-                    dialog.cancel()
-                })
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
-        }
+//        btn_init_actual.setOnClickListener {
+//            val work_idx = "" + AppGlobal.instance.get_work_idx()
+//            if (work_idx == "") {
+//                Toast.makeText(activity, getString(R.string.msg_not_start_work), Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//            val alertDialogBuilder = AlertDialog.Builder(activity)
+//            alertDialogBuilder.setTitle(getString(R.string.notice))
+//            alertDialogBuilder
+//                .setMessage("Reset Actual?")
+//                .setCancelable(false)
+//                .setPositiveButton(getString(R.string.confirm), DialogInterface.OnClickListener { dialog, id ->
+//                    AppGlobal.instance.set_current_shift_actual_cnt(0)
+//                    updateView()
+//                })
+//                .setNegativeButton(getString(R.string.cancel), DialogInterface.OnClickListener { dialog, id ->
+//                    dialog.cancel()
+//                })
+//            val alertDialog = alertDialogBuilder.create()
+//            alertDialog.show()
+//        }
         // button click
         tv_btn_wos_count.setOnClickListener {
             (activity as MainActivity).countViewType = 2
@@ -219,7 +219,7 @@ class CountViewFragment : BaseFragment() {
 
 //                        val styleno = d["ct"]!!.toInt()
 //                        val pieces_info = AppGlobal.instance.get_pieces_info()
-                    viewWosData()
+                    viewWorkInfo()
                     fetchFilterWos()
 
                     (activity as MainActivity).startComponent(wosno, styleno, model, size, target, actual)
@@ -227,24 +227,24 @@ class CountViewFragment : BaseFragment() {
                 }
             })
         }
-        viewWosData()
+        viewWorkInfo()
 //        updateView()      // onResume() 에서 함
         fetchColorData()    // Get Color
         fetchFilterWos()    // 기존 선택된 WOS 가 있으면 로드해서 화면에 표시한다.
     }
 
-    fun viewWosData() {
-        // WOS INFO
-        // 하단 bottom
-        tv_wosno.text = AppGlobal.instance.get_compo_wos()
-        tv_model.text = AppGlobal.instance.get_compo_model()
-        tv_component.text = AppGlobal.instance.get_compo_component()
-        tv_style_no.text = AppGlobal.instance.get_compo_style()
-
-        // 우측 쪽창
-        tv_count_view_csize.text = AppGlobal.instance.get_compo_size()
-        tv_count_view_clayer.text = AppGlobal.instance.get_compo_layer()
-        tv_count_view_ctarget.text = "" + AppGlobal.instance.get_compo_target()
+    fun viewWorkInfo() {
+        // WOS INFO 하단 bottom
+        tv_pieces.text = AppGlobal.instance.get_pieces_info()
+        tv_pairs.text = AppGlobal.instance.get_pairs_info()
+        tv_idx.text = AppGlobal.instance.get_design_info_idx()
+        tv_cycle_time.text = AppGlobal.instance.get_cycle_time().toString()
+        tv_model.text = AppGlobal.instance.get_model()
+        tv_material.text = AppGlobal.instance.get_material_way()
+        tv_material2.text = AppGlobal.instance.get_material_way()
+        tv_component.text = AppGlobal.instance.get_component()
+//        tv_model.text = AppGlobal.instance.get_compo_model()
+//        tv_component.text = AppGlobal.instance.get_compo_component()
     }
 
     // 해당 시간에만 카운트 값을 변경하기 위한 변수

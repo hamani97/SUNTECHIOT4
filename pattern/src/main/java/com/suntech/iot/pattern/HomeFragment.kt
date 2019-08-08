@@ -49,30 +49,53 @@ class HomeFragment : BaseFragment() {
                 (activity as MainActivity).changeFragment(1)
 //            }
         }
+        // 신버전. 디자인 기능으로 대체됨
         btn_component_info.setOnClickListener {
-//            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
-//                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
-//            } else {
-                (activity as MainActivity).countViewType = 2
-                (activity as MainActivity).changeFragment(1)
-//                val intent = Intent(activity, ComponentInfoActivity::class.java)
-//                getBaseActivity().startActivity(intent, { r, c, m, d ->
-//                    if (r && d != null) {
-//                        (activity as MainActivity).countViewType = 2
-//                        (activity as MainActivity).changeFragment(1)
-//
-//                        val wosno = d!!["wosno"]!!
-//                        val styleno = d["styleno"]!!.toString()
-//                        val model = d["model"]!!.toString()
-//                        val size = d["size"]!!.toString()
-//                        val target = d["target"]!!.toString()
-//                        val actual = d["actual"]!!.toString()
-//
-//                        (activity as MainActivity).startComponent(wosno, styleno, model, size, target, actual)
-//                    }
-//                })
-//            }
+            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
+            } else {
+                btn_component_info.isEnabled = false
+                val intent = Intent(activity, DesignInfoActivity::class.java)
+                getBaseActivity().startActivity(intent, { r, c, m, d ->
+                    btn_component_info.isEnabled = true
+                    if (r && d!=null) {
+                        val idx = d!!["idx"]!!
+                        val cycle_time = d["ct"]!!.toInt()
+                        val model = d["model"]!!.toString()
+                        val article = d["article"]!!.toString()
+                        val material_way = d["material_way"]!!.toString()
+                        val component = d["component"]!!.toString()
+
+                        (activity as MainActivity).startNewProduct(idx, cycle_time, model, article, material_way, component)
+                    }
+                })
+            }
         }
+        // 구버전. 콤포넌트 기능 삭제됨
+//        btn_component_info.setOnClickListener {
+////            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+////                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
+////            } else {
+//                (activity as MainActivity).countViewType = 2
+//                (activity as MainActivity).changeFragment(1)
+////                val intent = Intent(activity, ComponentInfoActivity::class.java)
+////                getBaseActivity().startActivity(intent, { r, c, m, d ->
+////                    if (r && d != null) {
+////                        (activity as MainActivity).countViewType = 2
+////                        (activity as MainActivity).changeFragment(1)
+////
+////                        val wosno = d!!["wosno"]!!
+////                        val styleno = d["styleno"]!!.toString()
+////                        val model = d["model"]!!.toString()
+////                        val size = d["size"]!!.toString()
+////                        val target = d["target"]!!.toString()
+////                        val actual = d["actual"]!!.toString()
+////
+////                        (activity as MainActivity).startComponent(wosno, styleno, model, size, target, actual)
+////                    }
+////                })
+////            }
+//        }
         btn_work_info.setOnClickListener {
             if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
                 Toast.makeText(activity, getString(R.string.msg_no_setting), Toast.LENGTH_SHORT).show()

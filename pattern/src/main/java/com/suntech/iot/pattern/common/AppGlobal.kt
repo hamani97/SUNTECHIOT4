@@ -65,8 +65,8 @@ class AppGlobal private constructor() {
     fun set_sound_at_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_sound_count", state) }
     fun get_sound_at_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_sound_count") }
 
-    fun set_without_component(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_without_component", state) }
-    fun get_without_component() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_without_component") }
+//    fun set_without_component(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_without_component", state) }
+//    fun get_without_component() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_without_component") }
 
     fun set_wos_name(name: String) { UtilLocalStorage.setString(instance._context!!, "current_wos_name", name) }
     fun get_wos_name() : String {
@@ -87,7 +87,7 @@ class AppGlobal private constructor() {
     fun get_server_port() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_port") }
 
 
-    // Component 필터 세팅값
+    // Component 필터 세팅값 (사라진 기능. 지워야 할것들)
     fun set_compo_sort_key(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_sort_key", value) }
     fun get_compo_sort_key() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_sort_key") }
 
@@ -169,12 +169,27 @@ class AppGlobal private constructor() {
 //    }
 
 
-    // 디자인 정보 설정
-//    fun set_design_info_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_design_info_idx", idx) }
-//    fun get_design_info_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_design_info_idx") }
-//    fun set_design_info(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "design_info", data) }
-//    fun get_design_info() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "design_info") }
+    // Design 관련 세팅값
+    fun set_design_info(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "design_info", data) }
+    fun get_design_info() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "design_info") }
 
+    fun set_pieces_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", idx) }
+    fun get_pieces_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
+    fun set_pairs_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pairs_info", idx) }
+    fun get_pairs_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pairs_info") }
+
+    // 디자인 정보 설정
+    fun set_design_info_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_design_info_idx", idx) }
+    fun get_design_info_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_design_info_idx") }
+
+    fun set_model(data: String) { UtilLocalStorage.setString(instance._context!!, "current_model", data) }
+    fun get_model() : String { return UtilLocalStorage.getString(instance._context!!, "current_model") }
+    fun set_article(data: String) { UtilLocalStorage.setString(instance._context!!, "current_article", data) }
+    fun get_article() : String { return UtilLocalStorage.getString(instance._context!!, "current_article") }
+    fun set_material_way(data: String) { UtilLocalStorage.setString(instance._context!!, "current_material_way", data) }
+    fun get_material_way() : String { return UtilLocalStorage.getString(instance._context!!, "current_material_way") }
+    fun set_component(data: String) { UtilLocalStorage.setString(instance._context!!, "current_component", data) }
+    fun get_component() : String { return UtilLocalStorage.getString(instance._context!!, "current_component") }
     fun set_cycle_time(idx: Int) { UtilLocalStorage.setInt(instance._context!!, "current_cycle_time", idx) }
     fun get_cycle_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_cycle_time") }
 

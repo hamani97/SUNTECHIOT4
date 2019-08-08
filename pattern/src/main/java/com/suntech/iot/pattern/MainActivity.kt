@@ -168,6 +168,7 @@ class MainActivity : BaseActivity() {
     private fun fetchRequiredData() {
         if (AppGlobal.instance.get_server_ip().trim() != "") {
             fetchWorkData()         // 작업시간
+            fetchDesignData()
             fetchServerTarget()     // 목표수량
             fetchDownTimeType()
             fetchColorData()
@@ -297,6 +298,27 @@ class MainActivity : BaseActivity() {
 //            }
 //        })
 //    }
+
+    private fun fetchDesignData() {
+        if (AppGlobal.instance.get_server_ip() == "") return
+
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "design",
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx())
+
+        request(this, uri, false, params, { result ->
+
+            var code = result.getString("code")
+            var msg = result.getString("msg")
+            if(code == "00"){
+                var list = result.getJSONArray("item")
+                AppGlobal.instance.set_design_info(list)
+            }else{
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     /*
      *  당일 작업시간 가져오기. 새벽이 지난 시간은 1일을 더한다.
@@ -971,17 +993,17 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(this, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show(); return
             }
             // 콤포넌트 선택되어야만 실행되는 경우
-            val work_idx = AppGlobal.instance.get_work_idx()
-            if (AppGlobal.instance.get_without_component() == false) {
-                // 선택한 Component 제품이 있는지 확인
-                if (work_idx == "") {
-                    Toast.makeText(this, getString(R.string.msg_select_component), Toast.LENGTH_SHORT).show(); return
-                }
-                // Pairs 선택 확인
-                if (AppGlobal.instance.get_compo_pairs() == "") {
-                    Toast.makeText(this, getString(R.string.msg_layer_not_selected), Toast.LENGTH_SHORT).show(); return
-                }
-            }
+//            val work_idx = AppGlobal.instance.get_work_idx()
+//            if (AppGlobal.instance.get_without_component() == false) {
+//                // 선택한 Component 제품이 있는지 확인
+//                if (work_idx == "") {
+//                    Toast.makeText(this, getString(R.string.msg_select_component), Toast.LENGTH_SHORT).show(); return
+//                }
+//                // Pairs 선택 확인
+//                if (AppGlobal.instance.get_compo_pairs() == "") {
+//                    Toast.makeText(this, getString(R.string.msg_layer_not_selected), Toast.LENGTH_SHORT).show(); return
+//                }
+//            }
 
             val shift_idx = cur_shift["shift_idx"]      // 현재 작업중인 Shift
             var inc_count = value.toString().toInt()
@@ -1016,20 +1038,21 @@ class MainActivity : BaseActivity() {
             AppGlobal.instance.set_current_shift_actual_cnt(cnt)
 
             // 콤포넌트 선택인 경우
-            if (AppGlobal.instance.get_without_component() == false) {
-                // component total count
-                var db = DBHelperForComponent(this)
-                val row = db.get(work_idx)
-                if (row != null) {
-                    val actual = (row!!["actual"].toString().toInt() + inc_count)
-                    db.updateWorkActual(work_idx, actual)
-                    sendCountData(value.toString(), inc_count, actual)  // 서버에 카운트 정보 전송
-                } else {
-                    sendCountData(value.toString(), inc_count, inc_count)  // 서버에 카운트 정보 전송
-                }
-            } else {
-                sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
-            }
+            sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
+//            if (AppGlobal.instance.get_without_component() == false) {
+//                // component total count
+//                var db = DBHelperForComponent(this)
+//                val row = db.get(work_idx)
+//                if (row != null) {
+//                    val actual = (row!!["actual"].toString().toInt() + inc_count)
+//                    db.updateWorkActual(work_idx, actual)
+//                    sendCountData(value.toString(), inc_count, actual)  // 서버에 카운트 정보 전송
+//                } else {
+//                    sendCountData(value.toString(), inc_count, inc_count)  // 서버에 카운트 정보 전송
+//                }
+//            } else {
+//                sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
+//            }
 
             _last_count_received_time = DateTime()      // downtime 시간 초기화
 
@@ -1140,8 +1163,22 @@ class MainActivity : BaseActivity() {
         // 현재 shift의 첫생산인데 지각인경우 downtime 처리
     }
 
-    fun startNewProduct(didx:String, piece_info:Int, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
+    fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
 
+        // 전의 작업과 동일한 디자인 번호이면 새작업이 아님
+        val prev_didx = AppGlobal.instance.get_design_info_idx()
+        if (didx == prev_didx) return
+
+        // 전에 완료되지 않은 작업이 있다면 완료처리
+//        var prev_work_idx = ""+AppGlobal.instance.get_product_idx()
+//        if (prev_work_idx!="") db.updateWorkEnd(prev_work_idx)
+
+        AppGlobal.instance.set_design_info_idx(didx)
+        AppGlobal.instance.set_model(model)
+        AppGlobal.instance.set_article(article)
+        AppGlobal.instance.set_material_way(material_way)
+        AppGlobal.instance.set_component(component)
+        AppGlobal.instance.set_cycle_time(cycle_time)
     }
 
     // downtime 발생시 푸시 발송
