@@ -18,11 +18,13 @@ import android.widget.TextView
 import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_component_info.*
 import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_cancel
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_confirm
 import kotlinx.android.synthetic.main.layout_top_menu_component.*
+import org.joda.time.DateTime
 
 class DesignInfoActivity : BaseActivity() {
 
@@ -76,7 +78,27 @@ class DesignInfoActivity : BaseActivity() {
 
     private fun initView() {
 
-        tv_title.setText("DESIGN INFO")
+        val list = AppGlobal.instance.get_current_work_time()
+        var find_title = false
+        if (list.length() > 0) {
+            val now_millis = DateTime().millis
+            for (i in 0..(list.length() - 1)) {
+                val item = list.getJSONObject(i)
+                val shift_stime = OEEUtil.parseDateTime(item["work_stime"].toString()).millis
+                val shift_etime = OEEUtil.parseDateTime(item["work_etime"].toString()).millis
+                if (shift_stime <= now_millis && now_millis < shift_etime) {
+                    // 타이틀 변경
+                    tv_title.setText(item["shift_name"].toString() + "   " +
+                            OEEUtil.parseDateTime(item["work_stime"].toString()).toString("HH:mm") + " - " +
+                            OEEUtil.parseDateTime(item["work_etime"].toString()).toString("HH:mm"))
+                    find_title = true
+                    break
+                }
+            }
+        }
+        if (find_title == false) {
+            tv_title.setText("No shift")
+        }
 
         list_adapter = ListAdapter(this, _filtered_list)
         lv_design_info.adapter = list_adapter

@@ -279,6 +279,12 @@ class AppGlobal private constructor() {
     fun set_color_code(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "color_code", data) }
     fun get_color_code() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "color_code") }
 
+    fun set_availability(value: String) { UtilLocalStorage.setString(instance._context!!, "current_availability", value) }
+    fun get_availability() : String { return UtilLocalStorage.getString(instance._context!!, "current_availability") }
+    fun set_performance(value: String) { UtilLocalStorage.setString(instance._context!!, "current_performance", value) }
+    fun get_performance() : String { return UtilLocalStorage.getString(instance._context!!, "current_performance") }
+    fun set_quality(value: String) { UtilLocalStorage.setString(instance._context!!, "current_quality", value) }
+    fun get_quality() : String { return UtilLocalStorage.getString(instance._context!!, "current_quality") }
 
     // Layer정보 = pair 수
     fun set_layer_pairs(layer_no: String, pair: String) { UtilLocalStorage.setString(instance._context!!, "current_layer_" + layer_no, pair) }

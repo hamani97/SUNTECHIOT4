@@ -38,7 +38,7 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
 
-    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
+//    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
 
     //    val _stitch_db = DBHelperForCount(this)     // Count 정보
     val _target_db = DBHelperForTarget(this)    // 날짜의 Shift별 정보, Target 수량 정보 저장
@@ -620,6 +620,39 @@ class MainActivity : BaseActivity() {
         })
     }
 
+    private fun fetchOEEGraph() {
+        if (AppGlobal.instance.get_server_ip().trim() == "") return
+        var work_date = DateTime().toString("HH:mm:ss")
+        var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
+        if (item != null) {
+            work_date = item["date"].toString()
+        }
+        val uri = "/getoee.php"
+        var params = listOf(
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
+            "work_date" to work_date)
+//Log.e("oeegraph", "mac_addr="+AppGlobal.instance.getMACAddress()+", shift_idx="+AppGlobal.instance.get_current_shift_idx()+"," +
+//        " factory_parent_idx="+AppGlobal.instance.get_factory_idx()+", factory_idx="+AppGlobal.instance.get_room_idx()+", line_idx="+AppGlobal.instance.get_line_idx()+
+//        ", work_date="+work_date)
+        request(this, uri, false, params, { result ->
+            var code = result.getString("code")
+            if (code == "00") {
+                var availability = result.getString("availability")
+                var performance = result.getString("performance")
+                var quality = result.getString("quality")
+//Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
+                AppGlobal.instance.set_availability(availability)
+                AppGlobal.instance.set_performance(performance)
+                AppGlobal.instance.set_quality(quality)
+            } else {
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     private fun sendPing() {
         tv_ms.text = "-" + " ms"
@@ -818,8 +851,9 @@ class MainActivity : BaseActivity() {
 
     /////// 쓰레드
     private val _downtime_timer = Timer()
-    private val _timer_task1 = Timer()          // 서버 접속 체크 Ping test. Shift의 Target 정보
+//    private val _timer_task1 = Timer()          // 서버 접속 체크 Ping test. Shift의 Target 정보
     private val _timer_task2 = Timer()          // 작업시간, 다운타입, 칼라 Data 가져오기 (workdata, designdata, downtimetype, color)
+    private val _timer_task3 = Timer()          // 30초마다. 그래프 그리기 위한 태스크
     private val _timer_task4 = Timer()          // 30분마다. 서버로 타겟값 전송
 
     private fun start_timer() {
@@ -836,16 +870,16 @@ class MainActivity : BaseActivity() {
         }
         _downtime_timer.schedule(downtime_task, 500, 1000)
 
-        // 10초마다
-        val task1 = object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    sendPing()
-//                    updateCurrentWorkTarget() // 30분으로 이동
-                }
-            }
-        }
-        _timer_task1.schedule(task1, 2000, 10000)
+//        // 10초마다
+//        val task1 = object : TimerTask() {
+//            override fun run() {
+//                runOnUiThread {
+////                    sendPing()
+////                    updateCurrentWorkTarget() // 30분으로 이동
+//                }
+//            }
+//        }
+//        _timer_task1.schedule(task1, 2000, 10000)
 
         // 10분마다
         val task2 = object : TimerTask() {
@@ -856,6 +890,17 @@ class MainActivity : BaseActivity() {
             }
         }
         _timer_task2.schedule(task2, 600000, 600000)
+
+        // 30초마다
+        val task3 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    sendPing()
+                    fetchOEEGraph()
+                }
+            }
+        }
+        _timer_task3.schedule(task3, 3000, 30000)
 
         // 30분마다
         val task4 = object : TimerTask() {
@@ -869,8 +914,9 @@ class MainActivity : BaseActivity() {
     }
     private fun cancel_timer () {
         _downtime_timer.cancel()
-        _timer_task1.cancel()
+//        _timer_task1.cancel()
         _timer_task2.cancel()
+        _timer_task3.cancel()
         _timer_task4.cancel()
     }
 
@@ -972,6 +1018,9 @@ class MainActivity : BaseActivity() {
         }
         return true
     }
+
+    var pieces_qty = 0
+    var pairs_qty = 0
 
     var trim_qty = 0
     var trim_pairs = 0
@@ -1164,6 +1213,8 @@ class MainActivity : BaseActivity() {
     }
 
     fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
+
+        val db = DBHelperForDesign(this)
 
         // 전의 작업과 동일한 디자인 번호이면 새작업이 아님
         val prev_didx = AppGlobal.instance.get_design_info_idx()

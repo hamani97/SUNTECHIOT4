@@ -45,7 +45,6 @@ class HomeFragment : BaseFragment() {
 //            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
 //                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
 //            } else {
-                (activity as MainActivity).countViewType = 1
                 (activity as MainActivity).changeFragment(1)
 //            }
         }
