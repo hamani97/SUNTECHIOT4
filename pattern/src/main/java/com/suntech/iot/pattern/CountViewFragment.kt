@@ -120,7 +120,6 @@ class CountViewFragment : BaseFragment() {
         tv_cycle_time.text = AppGlobal.instance.get_cycle_time().toString()
         tv_model.text = AppGlobal.instance.get_model()
         tv_material.text = AppGlobal.instance.get_material_way()
-        tv_material2.text = AppGlobal.instance.get_material_way()
         tv_component.text = AppGlobal.instance.get_component()
 //        tv_model.text = AppGlobal.instance.get_compo_model()
 //        tv_component.text = AppGlobal.instance.get_compo_component()
@@ -163,7 +162,7 @@ class CountViewFragment : BaseFragment() {
     private fun countTarget() {
         if (_current_cycle_time >= 86400 && force_count == false) return
 
-        val shift_now_time = AppGlobal.instance.get_current_shift_accumulated_time()
+        val shift_now_time = AppGlobal.instance.get_current_shift_accumulated_time()    // 현재 쉬프트의 누적 시간
         if (shift_now_time <= 0 && force_count == false) return
 
         if (shift_now_time % _current_cycle_time == 0 || force_count) {
@@ -204,8 +203,6 @@ class CountViewFragment : BaseFragment() {
 //    var _current_compo_actual_count = -1
 
     private fun updateView() {
-
-        drawChartView2()
 
         tv_pieces_qty.text = "" + (activity as MainActivity).pieces_qty
         tv_pairs_qty.text = "" + (activity as MainActivity).pairs_qty
@@ -275,6 +272,8 @@ class CountViewFragment : BaseFragment() {
                     }
                 }
             }
+        handle_cnt = 0
+        drawChartView2()
     }
 
     // 값에 변화가 생길때만 화면을 리프레쉬 하기 위한 변수
@@ -383,10 +382,10 @@ class CountViewFragment : BaseFragment() {
         val handler = Handler()
         handler.postDelayed({
             if (is_loop) {
-                updateView()
                 checkBlink()
-                if (handle_cnt++ > 15) {
+                if (handle_cnt++ > 5) {
                     handle_cnt = 0
+                    updateView()
                     computeCycleTime()
                 }
                 startHandler()
