@@ -725,73 +725,41 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun endWork() {
-        AppGlobal.instance.set_work_idx("")
-        AppGlobal.instance.set_worker_no("")
-        AppGlobal.instance.set_worker_name("")
-//        AppGlobal.instance.set_design_info_idx("")
-//        AppGlobal.instance.set_model("")
-//        AppGlobal.instance.set_article("")
-//        AppGlobal.instance.set_material_way("")
-//        AppGlobal.instance.set_component("")
-
-        AppGlobal.instance.set_current_shift_actual_cnt(0)
-
-        // 다운타임이 있으면 완료로 처리
-        val downtime_idx = AppGlobal.instance.get_downtime_idx()
-        if (downtime_idx != "") sendEndDownTimeForce()
-
-        var db = SimpleDatabaseHelperBackup(this)
-        db.delete()
-
-        var db2 = DBHelperForDownTime(this)
-        db2.delete()
-
-        var db3 = DBHelperForCount(this)
-        db3.delete()
-
-        // Component DB는 그날의 shift 가 다 끝나야 초기화한다.
-        val today = AppGlobal.instance.get_today_work_time()
-        if (today.length() > 0) {
-            val shift = today.getJSONObject(today.length() - 1)
-            var shift_etime = OEEUtil.parseDateTime(shift["work_etime"].toString())
-            val now = DateTime()
-            if (shift_etime.millis <= now.millis) {
-                var db1 = DBHelperForComponent(this)
-                db1.delete()
-
-//                AppGlobal.instance.set_compo_wos("")
-//                AppGlobal.instance.set_compo_model("")
-//                AppGlobal.instance.set_compo_style("")
-//                AppGlobal.instance.set_compo_component("")
-                AppGlobal.instance.set_compo_size("")
-                AppGlobal.instance.set_compo_target(0)
-            }
-        }
-//Log.e("today", today.toString())
-//        var db1 = DBHelperForComponent(this)
-//        db1.delete()
-
-        Toast.makeText(this, getString(R.string.msg_exit_automatically), Toast.LENGTH_SHORT).show()
-    }
-
-//    private fun checkExit() {
-//        val work_idx = ""+AppGlobal.instance.get_work_idx()
-//        if (work_idx=="") return
+//    fun endWork() {
+//        AppGlobal.instance.set_work_idx("")
+//        AppGlobal.instance.set_worker_no("")
+//        AppGlobal.instance.set_worker_name("")
 //
-//        val last_work_dt = OEEUtil.parseDate(AppGlobal.instance.get_current_work_day())
-//Log.e("checkExit", "last_work_dt="+last_work_dt.toString())
-//        val current = AppGlobal.instance.get_current_work_time()
-//        if (current.length()==0) return
+//        AppGlobal.instance.set_current_shift_actual_cnt(0)
 //
-//        val shift = current.getJSONObject(0)
-//        var shift_stime = OEEUtil.parseDateTime(shift["work_stime"].toString())
-//        var d = Days.daysBetween(last_work_dt.toLocalDate(), shift_stime.toLocalDate()).getDays()
-//Log.e("checkExit", "shift stime="+shift_stime.toString())
-//Log.e("checkExit", "d="+d.toString())
-//        if (d != 0) {
-////            endWork()
+//        // 다운타임이 있으면 완료로 처리
+//        val downtime_idx = AppGlobal.instance.get_downtime_idx()
+//        if (downtime_idx != "") sendEndDownTimeForce()
+//
+//        var db = SimpleDatabaseHelperBackup(this)
+//        db.delete()
+//
+//        var db2 = DBHelperForDownTime(this)
+//        db2.delete()
+//
+//        var db3 = DBHelperForCount(this)
+//        db3.delete()
+//
+//        // Component DB는 그날의 shift 가 다 끝나야 초기화한다.
+//        val today = AppGlobal.instance.get_today_work_time()
+//        if (today.length() > 0) {
+//            val shift = today.getJSONObject(today.length() - 1)
+//            var shift_etime = OEEUtil.parseDateTime(shift["work_etime"].toString())
+//            val now = DateTime()
+//            if (shift_etime.millis <= now.millis) {
+//                var db1 = DBHelperForComponent2.DBHelperForComponent(this)
+//                db1.delete()
+//
+//                AppGlobal.instance.set_compo_size("")
+//                AppGlobal.instance.set_compo_target(0)
+//            }
 //        }
+//        Toast.makeText(this, getString(R.string.msg_exit_automatically), Toast.LENGTH_SHORT).show()
 //    }
 
 
@@ -813,8 +781,11 @@ class MainActivity : BaseActivity() {
         var db3 = DBHelperForCount(this)
         db3.delete()
 
-        var db4 = DBHelperForComponent(this)
-        db4.delete()
+//        var db4 = DBHelperForComponent(this)
+//        db4.delete()
+
+//        var db5 = DBHelperForDesign(this)
+//        db5.delete()
 
         ToastOut(this, R.string.msg_exit_automatically)
     }
@@ -1134,9 +1105,9 @@ class MainActivity : BaseActivity() {
 
         // Cutting 과는 다르게 콤포넌트가 필수 선택사항이 아니므로
         // 선택되었을 경우에만 seq 값을 구하고 아니면, 디폴트 1을 전송한다.
-        val work_idx = AppGlobal.instance.get_work_idx()
+        val work_idx = AppGlobal.instance.get_product_idx()
         if (work_idx != "") {
-            var db = DBHelperForComponent(this)
+            var db = DBHelperForDesign(this)
             val row = db.get(work_idx)
             seq = row!!["seq"].toString().toInt()
         }
@@ -1167,56 +1138,56 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
-
-        var db = DBHelperForComponent(this)
-
-        val work_info = AppGlobal.instance.get_current_shift_time()
-        val shift_idx = work_info?.getString("shift_idx") ?: ""
-        val shift_name = work_info?.getString("shift_name") ?: ""
-
-        val row = db.get(wosno, size)
-
-        if (row == null) {
-            val s = db.gets_all_wos()
-            val seq = (s?.size ?: 0) + 1
-
-            db.add(wosno, shift_idx, shift_name, styleno, model, size, target.toInt(), 0, 0, seq)
-            val row2 = db.get(wosno, size)
-            if (row2 == null) {
-                Log.e("work_idx", "none")
-                AppGlobal.instance.set_work_idx("")
-            } else {
-                AppGlobal.instance.set_work_idx(row2["work_idx"].toString())
-                Log.e("work_idx", row2["work_idx"].toString())
-            }
-        } else {
-            AppGlobal.instance.set_work_idx(row["work_idx"].toString())
-            Log.e("work_idx", row["work_idx"].toString())
-        }
-        val br_intent = Intent("need.refresh")
-        this.sendBroadcast(br_intent)
-
-        // 작업시작할때 현재 쉬프트의 날짜를 기록해놓음
-        val current = AppGlobal.instance.get_current_work_time()
-        if (current.length() > 0) {
-            val shift = current.getJSONObject(0)
-            var shift_stime = OEEUtil.parseDateTime(shift["work_stime"].toString())
-            AppGlobal.instance.set_current_work_day(shift_stime.toString("yyyy-MM-dd"))
-        }
-
-        // downtime sec 초기화
-        // 새로 선택한 상품이 있으므로 이 값을 초기화 한다. 기존에 없던 부분
-        _last_count_received_time = DateTime()
-
-        // 현재 shift의 첫생산인데 지각인경우 downtime 처리
-    }
+//    fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
+//
+//        var db = DBHelperForDesign(this)
+//
+//        val work_info = AppGlobal.instance.get_current_shift_time()
+//        val shift_idx = work_info?.getString("shift_idx") ?: ""
+//        val shift_name = work_info?.getString("shift_name") ?: ""
+//
+//        val row = db.get(wosno, size)
+//
+//        if (row == null) {
+//            val s = db.counts_for_didx()
+//            val seq = s + 1
+//
+//            db.add(wosno, shift_idx, shift_name, styleno, model, size, target.toInt(), 0, 0, seq)
+//            val row2 = db.get(wosno, size)
+//            if (row2 == null) {
+//                Log.e("work_idx", "none")
+//                AppGlobal.instance.set_work_idx("")
+//            } else {
+//                AppGlobal.instance.set_work_idx(row2["work_idx"].toString())
+//                Log.e("work_idx", row2["work_idx"].toString())
+//            }
+//        } else {
+//            AppGlobal.instance.set_work_idx(row["work_idx"].toString())
+//            Log.e("work_idx", row["work_idx"].toString())
+//        }
+//        val br_intent = Intent("need.refresh")
+//        this.sendBroadcast(br_intent)
+//
+//        // 작업시작할때 현재 쉬프트의 날짜를 기록해놓음
+//        val current = AppGlobal.instance.get_current_work_time()
+//        if (current.length() > 0) {
+//            val shift = current.getJSONObject(0)
+//            var shift_stime = OEEUtil.parseDateTime(shift["work_stime"].toString())
+//            AppGlobal.instance.set_current_work_day(shift_stime.toString("yyyy-MM-dd"))
+//        }
+//
+//        // downtime sec 초기화
+//        // 새로 선택한 상품이 있으므로 이 값을 초기화 한다. 기존에 없던 부분
+//        _last_count_received_time = DateTime()
+//
+//        // 현재 shift의 첫생산인데 지각인경우 downtime 처리
+//    }
 
     fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
 
         val db = DBHelperForDesign(this)
 
-        // 전의 작업과 동일한 디자인 번호이면 새작업이 아님
+        // 이전 작업과 동일한 디자인 번호이면 새작업이 아님
         val prev_didx = AppGlobal.instance.get_design_info_idx()
         if (didx == prev_didx) return
 
@@ -1230,6 +1201,21 @@ class MainActivity : BaseActivity() {
         AppGlobal.instance.set_material_way(material_way)
         AppGlobal.instance.set_component(component)
         AppGlobal.instance.set_cycle_time(cycle_time)
+
+        val pieces_info = AppGlobal.instance.get_pieces_info()
+        val pairs_info = AppGlobal.instance.get_pairs_info()
+
+        AppGlobal.instance.set_product_idx()
+
+        val s = db.gets()
+        val seq = (s?.size ?: 0) + 1
+        Log.e("test", "seq = " + seq)
+
+        val work_idx = "" + AppGlobal.instance.get_product_idx()
+        val work_info = AppGlobal.instance.get_current_shift_time()
+        val shift_idx = work_info?.getString("shift_idx") ?: ""
+        val shift_name = work_info?.getString("shift_name") ?: ""
+        db.add(work_idx, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
     }
 
     // downtime 발생시 푸시 발송
