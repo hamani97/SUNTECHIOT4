@@ -194,9 +194,18 @@ class AppGlobal private constructor() {
     fun get_cycle_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_cycle_time") }
 
 
-    // 작업 워크 고유값 설정
+    // 작업 워크 고유값 설정 (커팅버전. 여기선 안씀)
     fun set_work_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "work_idx", idx) }
     fun get_work_idx() : String { return UtilLocalStorage.getString(instance._context!!, "work_idx") }
+
+    // 패턴용 버전 (이앱에서 사용)
+    fun set_product_idx() {
+        var product_idx = get_product_idx()
+        val new_product_idx = if (product_idx == "") "1000" else product_idx.toInt() + 1
+        UtilLocalStorage.setString(instance._context!!, "work_idx", new_product_idx.toString())
+    }
+    fun get_product_idx() : String { return UtilLocalStorage.getString(instance._context!!, "work_idx") }
+    fun reset_product_idx() { UtilLocalStorage.setString(instance._context!!, "work_idx", "") }
 
     // 작업시간 설정
     fun set_today_work_time(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "current_work_time", data) }      // 오늘의 shift 정보

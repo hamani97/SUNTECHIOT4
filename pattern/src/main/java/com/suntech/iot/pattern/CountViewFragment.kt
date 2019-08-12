@@ -15,7 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
-import com.suntech.iot.pattern.db.DBHelperForComponent
+import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.popup.PiecePairCountEditActivity
 import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.*
@@ -247,8 +247,8 @@ class CountViewFragment : BaseFragment() {
         }
 
         // Component count 정보 표시
-        var db = DBHelperForComponent(activity)
-        val work_idx = AppGlobal.instance.get_work_idx()
+        var db = DBHelperForDesign(activity)
+        val work_idx = AppGlobal.instance.get_product_idx()
 
 
         // 1번 화면
