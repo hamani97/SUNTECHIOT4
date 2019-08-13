@@ -19,7 +19,6 @@ import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.OEEUtil
-import kotlinx.android.synthetic.main.activity_component_info.*
 import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_cancel
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_confirm

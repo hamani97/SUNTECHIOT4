@@ -5,7 +5,7 @@ import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
-import com.suntech.iot.pattern.db.DBHelperForComponent
+import com.suntech.iot.pattern.db.DBHelperForDesign
 import kotlinx.android.synthetic.main.activity_actual_count_edit_input.*
 
 class ActualCountEditInputActivity : BaseActivity() {
@@ -26,7 +26,7 @@ class ActualCountEditInputActivity : BaseActivity() {
 
         _origin_actual = actual.toInt()
 
-        var db = DBHelperForComponent(this)
+        var db = DBHelperForDesign(this)
         val row = db.get(work_idx)
 
         if (row == null) {
@@ -68,7 +68,7 @@ class ActualCountEditInputActivity : BaseActivity() {
             return
         }
 
-        var db = DBHelperForComponent(this)
+        var db = DBHelperForDesign(this)
         val row = db.get(work_idx)
 
         if (row == null) {

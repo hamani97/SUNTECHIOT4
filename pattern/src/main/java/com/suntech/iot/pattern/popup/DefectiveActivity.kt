@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
-import com.suntech.iot.pattern.db.DBHelperForComponent
+import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_defective.*
 import kotlinx.android.synthetic.main.list_item_defective_total.*
@@ -32,7 +32,7 @@ class DefectiveActivity : BaseActivity() {
         tv_item_row0.text = "TOTAL"
         tv_item_row2.text = ""
 
-        var db = DBHelperForComponent(this)
+        var db = DBHelperForDesign(this)
         _list = db.gets() ?: _list
 
         list_adapter = ProductListActivity.ListDefectiveAdapter(this, _list)

@@ -17,6 +17,7 @@ import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.popup.PiecePairCountEditActivity
+import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
@@ -131,30 +132,39 @@ class CountViewFragment : BaseFragment() {
 
     // Total target을 표시할 사이클 타임을 계산한다.
     private fun computeCycleTime() {
-        force_count = true
-        val target = AppGlobal.instance.get_current_shift_target_cnt()
-        if (target == null || target == "") {
-            // 작업 시간이 아니므로 값을 초기화 한다.
-            _current_cycle_time = 15
-            _total_target = 0
-            return
-        }
-
-        val total_target = target.toInt()
-        val target_type = AppGlobal.instance.get_target_type()
-
+        val target_type = AppGlobal.instance.get_target_type()  // setting menu 메뉴에서 선택한 타입
         if (target_type=="device_per_accumulate" || target_type=="server_per_accumulate") {
-            val shift_total_time = AppGlobal.instance.get_current_shift_total_time()
-            _current_cycle_time = if (total_target > 0) (shift_total_time / total_target) else 0
+            _current_cycle_time = AppGlobal.instance.get_cycle_time()
             if (_current_cycle_time < 5) _current_cycle_time = 5        // 너무 자주 리프레시 되는걸 막기위함
-
-        } else if (target_type=="device_per_hourly" || target_type=="server_per_hourly") {
-            _current_cycle_time = 86400
-
-        } else if (target_type=="device_per_day_total" || target_type=="server_per_day_total") {
-            _current_cycle_time = 86400
+        } else {
+            _current_cycle_time = 180   // 3분
         }
     }
+//    private fun computeCycleTime() {
+//        force_count = true
+//        val target = AppGlobal.instance.get_current_shift_target_cnt()
+//        if (target == null || target == "") {
+//            // 작업 시간이 아니므로 값을 초기화 한다.
+//            _current_cycle_time = 15
+//            _total_target = 0
+//            return
+//        }
+//
+//        val total_target = target.toInt()
+//        val target_type = AppGlobal.instance.get_target_type()
+//
+//        if (target_type=="device_per_accumulate" || target_type=="server_per_accumulate") {
+//            val shift_total_time = AppGlobal.instance.get_current_shift_total_time()
+//            _current_cycle_time = if (total_target > 0) (shift_total_time / total_target) else 0
+//            if (_current_cycle_time < 5) _current_cycle_time = 5        // 너무 자주 리프레시 되는걸 막기위함
+//
+//        } else if (target_type=="device_per_hourly" || target_type=="server_per_hourly") {
+//            _current_cycle_time = 86400
+//
+//        } else if (target_type=="device_per_day_total" || target_type=="server_per_day_total") {
+//            _current_cycle_time = 86400
+//        }
+//    }
 
     // 무조건 계산해야 할경우 true
     var force_count = true
@@ -204,8 +214,86 @@ class CountViewFragment : BaseFragment() {
 
     private fun updateView() {
 
+        // 기본 출력
+        tv_current_time.text = DateTime.now().toString("yyyy-MM-dd HH:mm:ss")
+
         tv_pieces_qty.text = "" + (activity as MainActivity).pieces_qty
         tv_pairs_qty.text = "" + (activity as MainActivity).pairs_qty
+
+        //
+        var db = DBHelperForDesign(activity)
+
+        val work_idx = AppGlobal.instance.get_product_idx()
+        if (work_idx == "") return
+
+        val item = db.get(work_idx)
+        if (item == null || item.toString() == "") return
+
+
+        // Total count 를 표시하기 위한 작업
+        val target_type = AppGlobal.instance.get_target_type()  // setting menu 메뉴에서 선택한 타입
+
+        var current_cycle_time = 180   // 3분
+
+        if (target_type=="device_per_accumulate" || target_type=="server_per_accumulate") {
+            current_cycle_time = AppGlobal.instance.get_cycle_time()
+            if (current_cycle_time < 3) current_cycle_time = 3        // 너무 자주 리프레시 되는걸 막기위함
+        }
+
+        val now = DateTime().millis
+        val start_dt = OEEUtil.parseDateTime(item["start_dt"].toString()).millis
+
+        val work_time = (now - start_dt) / 1000         // 디자인 작업 시작 시간부터 지난 시간(초)
+        val target = (work_time / current_cycle_time).toInt() + 1    // 현 시간에 만들어야 할 갯수
+
+        val actual = item["actual"].toString().toInt()
+
+        Log.e("Second", "value = " + work_time)
+
+        if (_current_target_count != target || _current_actual_count != actual) {
+
+            _current_target_count = target
+            _current_actual_count = actual
+
+            var ratio = 0
+            var ratio_txt = "N/A"
+
+            if (_current_target_count > 0) {
+                ratio = (_current_actual_count.toFloat() / _current_target_count.toFloat() * 100).toInt()
+                if (ratio > 999) ratio = 999
+                ratio_txt = "" + ratio + "%"
+            }
+
+            tv_count_view_target.text = "" + _current_target_count
+            tv_count_view_actual.text = "" + _current_actual_count
+            tv_count_view_ratio.text = ratio_txt
+
+            var maxEnumber = 0
+            var color_code = "ffffff"
+
+            for (i in 0..(_list.size - 1)) {
+                val snumber = _list[i]["snumber"]?.toInt() ?: 0
+                val enumber = _list[i]["enumber"]?.toInt() ?: 0
+                if (maxEnumber < enumber) maxEnumber = enumber
+                if (snumber <= ratio && enumber >= ratio) color_code = _list[i]["color_code"].toString()
+            }
+            tv_count_view_target.setTextColor(Color.parseColor("#" + color_code))
+            tv_count_view_actual.setTextColor(Color.parseColor("#" + color_code))
+            tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
+
+            if (true) {
+                val db_design = DBHelperForDesign(activity)
+                var db_list = db_design.gets()
+                val count = db_list?.size ?: 1
+                for (i in 0..(count - 1)) {
+                    val item = db_list?.get(i)
+                    Log.e("Design DB", i.toString() + " = " + item.toString())
+                }
+            }
+        }
+        return
+
+
 
         countTarget()
 
@@ -243,13 +331,11 @@ class CountViewFragment : BaseFragment() {
             tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
         }
 
-        // Component count 정보 표시
-        var db = DBHelperForDesign(activity)
-        val work_idx = AppGlobal.instance.get_product_idx()
+
 
 
         // 1번 화면
-            tv_current_time.text = DateTime.now().toString("yyyy-MM-dd HH:mm:ss")
+
 
             if (work_idx=="") {
 //                _current_compo_target_count = -1
@@ -272,7 +358,6 @@ class CountViewFragment : BaseFragment() {
                     }
                 }
             }
-        handle_cnt = 0
         drawChartView2()
     }
 
@@ -377,17 +462,17 @@ class CountViewFragment : BaseFragment() {
 //        })
 //    }
 
-    var handle_cnt = 0
+//    var handle_cnt = 0
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
             if (is_loop) {
+                updateView()
                 checkBlink()
-                if (handle_cnt++ > 5) {
-                    handle_cnt = 0
-                    updateView()
-                    computeCycleTime()
-                }
+//                if (handle_cnt++ > 5) {
+//                    handle_cnt = 0
+//                    computeCycleTime()
+//                }
                 startHandler()
             }
         }, 1000)

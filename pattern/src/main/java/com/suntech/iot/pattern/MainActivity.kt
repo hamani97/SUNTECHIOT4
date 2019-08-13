@@ -1191,9 +1191,9 @@ class MainActivity : BaseActivity() {
         val prev_didx = AppGlobal.instance.get_design_info_idx()
         if (didx == prev_didx) return
 
-        // 전에 완료되지 않은 작업이 있다면 완료처리
-//        var prev_work_idx = ""+AppGlobal.instance.get_product_idx()
-//        if (prev_work_idx!="") db.updateWorkEnd(prev_work_idx)
+        // 이전 작업 완료 처리
+        var prev_work_idx = "" + AppGlobal.instance.get_product_idx()
+        if (prev_work_idx != "") db.updateWorkEnd(prev_work_idx)
 
         AppGlobal.instance.set_design_info_idx(didx)
         AppGlobal.instance.set_model(model)

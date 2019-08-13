@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
-import com.suntech.iot.pattern.db.DBHelperForComponent
+import com.suntech.iot.pattern.db.DBHelperForDesign
 import kotlinx.android.synthetic.main.activity_actual_count_edit.*
 import kotlinx.android.synthetic.main.list_item_product_title.*
 import kotlinx.android.synthetic.main.list_item_product_total.*
@@ -57,8 +57,9 @@ class ActualCountEditActivity : BaseActivity() {
         val def_wosno = AppGlobal.instance.get_compo_wos()
         val def_size = AppGlobal.instance.get_compo_size()
 
-        var db = DBHelperForComponent(this)
-        _list = db.gets(def_wosno, def_size) ?: _list
+        var db = DBHelperForDesign(this)
+//        _list = db.gets(def_wosno, def_size) ?: _list
+        _list = db.gets() ?: _list
 
         list_adapter = ProductListActivity.ListAdapter(this, _list)
         lv_products.adapter = list_adapter
