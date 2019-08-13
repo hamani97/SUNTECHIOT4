@@ -128,17 +128,18 @@ class CountViewFragment : BaseFragment() {
 
     // 해당 시간에만 카운트 값을 변경하기 위한 변수
     // 타이밍 값을 미리 계산해 놓는다.
-    var _current_cycle_time = 86400     // 1일
+    var _current_cycle_time = 300   // 5분
 
     // Total target을 표시할 사이클 타임을 계산한다.
     private fun computeCycleTime() {
         val target_type = AppGlobal.instance.get_target_type()  // setting menu 메뉴에서 선택한 타입
         if (target_type=="device_per_accumulate" || target_type=="server_per_accumulate") {
             _current_cycle_time = AppGlobal.instance.get_cycle_time()
-            if (_current_cycle_time < 5) _current_cycle_time = 5        // 너무 자주 리프레시 되는걸 막기위함
+            if (_current_cycle_time < 10) _current_cycle_time = 10        // 너무 자주 리프레시 되는걸 막기위함 (10초)
         } else {
             _current_cycle_time = 180   // 3분
         }
+        Log.e("Count Time", "Current time = " + _current_cycle_time.toString())
     }
 //    private fun computeCycleTime() {
 //        force_count = true
@@ -206,12 +207,6 @@ class CountViewFragment : BaseFragment() {
         }
     }
 
-    // 값에 변화가 생길때만 화면을 리프레쉬 하기 위한 변수
-    var _current_target_count = -1
-    var _current_actual_count = -1
-//    var _current_compo_target_count = -1
-//    var _current_compo_actual_count = -1
-
     private fun updateView() {
 
         // 기본 출력
@@ -224,10 +219,16 @@ class CountViewFragment : BaseFragment() {
         var db = DBHelperForDesign(activity)
 
         val work_idx = AppGlobal.instance.get_product_idx()
-        if (work_idx == "") return
+        if (work_idx == "") {
+            Log.e("CountView UpdateView", "Design not selected.")
+            return
+        }
 
         val item = db.get(work_idx)
-        if (item == null || item.toString() == "") return
+        if (item == null || item.toString() == "") {
+            Log.e("CountView UpdateView", "Design DB not found.")
+            return
+        }
 
 
         // Total count 를 표시하기 위한 작업
@@ -244,37 +245,33 @@ class CountViewFragment : BaseFragment() {
         val start_dt = OEEUtil.parseDateTime(item["start_dt"].toString()).millis
 
         val work_time = (now - start_dt) / 1000         // 디자인 작업 시작 시간부터 지난 시간(초)
-        val target = (work_time / current_cycle_time).toInt() + 1    // 현 시간에 만들어야 할 갯수
 
+        val target = (work_time / current_cycle_time).toInt() + 1    // 현 시간에 만들어야 할 갯수
         val actual = item["actual"].toString().toInt()
 
         Log.e("Second", "value = " + work_time)
 
-        if (_current_target_count != target || _current_actual_count != actual) {
-
-            _current_target_count = target
-            _current_actual_count = actual
+        // 사이클 타임이 되었을 때만 화면 리프레시
+        if (work_time % _current_cycle_time == 0L) {
 
             var ratio = 0
             var ratio_txt = "N/A"
 
-            if (_current_target_count > 0) {
-                ratio = (_current_actual_count.toFloat() / _current_target_count.toFloat() * 100).toInt()
+            if (target > 0) {
+                ratio = (actual.toFloat() / target.toFloat() * 100).toInt()
                 if (ratio > 999) ratio = 999
                 ratio_txt = "" + ratio + "%"
             }
 
-            tv_count_view_target.text = "" + _current_target_count
-            tv_count_view_actual.text = "" + _current_actual_count
+            tv_count_view_target.text = "" + target
+            tv_count_view_actual.text = "" + actual
             tv_count_view_ratio.text = ratio_txt
 
-            var maxEnumber = 0
             var color_code = "ffffff"
 
             for (i in 0..(_list.size - 1)) {
                 val snumber = _list[i]["snumber"]?.toInt() ?: 0
                 val enumber = _list[i]["enumber"]?.toInt() ?: 0
-                if (maxEnumber < enumber) maxEnumber = enumber
                 if (snumber <= ratio && enumber >= ratio) color_code = _list[i]["color_code"].toString()
             }
             tv_count_view_target.setTextColor(Color.parseColor("#" + color_code))
@@ -291,73 +288,7 @@ class CountViewFragment : BaseFragment() {
                 }
             }
         }
-        return
-
-
-
-        countTarget()
-
-        // Total count view 화면 정보 표시
-        val total_actual = AppGlobal.instance.get_current_shift_actual_cnt()
-
-        // 값에 변화가 있을때만 갱신
-        if (_current_target_count != _total_target || _current_actual_count != total_actual) {
-            _current_target_count = _total_target
-            _current_actual_count = total_actual
-            var ratio = 0
-            var ratio_txt = "N/A"
-
-            if (_total_target > 0) {
-                ratio = (total_actual.toFloat() / _total_target.toFloat() * 100).toInt()
-                if (ratio > 999) ratio = 999
-                ratio_txt = "" + ratio + "%"
-            }
-
-            tv_count_view_target.text = "" + _total_target
-            tv_count_view_actual.text = "" + total_actual
-            tv_count_view_ratio.text = ratio_txt
-
-            var maxEnumber = 0
-            var color_code = "ffffff"
-
-            for (i in 0..(_list.size - 1)) {
-                val snumber = _list[i]["snumber"]?.toInt() ?: 0
-                val enumber = _list[i]["enumber"]?.toInt() ?: 0
-                if (maxEnumber < enumber) maxEnumber = enumber
-                if (snumber <= ratio && enumber >= ratio) color_code = _list[i]["color_code"].toString()
-            }
-            tv_count_view_target.setTextColor(Color.parseColor("#" + color_code))
-            tv_count_view_actual.setTextColor(Color.parseColor("#" + color_code))
-            tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
-        }
-
-
-
-
-        // 1번 화면
-
-
-            if (work_idx=="") {
-//                _current_compo_target_count = -1
-//                _current_compo_actual_count = -1
-            } else {
-                var ratio = 1
-                var ratio_txt = "N/A"
-
-                val item = db.get(work_idx)
-                if (item != null && item.toString() != "") {
-                    val target = item["target"].toString().toInt()
-                    val actual = (item["actual"].toString().toInt())
-//                    _current_compo_target_count = target
-//                    _current_compo_actual_count = actual
-
-                    if (target > 0) {
-                        ratio = (actual.toFloat() / target.toFloat() * 100).toInt()
-                        ratio_txt = if (ratio > 999) "999%" else "" + ratio + "%"
-                        if (ratio > 100) ratio = 100
-                    }
-                }
-            }
+//        countTarget()
         drawChartView2()
     }
 
@@ -462,7 +393,8 @@ class CountViewFragment : BaseFragment() {
 //        })
 //    }
 
-//    var handle_cnt = 0
+
+    //    var handle_cnt = 0
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
