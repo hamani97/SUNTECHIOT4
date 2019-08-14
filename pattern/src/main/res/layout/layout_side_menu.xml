@@ -44,16 +44,23 @@
                 android:id="@+id/btn_defective_info"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="50dp"
                 android:visibility="gone"
                 android:background="@drawable/btn_side_icon_defective_info" />
 
         <ImageButton
-                android:id="@+id/btn_production_report"
+                android:id="@+id/btn_worksheet"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/btn_side_icon_worksheet" />
+
+        <ImageButton
+                android:id="@+id/btn_production_report"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/btn_side_icon_product_list" />
 
     </LinearLayout>
 </LinearLayout>

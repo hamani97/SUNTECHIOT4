@@ -58,6 +58,8 @@
         <activity android:name=".popup.DownTimeInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.DefectiveActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.DefectiveInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.WorkSheetActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.WorkSheetDetailActivity" android:theme="@style/AppTheme.PopupOverlay" />
     </application>
 
 </manifest>

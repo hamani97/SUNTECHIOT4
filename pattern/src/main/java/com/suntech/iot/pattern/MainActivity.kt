@@ -20,10 +20,7 @@ import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.common.Constants
 import com.suntech.iot.pattern.db.*
-import com.suntech.iot.pattern.popup.ActualCountEditActivity
-import com.suntech.iot.pattern.popup.DefectiveActivity
-import com.suntech.iot.pattern.popup.DownTimeActivity
-import com.suntech.iot.pattern.popup.PushActivity
+import com.suntech.iot.pattern.popup.*
 import com.suntech.iot.pattern.service.UsbService
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -72,6 +69,17 @@ class MainActivity : BaseActivity() {
 
         mHandler = MyHandler(this)
 
+        val db_design = DBHelperForDesign(this)
+        db_design.delete()
+        AppGlobal.instance.set_design_info_idx("")
+        AppGlobal.instance.set_model("")
+        AppGlobal.instance.set_article("")
+        AppGlobal.instance.set_material_way("")
+        AppGlobal.instance.set_component("")
+        AppGlobal.instance.set_cycle_time(0)
+        AppGlobal.instance.reset_product_idx()
+        AppGlobal.instance.reset_product_idx()
+
         // button click event
         if (AppGlobal.instance.get_long_touch()) {
             btn_home.setOnLongClickListener { changeFragment(0); true }
@@ -80,7 +88,9 @@ class MainActivity : BaseActivity() {
 //            btn_downtime.setOnLongClickListener { startDowntimeActivity(); true }
             btn_downtime.setOnLongClickListener { Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show(); true }
             btn_defective_info.setOnLongClickListener { startActivity(Intent(this, DefectiveActivity::class.java)); true }
+            btn_worksheet.setOnLongClickListener { startActivity(Intent(this, WorkSheetActivity::class.java)); true }
             btn_production_report.setOnLongClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)); true }
+
         } else {
             btn_home.setOnClickListener { changeFragment(0) }
             btn_push_to_app.setOnClickListener { startActivity(Intent(this, PushActivity::class.java)) }
@@ -88,6 +98,7 @@ class MainActivity : BaseActivity() {
 //            btn_downtime.setOnClickListener { startDowntimeActivity() }
             btn_downtime.setOnClickListener { Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show() }
             btn_defective_info.setOnClickListener { startActivity(Intent(this, DefectiveActivity::class.java)) }
+            btn_worksheet.setOnClickListener { startActivity(Intent(this, WorkSheetActivity::class.java)) }
             btn_production_report.setOnClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)) }
         }
 
@@ -764,11 +775,19 @@ class MainActivity : BaseActivity() {
 
 
     fun endTodayWork() {
-        AppGlobal.instance.set_work_idx("")
-        AppGlobal.instance.set_worker_no("")
-        AppGlobal.instance.set_worker_name("")
-        AppGlobal.instance.set_compo_size("")
-        AppGlobal.instance.set_compo_target(0)
+//        AppGlobal.instance.set_work_idx("")
+//        AppGlobal.instance.set_worker_no("")
+//        AppGlobal.instance.set_worker_name("")
+//        AppGlobal.instance.set_compo_size("")
+//        AppGlobal.instance.set_compo_target(0)
+
+        AppGlobal.instance.set_design_info_idx("")
+        AppGlobal.instance.set_model("")
+        AppGlobal.instance.set_article("")
+        AppGlobal.instance.set_material_way("")
+        AppGlobal.instance.set_component("")
+        AppGlobal.instance.set_cycle_time(0)
+        AppGlobal.instance.reset_product_idx()
 
         AppGlobal.instance.set_current_shift_actual_cnt(0)
 
@@ -784,8 +803,8 @@ class MainActivity : BaseActivity() {
 //        var db4 = DBHelperForComponent(this)
 //        db4.delete()
 
-//        var db5 = DBHelperForDesign(this)
-//        db5.delete()
+        var db5 = DBHelperForDesign(this)
+        db5.delete()
 
         ToastOut(this, R.string.msg_exit_automatically)
     }
@@ -1211,11 +1230,21 @@ class MainActivity : BaseActivity() {
         val seq = (s?.size ?: 0) + 1
         Log.e("test", "seq = " + seq)
 
+        var start_dt = DateTime().toString("yyyy-MM-dd HH:mm:ss")
+
+        // 처음 시작이므로 Start 시작 시간을 Shift 시작 시간으로 세팅
+        if (seq == 1) {
+            val item = AppGlobal.instance.get_current_shift_time()
+            if (item != null) {
+                start_dt = item["work_stime"].toString()
+            }
+        }
+
         val work_idx = "" + AppGlobal.instance.get_product_idx()
         val work_info = AppGlobal.instance.get_current_shift_time()
         val shift_idx = work_info?.getString("shift_idx") ?: ""
         val shift_name = work_info?.getString("shift_name") ?: ""
-        db.add(work_idx, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
+        db.add(work_idx, start_dt, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
     }
 
     // downtime 발생시 푸시 발송

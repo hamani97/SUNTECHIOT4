@@ -154,21 +154,6 @@ class AppGlobal private constructor() {
     }
 
 
-    // 작업 프로덕트 고유값 설정
-//    fun reset_product_idx() {
-//        UtilLocalStorage.setString(instance._context!!, "work_idx", "")
-//    }
-//    fun set_product_idx() {
-//        var product_idx = get_product_idx()
-//        if (product_idx == "" ) product_idx = "1000"
-//        val new_product_idx = product_idx.toInt() + 1
-//        UtilLocalStorage.setString(instance._context!!, "work_idx", new_product_idx.toString())
-//    }
-//    fun get_product_idx() : String {
-//        return UtilLocalStorage.getString(instance._context!!, "work_idx")
-//    }
-
-
     // Design 관련 세팅값
     fun set_design_info(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "design_info", data) }
     fun get_design_info() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "design_info") }

@@ -145,7 +145,7 @@ class DBHelperForDesign
             return arr.size
         }
 
-        fun add(work_idx: String, design_idx: String, shift_id:String, shift_name:String, cycle_time: Int, pieces_info: String, pairs_info: String, target:Int, actual:Int, defective:Int, seq:Int): Long {
+        fun add(work_idx: String, start_dt: String, design_idx: String, shift_id:String, shift_name:String, cycle_time: Int, pieces_info: String, pairs_info: String, target:Int, actual:Int, defective:Int, seq:Int): Long {
             val db = _openHelper.writableDatabase ?: return 0
             val row = ContentValues()
             row.put("work_idx", work_idx)
@@ -160,7 +160,8 @@ class DBHelperForDesign
             row.put("actual", actual)
             row.put("defective", defective)
             row.put("seq", seq)
-            row.put("start_dt", DateTime().toString("yyyy-MM-dd HH:mm:ss"))
+            row.put("start_dt", start_dt)
+//            row.put("start_dt", DateTime().toString("yyyy-MM-dd HH:mm:ss"))
             val id = db.insert("design", null, row)
             db.close()
             return id
