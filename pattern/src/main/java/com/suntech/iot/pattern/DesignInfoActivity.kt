@@ -122,10 +122,6 @@ class DesignInfoActivity : BaseActivity() {
         })
 
         btn_setting_confirm.setOnClickListener {
-            if (_selected_index < 0) {
-                Toast.makeText(this, getString(R.string.msg_has_notselected), Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
             if (tv_design_pieces.text.toString() == "" || tv_design_pairs.text.toString() == "") {
                 Toast.makeText(this, getString(R.string.msg_require_info), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -133,10 +129,17 @@ class DesignInfoActivity : BaseActivity() {
             AppGlobal.instance.set_pieces_info(tv_design_pieces.text.toString())
             AppGlobal.instance.set_pairs_info(tv_design_pairs.text.toString())
 
+            if (_selected_index < 0) {
+                finish(false, 0, "ok", null)
+//                Toast.makeText(this, getString(R.string.msg_has_notselected), Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+            } else {
+                finish(true, 1, "ok", _filtered_list[_selected_index])
+            }
+
 //            val pieces_info = et_design_pieces.text.toString().toInt()
 //            AppGlobal.instance.set_pieces_info(pieces_info)
 //            Log.e("data", ""+_filtered_list[_selected_index].toString())
-            finish(true, 1, "ok", _filtered_list[_selected_index])
         }
         btn_setting_cancel.setOnClickListener {
             finish(false, 0, "ok", null)

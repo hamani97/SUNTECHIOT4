@@ -90,7 +90,7 @@ class SettingActivity : BaseActivity() {
         et_setting_server_ip.setText(AppGlobal.instance.get_server_ip())
         et_setting_port.setText(AppGlobal.instance.get_server_port())
 
-        et_setting_wos_name.setText(AppGlobal.instance.get_wos_name())
+//        et_setting_wos_name.setText(AppGlobal.instance.get_wos_name())
 
         sw_long_touch.isChecked = AppGlobal.instance.get_long_touch()
         sw_message_enable.isChecked = AppGlobal.instance.get_message_enable()
@@ -255,7 +255,7 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_sound_at_count(sw_sound_at_count.isChecked)
 //        AppGlobal.instance.set_without_component(sw_without_component.isChecked)
 
-        AppGlobal.instance.set_wos_name(et_setting_wos_name.text.toString())
+//        AppGlobal.instance.set_wos_name(et_setting_wos_name.text.toString())
 
         AppGlobal.instance.set_screen_blink(sw_screen_blink_effect.isChecked)
         AppGlobal.instance.set_remain_number(remain_num)

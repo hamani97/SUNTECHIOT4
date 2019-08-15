@@ -104,7 +104,7 @@ class ProductListActivity : BaseActivity() {
             vh.tv_item_actual.text = _list[position]["actual"]
             vh.tv_item_balance.text = _list[position]["balance"]
 
-            if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_work_idx()) {
+            if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_product_idx()) {
                 vh.tv_item_wosno.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_model.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_size.setTextColor(Color.parseColor("#ff0000"))
@@ -171,17 +171,17 @@ class ProductListActivity : BaseActivity() {
 
             vh.tv_item_shift_name.text = _list[position]["shift_name"]
             vh.tv_item_work_time.text = _list[position]["work_time"]
-            vh.tv_item_wosno.text = _list[position]["wosno"]
+            vh.tv_item_design_idx.text = _list[position]["design_idx"]
             vh.tv_item_target.text = _list[position]["target"]
             vh.tv_item_actual.text = _list[position]["actual"]
             vh.tv_item_product_rate.text = _list[position]["product_rate"]
             vh.tv_item_defective.text = _list[position]["defective"]
             vh.tv_item_quality_rate.text = _list[position]["quality_rate"]
 
-            if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_work_idx()) {
+            if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_product_idx()) {
                 vh.tv_item_shift_name.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_work_time.setTextColor(Color.parseColor("#ff0000"))
-                vh.tv_item_wosno.setTextColor(Color.parseColor("#ff0000"))
+                vh.tv_item_design_idx.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_target.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_actual.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_product_rate.setTextColor(Color.parseColor("#ff0000"))
@@ -190,7 +190,7 @@ class ProductListActivity : BaseActivity() {
             } else {
                 vh.tv_item_shift_name.setTextColor(Color.parseColor("#000000"))
                 vh.tv_item_work_time.setTextColor(Color.parseColor("#000000"))
-                vh.tv_item_wosno.setTextColor(Color.parseColor("#000000"))
+                vh.tv_item_design_idx.setTextColor(Color.parseColor("#000000"))
                 vh.tv_item_target.setTextColor(Color.parseColor("#000000"))
                 vh.tv_item_actual.setTextColor(Color.parseColor("#000000"))
                 vh.tv_item_product_rate.setTextColor(Color.parseColor("#000000"))
@@ -203,7 +203,7 @@ class ProductListActivity : BaseActivity() {
         private class ViewHolder(row: View?) {
             val tv_item_shift_name: TextView
             val tv_item_work_time: TextView
-            val tv_item_wosno: TextView
+            val tv_item_design_idx: TextView
             val tv_item_target: TextView
             val tv_item_actual: TextView
             val tv_item_product_rate: TextView
@@ -213,7 +213,7 @@ class ProductListActivity : BaseActivity() {
             init {
                 this.tv_item_shift_name = row?.findViewById<TextView>(R.id.tv_item_shift_name) as TextView
                 this.tv_item_work_time = row?.findViewById<TextView>(R.id.tv_item_work_time) as TextView
-                this.tv_item_wosno = row?.findViewById<TextView>(R.id.tv_item_wosno) as TextView
+                this.tv_item_design_idx = row?.findViewById<TextView>(R.id.tv_item_design_idx) as TextView
                 this.tv_item_target = row?.findViewById<TextView>(R.id.tv_item_target) as TextView
                 this.tv_item_actual = row?.findViewById<TextView>(R.id.tv_item_actual) as TextView
                 this.tv_item_product_rate = row?.findViewById<TextView>(R.id.tv_item_product_rate) as TextView

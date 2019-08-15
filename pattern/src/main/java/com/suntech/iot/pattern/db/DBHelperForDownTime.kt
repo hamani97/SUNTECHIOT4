@@ -162,6 +162,12 @@ class DBHelperForDownTime
         db.close()
     }
 
+    fun deleteLastDate(date: String) {
+        val db = _openHelper.writableDatabase ?: return
+        db.delete("downtime", "start_dt < ?", arrayOf(date))
+        db.close()
+    }
+
     fun delete() {
         val db = _openHelper.writableDatabase ?: return
         db.delete("downtime", "", arrayOf())

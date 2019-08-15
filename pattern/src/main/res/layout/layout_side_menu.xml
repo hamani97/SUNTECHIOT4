@@ -37,7 +37,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginBottom="50dp"
-                android:visibility="gone"
                 android:background="@drawable/btn_side_icon_downtime" />
 
         <ImageButton
@@ -52,15 +51,37 @@
                 android:id="@+id/btn_worksheet"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="30dp"
                 android:background="@drawable/btn_side_icon_worksheet" />
 
-        <ImageButton
-                android:id="@+id/btn_production_report"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/btn_side_icon_product_list" />
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="70dp"
+                android:background="@color/transparent">
+            <ImageButton
+                    android:id="@+id/btn_production_report"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/btn_side_icon_product_list" />
+            <TextView
+                    android:id="@+id/tv_report_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/shape_orange_round_button"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:paddingRight="6dp"
+                    android:paddingLeft="6dp"
+                    android:text="1"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorWhite"/>
+        </RelativeLayout>
 
     </LinearLayout>
 </LinearLayout>

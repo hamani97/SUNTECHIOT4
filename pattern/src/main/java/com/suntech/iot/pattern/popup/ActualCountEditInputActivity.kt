@@ -19,7 +19,7 @@ class ActualCountEditInputActivity : BaseActivity() {
     }
 
     private fun initView() {
-        tv_prod_edit_wos_name.text = AppGlobal.instance.get_wos_name()
+//        tv_prod_edit_wos_name.text = AppGlobal.instance.get_wos_name()
 
         val work_idx = intent.getStringExtra("work_idx")
         val actual = intent.getStringExtra("actual")
@@ -91,7 +91,7 @@ class ActualCountEditInputActivity : BaseActivity() {
             val uri = "/senddata1.php"
             var params = listOf(
                 "mac_addr" to AppGlobal.instance.getMACAddress(),
-                "didx" to "1001",
+                "didx" to AppGlobal.instance.get_design_info_idx(),
                 "count" to inc_count.toString(),
                 "total_count" to new_actual,
                 "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
@@ -99,9 +99,6 @@ class ActualCountEditInputActivity : BaseActivity() {
                 "line_idx" to AppGlobal.instance.get_line_idx(),
                 "shift_idx" to  shift_idx,
                 "seq" to seq,
-                "wos" to AppGlobal.instance.get_compo_wos(),
-                "comp" to AppGlobal.instance.get_compo_component_idx(),
-                "size" to AppGlobal.instance.get_compo_size(),
                 "max_rpm" to "",
                 "avr_rpm" to "")
 

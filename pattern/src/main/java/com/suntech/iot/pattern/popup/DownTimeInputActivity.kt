@@ -129,7 +129,7 @@ class DownTimeInputActivity : BaseActivity() {
     private fun resendStartDownTime() {
         if (AppGlobal.instance.get_server_ip() == "") return
 
-        val work_idx = "" + AppGlobal.instance.get_work_idx()
+        val work_idx = "" + AppGlobal.instance.get_product_idx()
         if (work_idx=="") return
 
         val idx = intent.getStringExtra("idx")

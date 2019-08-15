@@ -151,7 +151,7 @@
                     </LinearLayout>
 
                     <TextView style="@style/table_title" android:text="@string/title_etc"
-                              android:layout_height="43dp" android:layout_marginTop="6dp" />
+                              android:layout_height="43dp" android:layout_marginTop="40dp" />
 
                     <LinearLayout style="@style/table_row">
                         <TextView style="@style/table_row_title" android:text="Long Touch Enable"
@@ -223,12 +223,6 @@
                         <!--</LinearLayout>-->
                     <!--</LinearLayout>-->
 
-                    <!-- MC Serial -->
-                    <LinearLayout style="@style/table_row">
-                        <TextView style="@style/table_row_title" android:text="@string/label_wos_name"
-                                  android:layout_width="300dp"/>
-                        <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_wos_name" />
-                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
