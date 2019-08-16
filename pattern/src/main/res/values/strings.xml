@@ -15,7 +15,7 @@
     <string name="title_work_sheet">WORK SHEET</string>
 
     <string name="title_push_info">PUSH INFO</string>
-    <string name="title_edit_pieces_pairs_count">EDIT PIECES-PAIRS COUNT</string>
+    <string name="title_edit_pieces_pairs_count">EDIT PIECE(S) COUNT</string>
 
     <!-- 카운트화면 -->
     <string name="bottom_label_pieces">Pieces : \u0020</string>
@@ -43,6 +43,7 @@
     <string name="label_server_ip">SERVER IP</string>
     <string name="label_server_port">PORT</string>
     <string name="label_wos_name">WOS name to display</string>
+    <string name="label_worksheet_display_time">WorkSheet Display Time</string>
     <string name="label_count_trim_qty">Piece(s)</string>
     <string name="label_count_trim_pairs">Pair(s)</string>
 
@@ -105,10 +106,12 @@
     <string name="bottom_label_mc_model">MODEL : \u0020</string>
 
     <!-- Common -->
+    <string name="save">Save</string>
     <string name="server">SERVER</string>
     <string name="manual">Manual</string>
     <string name="confirm">Confirm</string>
-    <string name="save">Save</string>
+    <string name="start_of_display">Display Start</string>
+    <string name="back">Back</string>
     <string name="exit">Exit</string>
     <string name="edit">EDIT</string>
     <string name="cancel">Cancel</string>
@@ -149,11 +152,11 @@
 
     <string name="trim_count">TRIM COUNT</string>
     <string name="stitch_count">STITCH COUNT</string>
-    <string name="edit_pieces">EDIT PIECE(S)</string>
-    <string name="edit_pairs">EDIT PAIR(S)</string>
+    <string name="edit_pieces">EDIT PIECE(S) COUNT</string>
+    <string name="edit_pairs">EDIT PAIR(S) COUNT</string>
     <string name="delay_time">DELAY TIME</string>
-    <string name="pieces_count">PIECES COUNT</string>
-    <string name="pairs_count">PAIRS COUNT</string>
+    <string name="pieces_count">PIECE(S) COUNT</string>
+    <string name="pairs_count">PAIR(S) COUNT</string>
 
     <!-- Message -->
     <string name="msg_no_operator">Operator not found</string>

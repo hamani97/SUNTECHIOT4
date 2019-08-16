@@ -31,5 +31,11 @@ class WorkSheetDetailActivity : BaseActivity() {
             wv_view.loadUrl(file_url)
         }
 
+        btn_start.setOnClickListener {
+            finish(true, 1, "ok", null)
+        }
+        btn_back.setOnClickListener {
+            finish(true, 1, "ok", null)
+        }
     }
 }

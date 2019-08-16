@@ -223,6 +223,16 @@
                         <!--</LinearLayout>-->
                     <!--</LinearLayout>-->
 
+                    <!-- MC Serial -->
+                    <LinearLayout style="@style/table_row">
+                        <TextView style="@style/table_row_title" android:text="@string/label_worksheet_display_time"
+                                  android:layout_width="300dp"/>
+                        <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_worksheet_display_time"
+                                  android:layout_width="0dp" android:layout_weight="1" android:text="5" android:inputType="number" />
+                        <TextView style="@style/table_row_title" android:text="Seconds"
+                                  android:layout_width="0dp" android:layout_weight="1"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>

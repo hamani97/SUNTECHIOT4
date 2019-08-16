@@ -78,6 +78,9 @@ class AppGlobal private constructor() {
 //        return if (name != "") name else "WOS"
 //    }
 
+    fun set_worksheet_display_time(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_sheet_disptime", value) }
+    fun get_worksheet_display_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_sheet_disptime") }
+
     fun set_screen_blink(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_screen_blink", state) }
     fun get_screen_blink() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_screen_blink") }
     fun set_remain_number(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_remain_number", value) }

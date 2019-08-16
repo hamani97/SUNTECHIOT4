@@ -92,23 +92,31 @@ class CountViewFragment : BaseFragment() {
 //            Toast.makeText(activity, "Not yet available", Toast.LENGTH_SHORT).show()
 //        }
         btn_init_actual.setOnClickListener {
-            val intent = Intent(activity, PiecePairCountEditActivity::class.java)
-            intent.putExtra("pieces", "" + (activity as MainActivity).pieces_qty)
-            intent.putExtra("pairs", "" + (activity as MainActivity).pairs_qty)
-            (activity as MainActivity).startActivity(intent, { r, c, m, d ->
-                if (r) {
-                    val pieces = d?.get("pieces")
-                    val pairs = d?.get("pairs")
-                    if (pieces != null && pieces != "") {
-                        (activity as MainActivity).pieces_qty = pieces.toInt()
-                        tv_pieces_qty.text = pieces.toString()
+            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
+            } else if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
+                Toast.makeText(activity, getString(R.string.msg_no_setting), Toast.LENGTH_SHORT).show()
+            } else if (AppGlobal.instance.get_design_info_idx() == "") {
+                Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(activity, PiecePairCountEditActivity::class.java)
+                intent.putExtra("pieces", "" + (activity as MainActivity).pieces_qty)
+                intent.putExtra("pairs", "" + (activity as MainActivity).pairs_qty)
+                (activity as MainActivity).startActivity(intent, { r, c, m, d ->
+                    if (r) {
+                        val pieces = d?.get("pieces")
+                        val pairs = d?.get("pairs")
+                        if (pieces != null && pieces != "") {
+                            (activity as MainActivity).pieces_qty = pieces.toInt()
+                            tv_pieces_qty.text = pieces.toString()
+                        }
+                        if (pairs != null && pairs != "") {
+                            (activity as MainActivity).pairs_qty = pairs.toInt()
+                            tv_pairs_qty.text = pairs.toString()
+                        }
                     }
-                    if (pairs != null && pairs != "") {
-                        (activity as MainActivity).pairs_qty = pairs.toInt()
-                        tv_pairs_qty.text = pairs.toString()
-                    }
-                }
-            })
+                })
+            }
         }
 
         viewWorkInfo()
@@ -290,6 +298,10 @@ class CountViewFragment : BaseFragment() {
 
             var total_target = (work_time / current_cycle_time).toInt() + 1    // 현 시간에 만들어야 할 갯수
             var total_actual = db_item["actual"].toString().toInt()
+
+            // 현재 디자인 작업의 타겟을 업데이트한다.
+            // 아직 작업이 끝나지 않았어도 일단 저장
+            db.updateWorkTarget(work_idx, total_target, total_target)
 
             var db_list = db.gets()
 

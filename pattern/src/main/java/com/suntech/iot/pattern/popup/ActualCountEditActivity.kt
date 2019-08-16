@@ -65,8 +65,8 @@ class ActualCountEditActivity : BaseActivity() {
         var total_target = 0
         var total_actual = 0
         var total_defective = 0
-        var total_product_rate = 0
-        var total_quality_rate = 0
+//        var total_product_rate = 0
+//        var total_quality_rate = 0
         var total_work_time = 0
 
         for (i in 0..(_list.size - 1)) {

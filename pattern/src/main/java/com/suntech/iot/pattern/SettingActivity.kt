@@ -90,7 +90,9 @@ class SettingActivity : BaseActivity() {
         et_setting_server_ip.setText(AppGlobal.instance.get_server_ip())
         et_setting_port.setText(AppGlobal.instance.get_server_port())
 
-//        et_setting_wos_name.setText(AppGlobal.instance.get_wos_name())
+        // 워크시트 토글 시간(초). 0일때는 5로 초기화
+        val sec = if (AppGlobal.instance.get_worksheet_display_time()==0) "5" else AppGlobal.instance.get_worksheet_display_time().toString()
+        et_setting_worksheet_display_time.setText(sec)
 
         sw_long_touch.isChecked = AppGlobal.instance.get_long_touch()
         sw_message_enable.isChecked = AppGlobal.instance.get_message_enable()
@@ -234,6 +236,8 @@ class SettingActivity : BaseActivity() {
             return
         }
 
+        val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 5 else et_setting_worksheet_display_time.text.toString().toInt()
+
         // setting value
         AppGlobal.instance.set_factory_idx(_selected_factory_idx)
         AppGlobal.instance.set_room_idx(_selected_room_idx)
@@ -255,7 +259,7 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_sound_at_count(sw_sound_at_count.isChecked)
 //        AppGlobal.instance.set_without_component(sw_without_component.isChecked)
 
-//        AppGlobal.instance.set_wos_name(et_setting_wos_name.text.toString())
+        AppGlobal.instance.set_worksheet_display_time(worksheet_time)
 
         AppGlobal.instance.set_screen_blink(sw_screen_blink_effect.isChecked)
         AppGlobal.instance.set_remain_number(remain_num)

@@ -19,8 +19,7 @@ class ActualCountEditInputActivity : BaseActivity() {
     }
 
     private fun initView() {
-//        tv_prod_edit_wos_name.text = AppGlobal.instance.get_wos_name()
-
+        val design_idx = intent.getStringExtra("design_idx")
         val work_idx = intent.getStringExtra("work_idx")
         val actual = intent.getStringExtra("actual")
 
@@ -34,11 +33,8 @@ class ActualCountEditInputActivity : BaseActivity() {
             finish()
         }
 
-        tv_work_idx.setText(row!!["wosno"].toString())
-        tv_work_model.setText(row!!["model"].toString())
-        tv_work_size.setText(row!!["size"].toString())
         tv_work_actual.setText(row!!["actual"].toString())
-        et_defective_qty.setText(actual)
+        et_defective_qty.setText(row!!["actual"].toString())
 
         btn_actual_count_edit_plus.setOnClickListener {
             var value = et_defective_qty.text.toString().toInt()
@@ -83,10 +79,7 @@ class ActualCountEditInputActivity : BaseActivity() {
             val actual = count.toInt()                  // 사용자가 입력한 새 Actual 값
             val inc_count = actual - _origin_actual     // 사용자가 입력한 Actual로 계산된 증분값
             val new_actual = total_actual + inc_count   // 새로 계산된 카운트 최종값
-
-            var shift_idx = AppGlobal.instance.get_current_shift_idx()
-            if (shift_idx == "") shift_idx = "0"
-            val seq = "1"
+            val seq = row!!["seq"].toString().toInt()
 
             val uri = "/senddata1.php"
             var params = listOf(
@@ -97,7 +90,7 @@ class ActualCountEditInputActivity : BaseActivity() {
                 "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
                 "factory_idx" to AppGlobal.instance.get_room_idx(),
                 "line_idx" to AppGlobal.instance.get_line_idx(),
-                "shift_idx" to  shift_idx,
+                "shift_idx" to  AppGlobal.instance.get_current_shift_idx(),
                 "seq" to seq,
                 "max_rpm" to "",
                 "avr_rpm" to "")
