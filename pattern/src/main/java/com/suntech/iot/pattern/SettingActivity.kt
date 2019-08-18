@@ -148,10 +148,16 @@ class SettingActivity : BaseActivity() {
 
         // Target setting button listener
         btn_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
-        btn_server_hourly.setOnClickListener { targetTypeChange("server_per_hourly") }
+        btn_server_hourly.setOnClickListener {
+            Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show();
+//            targetTypeChange("server_per_hourly")
+        }
         btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
         btn_manual_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
-        btn_manual_hourly.setOnClickListener { targetTypeChange("device_per_hourly") }
+        btn_manual_hourly.setOnClickListener {
+            Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show();
+//            targetTypeChange("device_per_hourly")
+        }
         btn_manual_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
 
         // check server button

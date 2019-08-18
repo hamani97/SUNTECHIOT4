@@ -22,15 +22,15 @@
                 android:textColor="#333"/>
 
 
-        <TextView
-                android:id="@+id/tv_item_work_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:text="Work Time"
-                android:textSize="20sp"
-                android:textColor="#333"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_work_time"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="2"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Work Time"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textColor="#333"/>-->
 
 
         <TextView
@@ -44,15 +44,15 @@
                 android:textColor="#333"/>
 
 
-        <TextView
-                android:id="@+id/tv_item_target"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Target"
-                android:textSize="20sp"
-                android:textColor="#333"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_target"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Target"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textColor="#333"/>-->
 
         <TextView
                 android:id="@+id/tv_item_actual"
@@ -63,15 +63,15 @@
                 android:text="Actual"
                 android:textSize="20sp"
                 android:textColor="#333"/>
-        <TextView
-                android:id="@+id/tv_item_product_rate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Product Rate"
-                android:textSize="20sp"
-                android:textColor="#333"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_product_rate"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Product Rate"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textColor="#333"/>-->
 
         <TextView
                 android:id="@+id/tv_item_defective"
@@ -83,15 +83,15 @@
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
-        <TextView
-                android:id="@+id/tv_item_quality_rate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Quality Rate"
-                android:textSize="20sp"
-                android:textColor="#333"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_quality_rate"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="Quality Rate"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textColor="#333"/>-->
     </LinearLayout>
 
 </LinearLayout>

@@ -14,7 +14,7 @@ import org.joda.time.DateTime
 
 class ActualCountEditActivity : BaseActivity() {
 
-    private var list_adapter: ProductListActivity.ListDefectiveAdapter? = null
+    private var list_adapter: ProductListActivity.ListActualAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,7 @@ class ActualCountEditActivity : BaseActivity() {
         var db = DBHelperForDesign(this)
         _list = db.gets() ?: _list
 
-        list_adapter = ProductListActivity.ListDefectiveAdapter(this, _list)
+        list_adapter = ProductListActivity.ListActualAdapter(this, _list)
         lv_products.adapter = list_adapter
 
         var total_target = 0

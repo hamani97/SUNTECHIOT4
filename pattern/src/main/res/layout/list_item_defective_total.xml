@@ -13,8 +13,9 @@
 
         <TextView
                 android:id="@+id/tv_item_row0"
-                android:layout_width="80dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/list_item_shift"
                 android:textSize="21sp"
@@ -22,57 +23,61 @@
                 android:textStyle="bold"/>
 
 
-        <TextView
-                android:id="@+id/tv_item_row1"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/list_item_work_time"
-                android:textSize="21sp"
-                android:textColor="@color/colorBlack"
-                android:textStyle="bold"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_row1"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/list_item_work_time"-->
+                <!--android:textSize="21sp"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:textStyle="bold"/>-->
 
 
         <TextView
                 android:id="@+id/tv_item_row2"
-                android:layout_width="150dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/list_item_wos"
+                android:text="@string/list_item_design_idx"
                 android:textSize="21sp"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"/>
 
 
-        <TextView
-                android:id="@+id/tv_item_row3"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/list_item_target"
-                android:textSize="21sp"
-                android:textColor="#333"
-                android:textStyle="bold"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_row3"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/list_item_target"-->
+                <!--android:textSize="21sp"-->
+                <!--android:textColor="#333"-->
+                <!--android:textStyle="bold"/>-->
 
         <TextView
                 android:id="@+id/tv_item_row4"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/list_item_actual"
                 android:textSize="21sp"
                 android:textColor="#333"
                 android:textStyle="bold"/>
-        <TextView
-                android:id="@+id/tv_item_row5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/list_item_product_rate"
-                android:textSize="21sp"
-                android:textColor="#333"
-                android:textStyle="bold"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_row5"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/list_item_product_rate"-->
+                <!--android:textSize="21sp"-->
+                <!--android:textColor="#333"-->
+                <!--android:textStyle="bold"/>-->
 
         <TextView
                 android:id="@+id/tv_item_row6"
@@ -85,16 +90,16 @@
                 android:textColor="#333"
                 android:textStyle="bold"/>
 
-        <TextView
-                android:id="@+id/tv_item_row7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/list_item_qualti_rate"
-                android:textSize="21sp"
-                android:textColor="#333"
-                android:textStyle="bold"/>
+        <!--<TextView-->
+                <!--android:id="@+id/tv_item_row7"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/list_item_qualti_rate"-->
+                <!--android:textSize="21sp"-->
+                <!--android:textColor="#333"-->
+                <!--android:textStyle="bold"/>-->
     </LinearLayout>
 
 </LinearLayout>

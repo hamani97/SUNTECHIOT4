@@ -141,7 +141,7 @@ class ProductListActivity : BaseActivity() {
         }
     }
 
-    class ListDefectiveAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
+    class ListActualAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
 
         private var _list: ArrayList<HashMap<String, String>>
         private val _inflator: LayoutInflater
@@ -161,7 +161,7 @@ class ProductListActivity : BaseActivity() {
             val view: View?
             val vh: ViewHolder
             if (convertView == null) {
-                view = this._inflator.inflate(R.layout.list_item_defective, parent, false)
+                view = this._inflator.inflate(R.layout.list_item_product, parent, false)
                 vh = ViewHolder(view)
                 view.tag = vh
             } else {
@@ -219,6 +219,88 @@ class ProductListActivity : BaseActivity() {
                 this.tv_item_product_rate = row?.findViewById<TextView>(R.id.tv_item_product_rate) as TextView
                 this.tv_item_defective = row?.findViewById<TextView>(R.id.tv_item_defective) as TextView
                 this.tv_item_quality_rate = row?.findViewById<TextView>(R.id.tv_item_quality_rate) as TextView
+            }
+        }
+    }
+
+    class ListDefectiveAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
+
+        private var _list: ArrayList<HashMap<String, String>>
+        private val _inflator: LayoutInflater
+        private var _context : Context? =null
+
+        init {
+            this._inflator = LayoutInflater.from(context)
+            this._list = list
+            this._context = context
+        }
+
+        override fun getCount(): Int { return _list.size }
+        override fun getItem(position: Int): Any { return _list[position] }
+        override fun getItemId(position: Int): Long { return position.toLong() }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+            val view: View?
+            val vh: ViewHolder
+            if (convertView == null) {
+                view = this._inflator.inflate(R.layout.list_item_defective, parent, false)
+                vh = ViewHolder(view)
+                view.tag = vh
+            } else {
+                view = convertView
+                vh = view.tag as ViewHolder
+            }
+
+            vh.tv_item_shift_name.text = _list[position]["shift_name"]
+//            vh.tv_item_work_time.text = _list[position]["work_time"]
+            vh.tv_item_design_idx.text = _list[position]["design_idx"]
+//            vh.tv_item_target.text = _list[position]["target"]
+            vh.tv_item_actual.text = _list[position]["actual"]
+//            vh.tv_item_product_rate.text = _list[position]["product_rate"]
+            vh.tv_item_defective.text = _list[position]["defective"]
+//            vh.tv_item_quality_rate.text = _list[position]["quality_rate"]
+
+            if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_product_idx()) {
+                vh.tv_item_shift_name.setTextColor(Color.parseColor("#ff0000"))
+//                vh.tv_item_work_time.setTextColor(Color.parseColor("#ff0000"))
+                vh.tv_item_design_idx.setTextColor(Color.parseColor("#ff0000"))
+//                vh.tv_item_target.setTextColor(Color.parseColor("#ff0000"))
+                vh.tv_item_actual.setTextColor(Color.parseColor("#ff0000"))
+//                vh.tv_item_product_rate.setTextColor(Color.parseColor("#ff0000"))
+                vh.tv_item_defective.setTextColor(Color.parseColor("#ff0000"))
+//                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#ff0000"))
+            } else {
+                vh.tv_item_shift_name.setTextColor(Color.parseColor("#000000"))
+//                vh.tv_item_work_time.setTextColor(Color.parseColor("#000000"))
+                vh.tv_item_design_idx.setTextColor(Color.parseColor("#000000"))
+//                vh.tv_item_target.setTextColor(Color.parseColor("#000000"))
+                vh.tv_item_actual.setTextColor(Color.parseColor("#000000"))
+//                vh.tv_item_product_rate.setTextColor(Color.parseColor("#000000"))
+                vh.tv_item_defective.setTextColor(Color.parseColor("#000000"))
+//                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#000000"))
+            }
+            return view
+        }
+
+        private class ViewHolder(row: View?) {
+            val tv_item_shift_name: TextView
+//            val tv_item_work_time: TextView
+            val tv_item_design_idx: TextView
+//            val tv_item_target: TextView
+            val tv_item_actual: TextView
+//            val tv_item_product_rate: TextView
+            val tv_item_defective: TextView
+//            val tv_item_quality_rate: TextView
+
+            init {
+                this.tv_item_shift_name = row?.findViewById<TextView>(R.id.tv_item_shift_name) as TextView
+//                this.tv_item_work_time = row?.findViewById<TextView>(R.id.tv_item_work_time) as TextView
+                this.tv_item_design_idx = row?.findViewById<TextView>(R.id.tv_item_design_idx) as TextView
+//                this.tv_item_target = row?.findViewById<TextView>(R.id.tv_item_target) as TextView
+                this.tv_item_actual = row?.findViewById<TextView>(R.id.tv_item_actual) as TextView
+//                this.tv_item_product_rate = row?.findViewById<TextView>(R.id.tv_item_product_rate) as TextView
+                this.tv_item_defective = row?.findViewById<TextView>(R.id.tv_item_defective) as TextView
+//                this.tv_item_quality_rate = row?.findViewById<TextView>(R.id.tv_item_quality_rate) as TextView
             }
         }
     }

@@ -111,6 +111,7 @@
     <string name="manual">Manual</string>
     <string name="confirm">Confirm</string>
     <string name="start_of_display">Display Start</string>
+    <string name="end_of_display">Display Stop</string>
     <string name="back">Back</string>
     <string name="exit">Exit</string>
     <string name="edit">EDIT</string>

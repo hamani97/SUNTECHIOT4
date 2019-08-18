@@ -20,6 +20,7 @@ import com.suntech.iot.pattern.popup.PiecePairCountEditActivity
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.*
+import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
 import kotlinx.android.synthetic.main.list_item_push.*
 import org.joda.time.DateTime
@@ -38,7 +39,18 @@ class CountViewFragment : BaseFragment() {
     private val _need_to_refresh = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             computeCycleTime()
+            resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
             updateView()
+        }
+    }
+
+    fun resetDefectiveCount() {
+        val db = DBHelperForDesign(activity)
+        val count = db.sum_defective_count()
+        if (count==null || count<0) {
+            tv_defective_count.text = "0"
+        } else {
+            tv_defective_count.text = count.toString()
         }
     }
 
@@ -114,6 +126,41 @@ class CountViewFragment : BaseFragment() {
                             (activity as MainActivity).pairs_qty = pairs.toInt()
                             tv_pairs_qty.text = pairs.toString()
                         }
+                    }
+                })
+            }
+        }
+        btn_defective_plus.setOnClickListener {
+            val work_idx = AppGlobal.instance.get_product_idx()
+            if (work_idx == "") {
+                Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
+            } else {
+                val db = DBHelperForDesign(activity)
+                val row = db.get(work_idx)
+                val seq = row!!["seq"].toString().toInt()
+
+                val uri = "/defectivedata.php"
+                var params = listOf(
+                    "mac_addr" to AppGlobal.instance.getMACAddress(),
+                    "didx" to AppGlobal.instance.get_design_info_idx(),
+                    "defective_idx" to "99",
+                    "cnt" to "1",
+                    "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+                    "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+                    "factory_idx" to AppGlobal.instance.get_room_idx(),
+                    "line_idx" to AppGlobal.instance.get_line_idx(),
+                    "seq" to seq
+                )
+                getBaseActivity().request(activity, uri, true, false, params, { result ->
+                    val code = result.getString("code")
+
+                    Toast.makeText(activity, result.getString("msg"), Toast.LENGTH_SHORT).show()
+
+                    if (code == "00") {
+                        val item = db.get(work_idx)
+                        val defective = if (item != null) item["defective"].toString().toInt() else 0
+                        db.updateDefective(work_idx, defective + 1)
+                        resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
                     }
                 })
             }
@@ -221,11 +268,6 @@ class CountViewFragment : BaseFragment() {
     // 처음에 한번은 실행해야 하므로 필요
     var first_time = true
 
-    var _planned1_stime = DateTime()    // 현 시프트의 휴식 시간
-    var _planned1_etime = DateTime()
-    var _planned2_stime = DateTime()
-    var _planned2_etime = DateTime()
-
     private fun updateView() {
 
         // 기본 출력
@@ -235,6 +277,7 @@ class CountViewFragment : BaseFragment() {
 
         tv_count_view_actual.text = "" + AppGlobal.instance.get_current_shift_actual_cnt()
 
+        drawChartView2()
 
         var db = DBHelperForDesign(activity)
 
@@ -257,13 +300,24 @@ class CountViewFragment : BaseFragment() {
         // 현재 시프트의 휴식 시간을 미리 계산해 놓는다.
         val shift_time = AppGlobal.instance.get_current_shift_time()
 
-        if (shift_time != null) {
-            // 휴식 시간
-            _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
-            _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
-            _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
-            _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
+        if (shift_time == null) {
+            return
         }
+
+        val work_stime = shift_time["work_stime"].toString()
+
+        // 가져온 DB 데이터가 현 시프트의 정보가 아니라면 리턴.
+        if (db_item["end_dt"].toString() == null) {
+            if (db_item["end_dt"].toString() < work_stime) return
+        } else {
+            if (db_item["start_dt"].toString() < work_stime) return
+        }
+
+        // 휴식 시간
+        val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
+        val _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
+        val _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
+        val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
 
         val now = DateTime()
 
@@ -368,7 +422,6 @@ class CountViewFragment : BaseFragment() {
             tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
         }
 //        countTarget()
-        drawChartView2()
     }
 
     // 값에 변화가 생길때만 화면을 리프레쉬 하기 위한 변수

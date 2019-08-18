@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import android.widget.Toast
+import com.suntech.iot.pattern.MainActivity
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -42,11 +43,15 @@ class WorkSheetActivity : BaseActivity() {
 
             val intent = Intent(this, WorkSheetDetailActivity::class.java)
             intent.putExtra("file_url", file_url)
-            startActivity(intent)
+            startActivity(intent, { r, c, m, d ->
+                if (r) {
+                    finish(true, 1, "ok", hashMapOf("file_url" to ""+file_url))
+                }
+            })
         }
 
         btn_confirm.setOnClickListener {
-            finish(true, 1, "ok", null)
+            finish(false, 1, "ok", null)
         }
     }
 

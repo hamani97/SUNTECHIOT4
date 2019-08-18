@@ -5,7 +5,6 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              tools:context=".MainActivity">
-
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,4 +42,32 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+            android:id="@+id/ll_worksheet_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:background="@color/colorBackground">
+        <WebView
+                android:id="@+id/wv_view_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        <Button
+                android:id="@+id/btn_worksheet_stop"
+                android:layout_width="230dp"
+                android:layout_height="60dp"
+                android:layout_margin="8dp"
+                android:background="#ccf8ad13"
+                android:stateListAnimator="@null"
+                android:text="@string/end_of_display"
+                android:textSize="24sp"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

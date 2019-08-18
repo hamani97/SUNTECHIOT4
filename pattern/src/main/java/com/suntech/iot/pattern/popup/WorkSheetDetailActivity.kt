@@ -35,7 +35,7 @@ class WorkSheetDetailActivity : BaseActivity() {
             finish(true, 1, "ok", null)
         }
         btn_back.setOnClickListener {
-            finish(true, 1, "ok", null)
+            finish(false, 1, "ok", null)
         }
     }
 }

@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
@@ -23,7 +24,9 @@ import com.suntech.iot.pattern.db.*
 import com.suntech.iot.pattern.popup.*
 import com.suntech.iot.pattern.service.UsbService
 import com.suntech.iot.pattern.util.OEEUtil
+import com.suntech.iot.pattern.util.UtilFile
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
 import org.joda.time.DateTime
@@ -36,6 +39,8 @@ import java.util.*
 class MainActivity : BaseActivity() {
 
 //    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
+    var workSheetToggle = false     // 워크시트를 토글할 것인지. 토글 시간(초)는 세팅 메뉴에서 설정
+    var workSheetShow = false
 
     //    val _stitch_db = DBHelperForCount(this)     // Count 정보
     val _target_db = DBHelperForTarget(this)    // 날짜의 Shift별 정보, Target 수량 정보 저장
@@ -88,8 +93,33 @@ class MainActivity : BaseActivity() {
             btn_downtime.setOnLongClickListener { startDowntimeActivity(); true }
 //            btn_downtime.setOnLongClickListener { Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show(); true }
             btn_defective_info.setOnLongClickListener { startActivity(Intent(this, DefectiveActivity::class.java)); true }
-            btn_worksheet.setOnLongClickListener { startActivity(Intent(this, WorkSheetActivity::class.java)); true }
+            btn_worksheet.setOnLongClickListener { startActivity(Intent(this, WorkSheetActivity::class.java), { r, c, m, d ->
+                if (r && d!=null) {
+                    val file_url = d["file_url"]!!.toString()
+                    val ext = UtilFile.getFileExt(file_url)
+                    if (ext.toLowerCase()=="pdf") {
+                        workSheetToggle = false
+                        workSheetShow = false
+                        ll_worksheet_view.visibility = View.GONE
+                        wv_view_main.visibility = View.GONE
+                    } else {
+                        workSheetToggle = true
+                        workSheetShow = true
+                        wv_view_main.visibility = View.VISIBLE
+                        wv_view_main.loadUrl(file_url)
+                        changeFragment(2)
+                    }
+                }
+            }); true }
             btn_production_report.setOnLongClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)); true }
+
+            btn_worksheet_stop.setOnLongClickListener {
+                workSheetToggle = false
+                workSheetShow = false
+                ll_worksheet_view.visibility = View.GONE
+                wv_view_main.visibility = View.GONE
+                true
+            }
 
         } else {
             btn_home.setOnClickListener { changeFragment(0) }
@@ -98,8 +128,32 @@ class MainActivity : BaseActivity() {
             btn_downtime.setOnClickListener { startDowntimeActivity() }
 //            btn_downtime.setOnClickListener { Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show() }
             btn_defective_info.setOnClickListener { startActivity(Intent(this, DefectiveActivity::class.java)) }
-            btn_worksheet.setOnClickListener { startActivity(Intent(this, WorkSheetActivity::class.java)) }
+            btn_worksheet.setOnClickListener { startActivity(Intent(this, WorkSheetActivity::class.java), { r, c, m, d ->
+                if (r && d!=null) {
+                    val file_url = d["file_url"]!!.toString()
+                    val ext = UtilFile.getFileExt(file_url)
+                    if (ext.toLowerCase()=="pdf") {
+                        workSheetToggle = false
+                        workSheetShow = false
+                        ll_worksheet_view.visibility = View.GONE
+                        wv_view_main.visibility = View.GONE
+                    } else {
+                        workSheetToggle = true
+                        workSheetShow = true
+                        wv_view_main.visibility = View.VISIBLE
+                        wv_view_main.loadUrl(file_url)
+                        changeFragment(2)
+                    }
+                }
+            }) }
             btn_production_report.setOnClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)) }
+
+            btn_worksheet_stop.setOnClickListener {
+                workSheetToggle = false
+                workSheetShow = false
+                ll_worksheet_view.visibility = View.GONE
+                wv_view_main.visibility = View.GONE
+            }
         }
 
         // fragment & swipe
@@ -117,8 +171,9 @@ class MainActivity : BaseActivity() {
             override fun onPageScrollStateChanged(position: Int) {}
         })
 
-        // 지난 DownTime이 있으면 삭제한다.
+        // 지난 DownTime과 Design이 있으면 삭제한다.
         RemoveDownTimeData()
+        RemoveDesignData()
 
         start_timer()
     }
@@ -829,6 +884,7 @@ class MainActivity : BaseActivity() {
                 AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
                 AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
                 tv_report_count.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
+                tv_defective_count.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
                 AppGlobal.instance.reset_product_idx()                  // work idx 초기화
 
                 var db5 = DBHelperForDesign(this)                       // DB 선택된 디자인 idx 값도 초기화
@@ -853,6 +909,27 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // 이미지 파일을 지정 시간마다 토글
+    private fun checkToggle() {
+        if (vp_fragments.currentItem == 1) {
+            if (workSheetToggle) {
+                val time = AppGlobal.instance.get_worksheet_display_time()
+                if ((DateTime().millis / 1000) % time == 0L) {
+//                (activity as MainActivity).countViewType = 3 - (activity as MainActivity).countViewType
+                    if (workSheetShow) {
+                        workSheetShow = false
+                        ll_worksheet_view.visibility = View.GONE
+                    } else {
+                        workSheetShow = true
+                        ll_worksheet_view.visibility = View.VISIBLE
+                    }
+                }
+            }
+        } else {
+            ll_worksheet_view.visibility = View.GONE
+        }
+    }
+
     /////// 쓰레드
     private val _downtime_timer = Timer()
     private val _timer_task1 = Timer()          // 서버 접속 체크 Ping test. Shift의 Target 정보
@@ -868,6 +945,7 @@ class MainActivity : BaseActivity() {
                 runOnUiThread {
                     checkCurrentShiftEndTime()
                     checkDownTime()
+                    checkToggle()
 //                    checkExit()
                 }
             }
@@ -1396,15 +1474,23 @@ class MainActivity : BaseActivity() {
 
     // 작업 시간일때, 작업 시작 시간보다 작은 시간의 DownTime 을 삭제한다.(=지난 Shift의 DownTime)
     fun RemoveDownTimeData() {
-        val work_idx = AppGlobal.instance.get_product_idx()
-        if (work_idx != "") {
-            val item = AppGlobal.instance.get_current_shift_time()
-            if (item != null) {
-                val db = DBHelperForDownTime(this)
-                val work_stime = item["work_stime"].toString()
-//                var work_stime = OEEUtil.parseDateTime(item["work_stime"].toString())
-                db.deleteLastDate(work_stime)
-            }
+        val item = AppGlobal.instance.get_current_shift_time()
+        if (item != null) {
+            val work_stime = item["work_stime"].toString()
+            val db = DBHelperForDownTime(this)
+            db.deleteLastDate(work_stime)
+        }
+    }
+
+    // 지난 시프트의 디자인 정보가 있으면 삭제
+    fun RemoveDesignData() {
+        val db_design = DBHelperForDesign(this)
+        val item = AppGlobal.instance.get_current_shift_time()
+        if (item != null) {
+            val work_stime = item["work_stime"].toString()
+            db_design.deleteLastDate(work_stime)
+        } else {
+            db_design.delete()
         }
     }
 
