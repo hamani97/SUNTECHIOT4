@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
 import kotlinx.android.synthetic.main.list_item_push.*
 import org.joda.time.DateTime
+import org.json.JSONObject
 import kotlin.math.ceil
 
 class CountViewFragment : BaseFragment() {
@@ -131,38 +132,47 @@ class CountViewFragment : BaseFragment() {
             }
         }
         btn_defective_plus.setOnClickListener {
-            val work_idx = AppGlobal.instance.get_product_idx()
-            if (work_idx == "") {
-                Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
+            val cur_shift: JSONObject ?= AppGlobal.instance.get_current_shift_time()
+
+            // 작업 시간인지 확인
+            if (cur_shift == null) {
+                Toast.makeText(activity, getString(R.string.msg_not_start_work), Toast.LENGTH_SHORT).show()
             } else {
-                val db = DBHelperForDesign(activity)
-                val row = db.get(work_idx)
-                val seq = row!!["seq"].toString().toInt()
-
-                val uri = "/defectivedata.php"
-                var params = listOf(
-                    "mac_addr" to AppGlobal.instance.getMACAddress(),
-                    "didx" to AppGlobal.instance.get_design_info_idx(),
-                    "defective_idx" to "99",
-                    "cnt" to "1",
-                    "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
-                    "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-                    "factory_idx" to AppGlobal.instance.get_room_idx(),
-                    "line_idx" to AppGlobal.instance.get_line_idx(),
-                    "seq" to seq
-                )
-                getBaseActivity().request(activity, uri, true, false, params, { result ->
-                    val code = result.getString("code")
-
-                    Toast.makeText(activity, result.getString("msg"), Toast.LENGTH_SHORT).show()
-
-                    if (code == "00") {
-                        val item = db.get(work_idx)
-                        val defective = if (item != null) item["defective"].toString().toInt() else 0
-                        db.updateDefective(work_idx, defective + 1)
-                        resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
+                val work_idx = AppGlobal.instance.get_product_idx()
+                if (work_idx == "") {
+                    Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
+                } else {
+                    val db = DBHelperForDesign(activity)
+                    val row = db.get(work_idx)
+                    var seq = row!!["seq"].toString().toInt()
+                    if (row == null || seq == null) {
+                        seq = 1
                     }
-                })
+                    val uri = "/defectivedata.php"
+                    var params = listOf(
+                        "mac_addr" to AppGlobal.instance.getMACAddress(),
+                        "didx" to AppGlobal.instance.get_design_info_idx(),
+                        "defective_idx" to "99",
+                        "cnt" to "1",
+                        "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+                        "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+                        "factory_idx" to AppGlobal.instance.get_room_idx(),
+                        "line_idx" to AppGlobal.instance.get_line_idx(),
+                        "seq" to seq
+                    )
+                    getBaseActivity().request(activity, uri, true, false, params, { result ->
+                        val code = result.getString("code")
+
+                        Toast.makeText(activity, result.getString("msg"), Toast.LENGTH_SHORT).show()
+
+                        if (code == "00") {
+                            val item = db.get(work_idx)
+                            val defective = if (item != null) item["defective"].toString().toInt() else 0
+                            db.updateDefective(work_idx, defective + 1)
+                            resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
+                        }
+                    })
+                }
             }
         }
 
