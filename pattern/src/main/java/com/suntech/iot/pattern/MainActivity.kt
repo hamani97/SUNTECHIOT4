@@ -72,6 +72,17 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         AppGlobal.instance.setContext(this)
 
+        // 시작시 work_idx 값이 없으면 다른 값들도 리셋시킨다.
+        val work_idx = AppGlobal.instance.get_product_idx()
+        if (work_idx == "") {
+            AppGlobal.instance.set_design_info_idx("")
+            AppGlobal.instance.set_model("")
+            AppGlobal.instance.set_article("")
+            AppGlobal.instance.set_material_way("")
+            AppGlobal.instance.set_component("")
+            AppGlobal.instance.set_cycle_time(0)
+        }
+
         mHandler = MyHandler(this)
 
 //        val db_design = DBHelperForDesign(this)
@@ -885,6 +896,13 @@ class MainActivity : BaseActivity() {
                 AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
                 tv_report_count.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
                 tv_defective_count.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
+
+                AppGlobal.instance.set_design_info_idx("")
+                AppGlobal.instance.set_model("")
+                AppGlobal.instance.set_article("")
+                AppGlobal.instance.set_material_way("")
+                AppGlobal.instance.set_component("")
+                AppGlobal.instance.set_cycle_time(0)
                 AppGlobal.instance.reset_product_idx()                  // work idx 초기화
 
                 var db5 = DBHelperForDesign(this)                       // DB 선택된 디자인 idx 값도 초기화
