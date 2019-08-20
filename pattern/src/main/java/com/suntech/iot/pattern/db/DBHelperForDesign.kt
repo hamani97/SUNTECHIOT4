@@ -129,6 +129,22 @@ class DBHelperForDesign
             return arr
         }
 
+        fun counts_for_ids(): Int {
+            var arr = ArrayList<HashMap<String, String>>()
+            val db = _openHelper.readableDatabase ?: return -1
+
+            val sql = "select _id from design "
+            val cur = db.rawQuery(sql, arrayOf())
+            while (cur.moveToNext()) {
+                val row = HashMap<String, String>()
+                row.put("_id", cur.getString(0))
+                arr.add(row)
+            }
+            cur.close()
+            db.close()
+            return arr.size
+        }
+
         fun counts_for_didx(didx:String): Int {
             var arr = ArrayList<HashMap<String, String>>()
             val db = _openHelper.readableDatabase ?: return -1

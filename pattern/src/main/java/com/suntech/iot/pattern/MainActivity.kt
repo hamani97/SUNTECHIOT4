@@ -184,7 +184,7 @@ class MainActivity : BaseActivity() {
 
         // 지난 DownTime과 Design이 있으면 삭제한다.
         RemoveDownTimeData()
-        RemoveDesignData()
+        checkDesignData()
 
         start_timer()
     }
@@ -725,13 +725,24 @@ class MainActivity : BaseActivity() {
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
             if (code == "00") {
-                var availability = result.getString("availability")
-                var performance = result.getString("performance")
-                var quality = result.getString("quality")
+                val availability = result.getString("availability")
+                val performance = result.getString("performance")
+                val quality = result.getString("quality")
 //Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
+
+                val new_perform = performance.toFloat()
+                val old_perform = AppGlobal.instance.get_performance().toFloat()
+
                 AppGlobal.instance.set_availability(availability)
                 AppGlobal.instance.set_performance(performance)
                 AppGlobal.instance.set_quality(quality)
+
+                // performance가 100%를 넘었으면 푸시를 보낸다. 단, 이전에 100% 이전인 경우만..
+                if (new_perform >= 100.0f) {
+                    if (old_perform < 100.0f) {
+                        sendPush("Best performance")
+                    }
+                }
             } else {
                 Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
@@ -1372,7 +1383,7 @@ class MainActivity : BaseActivity() {
     }
 
     // downtime 발생시 푸시 발송
-    private fun sendPush() {
+    private fun sendPush(push_text: String) {
         val uri = "/pushcall.php"
         var params = listOf(
             "code" to "push_text_list",
@@ -1384,7 +1395,7 @@ class MainActivity : BaseActivity() {
             "machine_no" to AppGlobal.instance.get_mc_no1(),
             "mc_model" to AppGlobal.instance.get_mc_model(),
             "seq" to "0",
-            "text" to "downtime occurrence")
+            "text" to push_text)
 
         request(this, uri, true, params, { result ->
             var code = result.getString("code")
@@ -1442,7 +1453,7 @@ class MainActivity : BaseActivity() {
 
                 down_db.add(idx, work_idx, didx, shift_idx, shift_name, dt.toString("yyyy-MM-dd HH:mm:ss"))
 
-                sendPush()
+                sendPush("downtime occurrence")
 
             } else {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -1501,14 +1512,33 @@ class MainActivity : BaseActivity() {
     }
 
     // 지난 시프트의 디자인 정보가 있으면 삭제
-    fun RemoveDesignData() {
+    fun checkDesignData() {
         val db_design = DBHelperForDesign(this)
-        val item = AppGlobal.instance.get_current_shift_time()
-        if (item != null) {
-            val work_stime = item["work_stime"].toString()
-            db_design.deleteLastDate(work_stime)
+        val count = db_design.counts_for_ids()
+        if (count == 0) {
+            AppGlobal.instance.reset_product_idx()                  // work idx 초기화
+            AppGlobal.instance.set_design_info_idx("")
+            AppGlobal.instance.set_model("")
+            AppGlobal.instance.set_article("")
+            AppGlobal.instance.set_material_way("")
+            AppGlobal.instance.set_component("")
+            AppGlobal.instance.set_cycle_time(0)
         } else {
-            db_design.delete()
+            val item = AppGlobal.instance.get_current_shift_time()
+            if (item != null) {
+                val work_stime = item["work_stime"].toString()
+                db_design.deleteLastDate(work_stime)
+            } else {
+                AppGlobal.instance.set_design_info_idx("")
+                AppGlobal.instance.set_model("")
+                AppGlobal.instance.set_article("")
+                AppGlobal.instance.set_material_way("")
+                AppGlobal.instance.set_component("")
+                AppGlobal.instance.set_cycle_time(0)
+                AppGlobal.instance.reset_product_idx()                  // work idx 초기화
+
+                db_design.delete()
+            }
         }
     }
 

@@ -60,6 +60,9 @@ class DefectiveActivity : BaseActivity() {
             val defective = item["defective"]?.toInt() ?: 0
 //            var product_rate = ((actual.toFloat()/target.toFloat()) *100).toInt().toString()+ "%"
 //            var quality_rate = (((actual.toFloat()-defective)/actual.toFloat()) *100).toInt().toString()+ "%"
+            val tmp_rate = ((actual-defective).toFloat() / actual.toFloat()) * 100
+            var quality_rate = String.format("%.1f", tmp_rate)
+            quality_rate = quality_rate.replace(",", ".") + "%"//??
 //            val work_time = (dif / 1000 / 60 ).toInt()
 //            if (target==0) product_rate = "N/A"
 //            if (target==0) quality_rate = "N/A"
@@ -73,7 +76,7 @@ class DefectiveActivity : BaseActivity() {
             item.put("actual", actual.toString())
             item.put("defective", defective.toString())
 //            item.put("product_rate", product_rate)
-//            item.put("quality_rate", quality_rate)
+            item.put("quality_rate", quality_rate)
 //            item.put("work_time", "" +  work_time + " min")
         }
 
@@ -82,7 +85,7 @@ class DefectiveActivity : BaseActivity() {
         tv_item_row4.text = total_actual.toString()
 //        tv_item_row5.text = "-"
         tv_item_row6.text = total_defective.toString()
-//        tv_item_row7.text = "-"
+        tv_item_row7.text = "-"
     }
 
     private fun initView() {

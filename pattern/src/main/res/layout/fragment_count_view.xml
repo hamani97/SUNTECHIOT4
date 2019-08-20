@@ -140,8 +140,8 @@
                                     android:background="@drawable/shape_orange_round_button"
                                     android:paddingTop="1dp"
                                     android:paddingBottom="1dp"
-                                    android:paddingRight="8dp"
-                                    android:paddingLeft="8dp"
+                                    android:paddingRight="9dp"
+                                    android:paddingLeft="9dp"
                                     android:text="0"
                                     android:textSize="27sp"
                                     android:textColor="@color/colorWhite"/>

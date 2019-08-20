@@ -83,7 +83,10 @@ class ActualCountEditActivity : BaseActivity() {
             val actual = item["actual"]?.toInt() ?: 0
             val defective = item["defective"]?.toInt() ?: 0
             var product_rate = ((actual.toFloat()/target.toFloat()) *100).toInt().toString()+ "%"
-            var quality_rate = (((actual.toFloat()-defective)/actual.toFloat()) *100).toInt().toString()+ "%"
+//            var quality_rate = (((actual.toFloat()-defective)/actual.toFloat()) *100).toInt().toString()+ "%"
+            val tmp_rate = ((actual-defective).toFloat() / actual.toFloat()) * 100
+            var quality_rate = String.format("%.1f", tmp_rate)
+            quality_rate = quality_rate.replace(",", ".") + "%"//??
             val work_time = (dif / 1000 / 60 ).toInt()
             if (target==0) product_rate = "N/A"
             if (target==0) quality_rate = "N/A"
@@ -93,6 +96,7 @@ class ActualCountEditActivity : BaseActivity() {
             total_defective += defective
             total_work_time += work_time
 
+            item.put("shift_name", item["shift_name"].toString())
             item.put("target", target.toString())
             item.put("actual", actual.toString())
             item.put("defective", defective.toString())

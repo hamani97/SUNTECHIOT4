@@ -6,7 +6,10 @@ import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
+import com.suntech.iot.pattern.db.DBHelperForReport
 import kotlinx.android.synthetic.main.activity_actual_count_edit_input.*
+import org.joda.time.DateTime
+import org.json.JSONObject
 
 class ActualCountEditInputActivity : BaseActivity() {
 
@@ -103,6 +106,27 @@ class ActualCountEditInputActivity : BaseActivity() {
 
                     // Total count 의 Actual 값 갱신
                     AppGlobal.instance.set_current_shift_actual_cnt(if (new_actual>0) new_actual else 0)
+
+                    // Report DB 값 갱신
+                    // 작업 시간인지 확인용
+                    val cur_shift: JSONObject?= AppGlobal.instance.get_current_shift_time()
+                    if (cur_shift != null) {
+                        val shift_idx = cur_shift["shift_idx"]
+                        val now = cur_shift["date"]
+                        val date = now.toString()
+                        val houly = DateTime().toString("HH")
+
+                        val report_db = DBHelperForReport(this)
+                        val rep = report_db.get(date, houly, shift_idx.toString())
+
+                        if (rep == null) {
+                            report_db.add(date, houly, shift_idx.toString(), inc_count)
+                        } else {
+                            val idx = rep!!["idx"].toString()
+                            val actual = rep!!["actual"].toString().toInt() + inc_count
+                            report_db.updateActual(idx, actual)
+                        }
+                    }
 
                     ToastOut(this, result.getString("msg"))
                     finish(true, 0, "ok", null)

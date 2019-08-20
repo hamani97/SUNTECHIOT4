@@ -258,7 +258,7 @@ class ProductListActivity : BaseActivity() {
             vh.tv_item_actual.text = _list[position]["actual"]
 //            vh.tv_item_product_rate.text = _list[position]["product_rate"]
             vh.tv_item_defective.text = _list[position]["defective"]
-//            vh.tv_item_quality_rate.text = _list[position]["quality_rate"]
+            vh.tv_item_quality_rate.text = _list[position]["quality_rate"]
 
             if(_list[position]["work_idx"].toString() == AppGlobal.instance.get_product_idx()) {
                 vh.tv_item_shift_name.setTextColor(Color.parseColor("#ff0000"))
@@ -268,7 +268,7 @@ class ProductListActivity : BaseActivity() {
                 vh.tv_item_actual.setTextColor(Color.parseColor("#ff0000"))
 //                vh.tv_item_product_rate.setTextColor(Color.parseColor("#ff0000"))
                 vh.tv_item_defective.setTextColor(Color.parseColor("#ff0000"))
-//                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#ff0000"))
+                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#ff0000"))
             } else {
                 vh.tv_item_shift_name.setTextColor(Color.parseColor("#000000"))
 //                vh.tv_item_work_time.setTextColor(Color.parseColor("#000000"))
@@ -277,7 +277,7 @@ class ProductListActivity : BaseActivity() {
                 vh.tv_item_actual.setTextColor(Color.parseColor("#000000"))
 //                vh.tv_item_product_rate.setTextColor(Color.parseColor("#000000"))
                 vh.tv_item_defective.setTextColor(Color.parseColor("#000000"))
-//                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#000000"))
+                vh.tv_item_quality_rate.setTextColor(Color.parseColor("#000000"))
             }
             return view
         }
@@ -290,7 +290,7 @@ class ProductListActivity : BaseActivity() {
             val tv_item_actual: TextView
 //            val tv_item_product_rate: TextView
             val tv_item_defective: TextView
-//            val tv_item_quality_rate: TextView
+            val tv_item_quality_rate: TextView
 
             init {
                 this.tv_item_shift_name = row?.findViewById<TextView>(R.id.tv_item_shift_name) as TextView
@@ -300,7 +300,7 @@ class ProductListActivity : BaseActivity() {
                 this.tv_item_actual = row?.findViewById<TextView>(R.id.tv_item_actual) as TextView
 //                this.tv_item_product_rate = row?.findViewById<TextView>(R.id.tv_item_product_rate) as TextView
                 this.tv_item_defective = row?.findViewById<TextView>(R.id.tv_item_defective) as TextView
-//                this.tv_item_quality_rate = row?.findViewById<TextView>(R.id.tv_item_quality_rate) as TextView
+                this.tv_item_quality_rate = row?.findViewById<TextView>(R.id.tv_item_quality_rate) as TextView
             }
         }
     }
