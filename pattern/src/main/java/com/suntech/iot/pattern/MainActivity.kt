@@ -706,11 +706,17 @@ class MainActivity : BaseActivity() {
 
     private fun fetchOEEGraph() {
         if (AppGlobal.instance.get_server_ip().trim() == "") return
-        var work_date = DateTime().toString("HH:mm:ss")
+
         var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
-        if (item != null) {
-            work_date = item["date"].toString()
+        if (item == null) {
+            AppGlobal.instance.set_availability("0")
+            AppGlobal.instance.set_performance("0")
+            AppGlobal.instance.set_quality("0")
+            return
         }
+
+        val work_date = item["date"].toString()
+
         val uri = "/getoee.php"
         var params = listOf(
             "mac_addr" to AppGlobal.instance.getMACAddress(),
@@ -718,11 +724,14 @@ class MainActivity : BaseActivity() {
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
             "factory_idx" to AppGlobal.instance.get_room_idx(),
             "line_idx" to AppGlobal.instance.get_line_idx(),
-            "work_date" to work_date)
+            "work_date" to work_date
+        )
+
 //Log.e("oeegraph", "mac_addr="+AppGlobal.instance.getMACAddress()+", shift_idx="+AppGlobal.instance.get_current_shift_idx()+"," +
 //        " factory_parent_idx="+AppGlobal.instance.get_factory_idx()+", factory_idx="+AppGlobal.instance.get_room_idx()+", line_idx="+AppGlobal.instance.get_line_idx()+
 //        ", work_date="+work_date)
-        request(this, uri, false, params, { result ->
+
+        request(this, uri, false, false, params, { result ->
             var code = result.getString("code")
             if (code == "00") {
                 val availability = result.getString("availability")
@@ -730,12 +739,16 @@ class MainActivity : BaseActivity() {
                 val quality = result.getString("quality")
 //Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
 
-                val new_perform = performance.toFloat()
-                val old_perform = AppGlobal.instance.get_performance().toFloat()
+                Log.e("fetchOEEGraph", "availability = "+availability)
+                Log.e("fetchOEEGraph", "performance = "+performance)
+                Log.e("fetchOEEGraph", "quality = "+quality)
 
                 AppGlobal.instance.set_availability(availability)
                 AppGlobal.instance.set_performance(performance)
                 AppGlobal.instance.set_quality(quality)
+
+                val new_perform = performance.toFloat()
+                val old_perform = AppGlobal.instance.get_performance().toFloat()
 
                 // performance가 100%를 넘었으면 푸시를 보낸다. 단, 이전에 100% 이전인 경우만..
                 if (new_perform >= 100.0f) {

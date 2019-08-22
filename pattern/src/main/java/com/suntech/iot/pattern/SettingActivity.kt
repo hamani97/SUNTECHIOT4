@@ -315,7 +315,7 @@ class SettingActivity : BaseActivity() {
             "mac_addr" to AppGlobal.instance.getMACAddress(),
             "start_time" to now.toString("yyyy-MM-dd HH:mm:ss"))
         request(this, uri, true, params, { result ->
-            var code = result.getString("code")
+            val code = result.getString("code")
         })
     }
 

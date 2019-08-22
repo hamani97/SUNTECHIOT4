@@ -365,6 +365,7 @@ class AppGlobal private constructor() {
         return compute_work_time(shift_stime, shift_etime, false, false)
     }
 
+
     // 두시간(기간)에서 겹치는 시간을 계산
     fun compute_time(src_dt_s:DateTime, src_dt_e:DateTime, dst_dt_s:DateTime, dst_dt_e:DateTime) : Int {
         var dst_dt_s_cpy = dst_dt_s

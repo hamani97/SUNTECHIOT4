@@ -76,7 +76,9 @@ class CountViewFragment : BaseFragment() {
     }
 
     override fun onSelected() {
-        activity.tv_title?.visibility = View.VISIBLE
+        if (activity!=null) {
+            activity.tv_title?.visibility = View.VISIBLE
+        }
 
         tv_pieces_qty.text = "" + (activity as MainActivity).pieces_qty
         tv_pairs_qty.text = "" + (activity as MainActivity).pairs_qty
@@ -483,11 +485,15 @@ class CountViewFragment : BaseFragment() {
         if (performance=="") performance = "0"
         if (quality=="") quality = "0"
 
+
         // 값에 변화가 있을때만 갱신
         if (_availability != availability || _performance != performance || _quality != quality) {
             _availability = availability
             _performance = performance
             _quality = quality
+
+//            Log.e("drawChartView2", "old : availability="+_availability+", performance="+_performance+", quality"+_quality)
+//            Log.e("drawChartView2", "new : availability="+availability+", performance="+performance+", quality"+quality)
 
             Log.e("drawChartView2", "oee graph redraw")
 
