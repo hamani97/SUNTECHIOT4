@@ -246,49 +246,49 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                <TextView style="@style/table_title" android:text="@string/title_count_info" />
+                <!--<TextView style="@style/table_title" android:text="@string/title_count_info" />-->
 
-                <!-- Trim -->
-                <LinearLayout style="@style/table_row" android:layout_marginTop="12dp">
-                    <EditText android:id="@+id/tv_trim_qty"
-                              style="@style/table_row_data_editor1"
-                              android:layout_width="100dp"
-                              android:singleLine="true"
-                              android:gravity="center"
-                              android:inputType="number" />
-                    <TextView style="@style/table_row_title"
-                              android:layout_width="wrap_content"
-                              android:paddingLeft="16dp"
-                              android:paddingRight="16dp"
-                              android:text="@string/label_count_trim_qty"
-                              android:layout_marginLeft="8dp" />
-                    <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_arrow_right16" />
-                    <TextView style="@style/table_row_data_selector"
-                              android:id="@+id/tv_trim_pairs"
-                              android:gravity="center"
-                              android:text=""
-                              android:layout_width="100dp"/>
-                    <TextView style="@style/table_row_title"
-                              android:layout_width="wrap_content"
-                              android:paddingLeft="16dp"
-                              android:paddingRight="16dp"
-                              android:text="@string/label_count_trim_pairs"
-                              android:layout_marginLeft="8dp" />
-                </LinearLayout>
+                <!--&lt;!&ndash; Trim &ndash;&gt;-->
+                <!--<LinearLayout style="@style/table_row" android:layout_marginTop="12dp">-->
+                    <!--<EditText android:id="@+id/tv_trim_qty"-->
+                              <!--style="@style/table_row_data_editor1"-->
+                              <!--android:layout_width="100dp"-->
+                              <!--android:singleLine="true"-->
+                              <!--android:gravity="center"-->
+                              <!--android:inputType="number" />-->
+                    <!--<TextView style="@style/table_row_title"-->
+                              <!--android:layout_width="wrap_content"-->
+                              <!--android:paddingLeft="16dp"-->
+                              <!--android:paddingRight="16dp"-->
+                              <!--android:text="@string/label_count_trim_qty"-->
+                              <!--android:layout_marginLeft="8dp" />-->
+                    <!--<ImageView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:paddingLeft="20dp"-->
+                            <!--android:paddingRight="20dp"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:src="@drawable/ic_arrow_right16" />-->
+                    <!--<TextView style="@style/table_row_data_selector"-->
+                              <!--android:id="@+id/tv_trim_pairs"-->
+                              <!--android:gravity="center"-->
+                              <!--android:text=""-->
+                              <!--android:layout_width="100dp"/>-->
+                    <!--<TextView style="@style/table_row_title"-->
+                              <!--android:layout_width="wrap_content"-->
+                              <!--android:paddingLeft="16dp"-->
+                              <!--android:paddingRight="16dp"-->
+                              <!--android:text="@string/label_count_trim_pairs"-->
+                              <!--android:layout_marginLeft="8dp" />-->
+                <!--</LinearLayout>-->
 
                 <!--Screen blinking-->
                 <LinearLayout
                         android:layout_width="1080dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
                         android:layout_gravity="center_horizontal"
                         android:orientation="vertical">
+                    <!--android:layout_marginTop="40dp"-->
 
                     <TextView style="@style/table_title" android:text="SCREEN BLINK EFFECT" />
 

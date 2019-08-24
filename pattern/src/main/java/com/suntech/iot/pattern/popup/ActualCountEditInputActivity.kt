@@ -1,12 +1,14 @@
 package com.suntech.iot.pattern.popup
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.db.DBHelperForReport
+import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_actual_count_edit_input.*
 import org.joda.time.DateTime
 import org.json.JSONObject
@@ -76,9 +78,20 @@ class ActualCountEditInputActivity : BaseActivity() {
 
         } else {
 
-            // 토탈 카운트도 재계산
-            val total_actual = AppGlobal.instance.get_current_shift_actual_cnt()
+            var total_actual = 0
 
+//            // 토탈 카운트도 재계산
+//            val total_actual = AppGlobal.instance.get_current_shift_actual_cnt()
+
+            // 전체 디자인을 가져온다.
+            var db_list = db.gets()
+            for (i in 0..((db_list?.size ?: 1) - 1)) {
+                val item = db_list?.get(i)
+                val actual2 = item?.get("actual").toString().toInt()
+                total_actual += actual2
+            }
+
+            // 작업시작
             val actual = count.toInt()                  // 사용자가 입력한 새 Actual 값
             val inc_count = actual - _origin_actual     // 사용자가 입력한 Actual로 계산된 증분값
             val new_actual = total_actual + inc_count   // 새로 계산된 카운트 최종값
@@ -104,8 +117,8 @@ class ActualCountEditInputActivity : BaseActivity() {
                     // DB의 Actual 값 갱신
                     db.updateWorkActual(work_idx, actual)
 
-                    // Total count 의 Actual 값 갱신
-                    AppGlobal.instance.set_current_shift_actual_cnt(if (new_actual>0) new_actual else 0)
+//                    // Total count 의 Actual 값 갱신
+//                    AppGlobal.instance.set_current_shift_actual_cnt(if (new_actual>0) new_actual else 0)
 
                     // Report DB 값 갱신
                     // 작업 시간인지 확인용

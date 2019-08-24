@@ -120,10 +120,10 @@ class SettingActivity : BaseActivity() {
             blinkColorChange("888888")
         }
 
-        tv_trim_qty.setText(AppGlobal.instance.get_trim_qty())
-        tv_trim_pairs.setText(AppGlobal.instance.get_trim_pairs())
+//        tv_trim_qty.setText(AppGlobal.instance.get_trim_qty())
+//        tv_trim_pairs.setText(AppGlobal.instance.get_trim_pairs())
 
-        tv_trim_pairs.setOnClickListener { selectTrimPair() }
+//        tv_trim_pairs.setOnClickListener { selectTrimPair() }
 
         // target setting
         if (AppGlobal.instance.get_target_type() == "") targetTypeChange("device_per_accumulate")
@@ -236,11 +236,11 @@ class SettingActivity : BaseActivity() {
             return
         }
 
-        if (tv_trim_qty.text.toString().trim()=="" || tv_trim_pairs.text.toString()=="") {
-            tabChange(2)
-            Toast.makeText(this, getString(R.string.msg_require_pairs_info), Toast.LENGTH_SHORT).show()
-            return
-        }
+//        if (tv_trim_qty.text.toString().trim()=="" || tv_trim_pairs.text.toString()=="") {
+//            tabChange(2)
+//            Toast.makeText(this, getString(R.string.msg_require_pairs_info), Toast.LENGTH_SHORT).show()
+//            return
+//        }
 
         val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 5 else et_setting_worksheet_display_time.text.toString().toInt()
 
@@ -272,8 +272,8 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_blink_color(_selected_blink_color)
 
         // count setting
-        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())
-        AppGlobal.instance.set_trim_pairs(tv_trim_pairs.text.toString())
+//        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())
+//        AppGlobal.instance.set_trim_pairs(tv_trim_pairs.text.toString())
 
         // target type
         AppGlobal.instance.set_target_type(_selected_target_type)
@@ -319,22 +319,22 @@ class SettingActivity : BaseActivity() {
         })
     }
 
-    private fun selectTrimPair() {
-        var arr: ArrayList<String> = arrayListOf<String>()
-        arr.add("1/8")
-        arr.add("1/4")
-        arr.add("1/2")
-        arr.add("1")
-
-        val intent = Intent(this, PopupSelectList::class.java)
-        intent.putStringArrayListExtra("list", arr)
-        startActivity(intent, { r, c, m, d ->
-            if (r) {
-                tv_trim_pairs.text = arr[c]
-                _selected_trim_pair = arr[c]
-            }
-        })
-    }
+//    private fun selectTrimPair() {
+//        var arr: ArrayList<String> = arrayListOf<String>()
+//        arr.add("1/8")
+//        arr.add("1/4")
+//        arr.add("1/2")
+//        arr.add("1")
+//
+//        val intent = Intent(this, PopupSelectList::class.java)
+//        intent.putStringArrayListExtra("list", arr)
+//        startActivity(intent, { r, c, m, d ->
+//            if (r) {
+//                tv_trim_pairs.text = arr[c]
+//                _selected_trim_pair = arr[c]
+//            }
+//        })
+//    }
 
     private fun fetchDataForFactory() {
         val url = "http://"+ et_setting_server_ip.text.toString()

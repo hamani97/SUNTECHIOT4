@@ -549,7 +549,7 @@ class MainActivity : BaseActivity() {
                     // 이전 Shift와 현재 Shift가 다르다면 Actual 초기화
                     val shift_info = item["date"].toString() + item["shift_idx"].toString()
                     if (shift_info != AppGlobal.instance.get_last_shift_info()) {
-                        AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
+//                        AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
                         AppGlobal.instance.set_last_shift_info(shift_info)      // 현재 Shift 정보 저장
                     }
 
@@ -581,7 +581,7 @@ class MainActivity : BaseActivity() {
 
         tv_title.setText("No shift")
 
-        AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
+//        AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
 
 //        AppGlobal.instance.set_current_shift_idx("-1")
 //        AppGlobal.instance.set_current_shift_name("No-shift")
@@ -739,9 +739,9 @@ class MainActivity : BaseActivity() {
                 val quality = result.getString("quality")
 //Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
 
-                Log.e("fetchOEEGraph", "availability = "+availability)
-                Log.e("fetchOEEGraph", "performance = "+performance)
-                Log.e("fetchOEEGraph", "quality = "+quality)
+//                Log.e("fetchOEEGraph", "availability = "+availability)
+//                Log.e("fetchOEEGraph", "performance = "+performance)
+//                Log.e("fetchOEEGraph", "quality = "+quality)
 
                 AppGlobal.instance.set_availability(availability)
                 AppGlobal.instance.set_performance(performance)
@@ -793,7 +793,7 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    // 10초마다 현재 target을 서버에 저장
+    // 30분마다 현재 target을 서버에 저장
     // 작업 시간이 아닐경우는 Pass
     private fun updateCurrentWorkTarget() {
         var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
@@ -801,11 +801,50 @@ class MainActivity : BaseActivity() {
             var _total_target = 0
             var target_type = AppGlobal.instance.get_target_type()
             if (target_type=="server_per_hourly" || target_type=="server_per_accumulate" || target_type=="server_per_day_total") {
-                when (item["shift_idx"]) {
-                    "1" -> _total_target = AppGlobal.instance.get_target_server_shift("1").toInt()
-                    "2" -> _total_target = AppGlobal.instance.get_target_server_shift("2").toInt()
-                    "3" -> _total_target = AppGlobal.instance.get_target_server_shift("3").toInt()
+                // 신서버용
+                val work_idx = AppGlobal.instance.get_product_idx()
+
+                // 전체 디자인을 가져온다.
+                var db = DBHelperForDesign(this)
+                var db_list = db.gets()
+                for (i in 0..((db_list?.size ?: 1) - 1)) {
+                    val item = db_list?.get(i)
+                    val work_idx2 = item?.get("work_idx").toString()
+                    val target2 = item?.get("target").toString().toInt()
+                    val start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt").toString())    // 디자인의 시작시간
+
+                    if (work_idx == work_idx2) {    // 현재 진행중인 디자인
+                        val current_cycle_time = AppGlobal.instance.get_cycle_time()
+                        val shift_time = AppGlobal.instance.get_current_shift_time()
+
+                        if (shift_time != null && current_cycle_time > 0) {
+                            val work_etime = shift_time["work_etime"].toString()
+                            val shift_end_dt = OEEUtil.parseDateTime(work_etime)    // 시프트의 종료 시간
+
+                            // 설정되어 있는 휴식 시간
+                            val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
+                            val _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
+                            val _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
+                            val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
+
+                            val d1 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned1_stime, _planned1_etime)
+                            val d2 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned2_stime, _planned2_etime)
+
+                            // 디자인의 시작부터 시프트 종료시간까지 (초)
+                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2
+
+                            _total_target += (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+                        }
+                    } else {        // 지난 디자인
+                        _total_target += target2
+                    }
                 }
+                // 구서버용
+//                when (item["shift_idx"]) {
+//                    "1" -> _total_target = AppGlobal.instance.get_target_server_shift("1").toInt()
+//                    "2" -> _total_target = AppGlobal.instance.get_target_server_shift("2").toInt()
+//                    "3" -> _total_target = AppGlobal.instance.get_target_server_shift("3").toInt()
+//                }
             } else if (target_type=="device_per_hourly" || target_type=="device_per_accumulate" || target_type=="device_per_day_total") {
                 when (item["shift_idx"]) {
                     "1" -> _total_target = AppGlobal.instance.get_target_manual_shift("1").toInt()
@@ -815,12 +854,22 @@ class MainActivity : BaseActivity() {
             }
             Log.e("updateCurrentWorkTarget", "target_type=" + target_type + ", _total_target=" + _total_target)
             if (_total_target > 0) {
-                val uri = "/sendtarget.php"
+                // 구서버용
+//                val uri = "/sendtarget.php"
+//                var params = listOf(
+//                    "mac_addr" to AppGlobal.instance.getMACAddress(),
+//                    "date" to item["date"].toString(),
+//                    "shift_idx" to  item["shift_idx"],     // AppGlobal.instance.get_current_shift_idx()
+//                    "target_count" to _total_target)
+
+                // 신서버용
+                val uri = "/Starget.php"
                 var params = listOf(
                     "mac_addr" to AppGlobal.instance.getMACAddress(),
-                    "date" to item["date"].toString(),
-                    "shift_idx" to  item["shift_idx"],     // AppGlobal.instance.get_current_shift_idx()
-                    "target_count" to _total_target)
+                    "didx" to AppGlobal.instance.get_design_info_idx(),
+                    "target" to _total_target,
+                    "shift_idx" to  item["shift_idx"]     // AppGlobal.instance.get_current_shift_idx()
+                    )
 
                 request(this, uri, true,false, params, { result ->
                     var code = result.getString("code")
@@ -886,7 +935,7 @@ class MainActivity : BaseActivity() {
         AppGlobal.instance.set_cycle_time(0)
         AppGlobal.instance.reset_product_idx()
 
-        AppGlobal.instance.set_current_shift_actual_cnt(0)
+//        AppGlobal.instance.set_current_shift_actual_cnt(0)
 
         var db = SimpleDatabaseHelperBackup(this)
         db.delete()
@@ -916,7 +965,7 @@ class MainActivity : BaseActivity() {
         if (_current_shift_etime_millis != 0L) {
             if (_current_shift_etime_millis <= DateTime().millis) {
                 Log.e("checkCurrentShiftEnd", "end time . finish shift work =============================> need reload")
-                AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
+//                AppGlobal.instance.set_current_shift_actual_cnt(0)      // 토탈 Actual 초기화
                 AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
                 tv_report_count.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
                 tv_defective_count.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
@@ -1151,6 +1200,8 @@ class MainActivity : BaseActivity() {
 
         if (cmd == "T" || cmd == "count") {
 
+            var current_actual_cnt = AppGlobal.instance.get_current_shift_actual_cnt()
+
             // 작업 시간인지 확인
             val cur_shift: JSONObject ?= AppGlobal.instance.get_current_shift_time()
             if (cur_shift == null) {
@@ -1223,9 +1274,10 @@ class MainActivity : BaseActivity() {
             if (inc_count <= 0) return
 
             // total count
-            val cnt = AppGlobal.instance.get_current_shift_actual_cnt() + inc_count
-            AppGlobal.instance.set_current_shift_actual_cnt(cnt)
+//            val cnt = AppGlobal.instance.get_current_shift_actual_cnt() + inc_count
+//            AppGlobal.instance.set_current_shift_actual_cnt(cnt)
 
+            val cnt = current_actual_cnt + inc_count
 
             tv_report_count.text = "" + cnt
 
@@ -1233,7 +1285,7 @@ class MainActivity : BaseActivity() {
 
             AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss"))
 
-            // 서버 호출
+            // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
             sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
 
 
@@ -1272,7 +1324,7 @@ class MainActivity : BaseActivity() {
 
         var db = DBHelperForDesign(this)
         val row = db.get(work_idx)
-        val actual = row!!["actual"].toString().toInt()
+//        val actual = row!!["actual"].toString().toInt()
         val seq = row!!["seq"].toString().toInt()
 
         var shift_idx = AppGlobal.instance.get_current_shift_idx()
@@ -1282,19 +1334,30 @@ class MainActivity : BaseActivity() {
         // Cutting 과는 다르게 콤포넌트가 필수 선택사항이 아니므로
         // 선택되었을 경우에만 seq 값을 구하고 아니면, 디폴트 1을 전송한다.
 
-        val uri = "/senddata1.php"
+        // 구서버용
+//        val uri = "/senddata1.php"
+//        var params = listOf(
+//            "mac_addr" to AppGlobal.instance.getMACAddress(),
+//            "didx" to AppGlobal.instance.get_design_info_idx(),
+//            "count" to inc_count.toString(),
+//            "total_count" to sum_count,
+//            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+//            "factory_idx" to AppGlobal.instance.get_room_idx(),
+//            "line_idx" to AppGlobal.instance.get_line_idx(),
+//            "shift_idx" to  shift_idx,
+//            "seq" to seq,
+//            "max_rpm" to "",
+//            "avr_rpm" to "")
+
+        // 신서버용
+        val uri = "/Scount.php"
         var params = listOf(
             "mac_addr" to AppGlobal.instance.getMACAddress(),
             "didx" to AppGlobal.instance.get_design_info_idx(),
             "count" to inc_count.toString(),
             "total_count" to sum_count,
-            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-            "factory_idx" to AppGlobal.instance.get_room_idx(),
-            "line_idx" to AppGlobal.instance.get_line_idx(),
             "shift_idx" to  shift_idx,
-            "seq" to seq,
-            "max_rpm" to "",
-            "avr_rpm" to "")
+            "seq" to seq)
 //Log.e("params", params.toString())
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
