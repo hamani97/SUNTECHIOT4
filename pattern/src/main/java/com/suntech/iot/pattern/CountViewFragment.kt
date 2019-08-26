@@ -182,15 +182,15 @@ class CountViewFragment : BaseFragment() {
 
     fun viewWorkInfo() {
         // WOS INFO 하단 bottom
-        tv_pieces.text = AppGlobal.instance.get_pieces_info()
-        tv_pairs.text = AppGlobal.instance.get_pairs_info()
-        tv_idx.text = AppGlobal.instance.get_design_info_idx()
-        tv_cycle_time.text = AppGlobal.instance.get_cycle_time().toString()
-        tv_model.text = AppGlobal.instance.get_model()
-        tv_material.text = AppGlobal.instance.get_material_way()
-        tv_component.text = AppGlobal.instance.get_component()
-//        tv_model.text = AppGlobal.instance.get_compo_model()
-//        tv_component.text = AppGlobal.instance.get_compo_component()
+        tv_pieces?.text = AppGlobal.instance.get_pieces_info()
+        tv_pairs?.text = AppGlobal.instance.get_pairs_info()
+        tv_idx?.text = AppGlobal.instance.get_design_info_idx()
+        tv_cycle_time?.text = AppGlobal.instance.get_cycle_time().toString()
+        tv_model?.text = AppGlobal.instance.get_model()
+        tv_material?.text = AppGlobal.instance.get_material_way()
+        tv_component?.text = AppGlobal.instance.get_component()
+//        tv_model?.text = AppGlobal.instance.get_compo_model()
+//        tv_component?.text = AppGlobal.instance.get_compo_component()
     }
 
     // 해당 시간에만 카운트 값을 변경하기 위한 변수
@@ -290,12 +290,26 @@ class CountViewFragment : BaseFragment() {
 
         drawChartView2()
 
+
+        // 현재 시프트의 휴식시간 미리 계산
+        val shift_time = AppGlobal.instance.get_current_shift_time()
+        if (shift_time == null) {
+            refreshScreen("", 0, 0)
+            return
+        }
+
+        val work_stime = shift_time["work_stime"].toString()
+        val work_etime = shift_time["work_etime"].toString()
+        val shift_idx = shift_time["shift_idx"].toString()
+
+
         // 디자인이 선택되었는지 체크
         val work_idx = AppGlobal.instance.get_product_idx()
         if (work_idx == "") {
             if (AppGlobal.instance.get_message_enable() && (DateTime().millis/1000) % 10 == 0L) {  // 10초마다 출력
                 Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
             }
+//            refreshScreen(shift_idx, 0, 0)
             return
         }
 
@@ -303,15 +317,11 @@ class CountViewFragment : BaseFragment() {
 
         // DB에서 디자인 데이터를 가져온다.
         val db_item = db.get(work_idx)
-        if (db_item == null || db_item.toString() == "") return
+        if (db_item == null || db_item.toString() == "") {
+//            refreshScreen(shift_idx, 0, 0)
+            return
+        }
 
-
-        // 현재 시프트의 휴식시간 미리 계산
-        val shift_time = AppGlobal.instance.get_current_shift_time()
-        if (shift_time == null) return
-
-        val work_stime = shift_time["work_stime"].toString()
-        val work_etime = shift_time["work_etime"].toString()
 
         // 가져온 DB가 현 시프트의 정보가 아니라면 리턴
         if (db_item["end_dt"].toString() == null) {
@@ -319,6 +329,7 @@ class CountViewFragment : BaseFragment() {
         } else {
             if (db_item["start_dt"].toString() < work_stime) return
         }
+
 
         val now = DateTime()        // 현재
         val start_dt = OEEUtil.parseDateTime(db_item["start_dt"].toString())    // 디자인의 시작시간
@@ -342,10 +353,10 @@ class CountViewFragment : BaseFragment() {
         var total_target = 0
         var total_actual = 0
 
-        // 전체 디자인을 가져온다.
-        var db_list = db.gets()
-
         if (target_type.substring(0, 6) == "server") {
+
+            // 전체 디자인을 가져온다.
+            var db_list = db.gets()
 
             for (i in 0..((db_list?.size ?: 1) - 1)) {
 
@@ -358,8 +369,6 @@ class CountViewFragment : BaseFragment() {
 
                 // 현재 진행중인 디자인
                 if (work_idx == work_idx2) {
-//                    db.updateWorkTarget(work_idx, 0, 0)
-
                     if (current_cycle_time == 0) continue
 
                     if (target_type == "server_per_accumulate") {
@@ -372,13 +381,12 @@ class CountViewFragment : BaseFragment() {
                         val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
                         total_target += count
 
-                        // target값이 변형되었으면 없데이트
+                        // target값이 변형되었으면 업데이트
                         if (work_idx != null && target2 != count) {
                             db.updateWorkTarget(work_idx, count, count)
                         }
 
                     } else if (target_type == "server_per_day_total") {
-
                         val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
                         val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
 
@@ -388,14 +396,13 @@ class CountViewFragment : BaseFragment() {
                         val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
                         total_target += count
 
-                        // target값이 변형되었으면 없데이트
+                        // target값이 변형되었으면 업데이트
                         if (work_idx != null && target2 != count) {
                             db.updateWorkTarget(work_idx, count, count)
                         }
                     }
 
                 } else {        // 지난 디자인 작업
-
                     val end_dt2 = OEEUtil.parseDateTime(item?.get("end_dt"))
                     if (end_dt2 != null) {
                         val start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt"))
@@ -411,7 +418,7 @@ class CountViewFragment : BaseFragment() {
                             val count = (work_time2 / cycle_time2).toInt() + 1 // 시작할때 1부터 시작이므로 1을 더함
                             total_target += count   // 현재 계산된 카운트를 더한다.
 
-                            // target값이 변형되었으면 없데이트
+                            // target값이 변형되었으면 업데이트
                             if (work_idx2 != null && target2 != count) {
 //                                Log.e("DB", i.toString() + " = " + item.toString())
 //                                Log.e("DB", i.toString() + " = db target = " + target2 + ", new target = " + count)
@@ -421,41 +428,17 @@ class CountViewFragment : BaseFragment() {
                     }
                 }
             }
+        } else if (target_type.substring(0, 6) == "device") {
+            when (shift_idx) {
+                "1" -> total_target = AppGlobal.instance.get_target_manual_shift("1").toInt()
+                "2" -> total_target = AppGlobal.instance.get_target_manual_shift("2").toInt()
+                "3" -> total_target = AppGlobal.instance.get_target_manual_shift("3").toInt()
+            }
         }
 
         // 값에 변화가 생겼을 때만 리프레시
-        if (total_target != last_total_target || total_actual != last_total_actual) {
-            last_total_target = total_target
-            last_total_actual = total_actual
+        refreshScreen(shift_idx, total_actual, total_target)
 
-            var ratio = 0
-            var ratio_txt = "N/A"
-
-            if (total_target > 0) {
-                ratio = (total_actual.toFloat() / total_target.toFloat() * 100).toInt()
-                if (ratio > 999) ratio = 999
-                ratio_txt = "" + ratio + "%"
-            }
-
-            tv_count_view_target.text = "" + total_target
-            tv_count_view_actual.text = "" + total_actual
-            tv_count_view_ratio.text = ratio_txt
-
-            var color_code = "ffffff"
-
-            for (i in 0..(_list.size - 1)) {
-                val snumber = _list[i]["snumber"]?.toInt() ?: 0
-                val enumber = _list[i]["enumber"]?.toInt() ?: 0
-                if (snumber <= ratio && enumber >= ratio) color_code = _list[i]["color_code"].toString()
-            }
-            tv_count_view_target.setTextColor(Color.parseColor("#" + color_code))
-            tv_count_view_actual.setTextColor(Color.parseColor("#" + color_code))
-            tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
-
-            //
-            AppGlobal.instance.set_current_shift_actual_cnt(total_actual)
-            tv_report_count?.text = "" + total_actual
-        }
 
 
 //        if (target_type.substring(0, 6) == "server") {
@@ -584,6 +567,75 @@ class CountViewFragment : BaseFragment() {
 //        }
 //        countTarget()
     }
+
+    private fun refreshScreen(shift_idx:String, total_actual:Int, total_target:Int) {
+        // 값에 변화가 생겼을 때만 리프레시
+        if (total_target != last_total_target || total_actual != last_total_actual) {
+            var ratio = 0
+            var ratio_txt = "N/A"
+
+            if (total_target > 0) {
+                ratio = (total_actual.toFloat() / total_target.toFloat() * 100).toInt()
+                if (ratio > 999) ratio = 999
+                ratio_txt = "" + ratio + "%"
+            }
+
+            tv_count_view_target.text = "" + total_target
+            tv_count_view_actual.text = "" + total_actual
+            tv_count_view_ratio.text = ratio_txt
+
+            var color_code = "ffffff"
+
+            for (i in 0..(_list.size - 1)) {
+                val snumber = _list[i]["snumber"]?.toInt() ?: 0
+                val enumber = _list[i]["enumber"]?.toInt() ?: 0
+                if (snumber <= ratio && enumber >= ratio) color_code = _list[i]["color_code"].toString()
+            }
+            tv_count_view_target.setTextColor(Color.parseColor("#" + color_code))
+            tv_count_view_actual.setTextColor(Color.parseColor("#" + color_code))
+            tv_count_view_ratio.setTextColor(Color.parseColor("#" + color_code))
+
+            //
+            AppGlobal.instance.set_current_shift_actual_cnt(total_actual)
+            tv_report_count?.text = "" + total_actual
+
+            // 타겟 수량이 바뀌면 서버에 통보한다.
+            if (total_target != last_total_target) {
+                if (shift_idx != "") {
+                    updateCurrentWorkTarget(shift_idx, total_target)
+                }
+            }
+
+            // 최종값 업데이트
+            last_total_target = total_target
+            last_total_actual = total_actual
+        }
+    }
+
+    // 현재 target을 서버에 저장
+    private fun updateCurrentWorkTarget(shift_idx: String, target: Int) {
+            Log.e("updateCurrentWorkTarget", "total_target=" + target)
+            if (_total_target > 0) {
+                // 신서버용
+                val uri = "/Starget.php"
+                var params = listOf(
+                    "mac_addr" to AppGlobal.instance.getMACAddress(),
+                    "didx" to AppGlobal.instance.get_design_info_idx(),
+                    "target" to target,
+                    "shift_idx" to  shift_idx
+                )
+
+                getBaseActivity().request(activity, uri, true,false, params, { result ->
+                    var code = result.getString("code")
+                    var msg = result.getString("msg")
+//                    Log.e("Starget result", "= " + msg.toString())
+                    if(code != "00"){
+                        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+    }
+
 
     // 값에 변화가 생길때만 화면을 리프레쉬 하기 위한 변수
     var _availability = ""

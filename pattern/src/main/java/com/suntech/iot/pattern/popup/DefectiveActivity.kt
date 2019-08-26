@@ -60,7 +60,7 @@ class DefectiveActivity : BaseActivity() {
             val defective = item["defective"]?.toInt() ?: 0
 //            var product_rate = ((actual.toFloat()/target.toFloat()) *100).toInt().toString()+ "%"
 //            var quality_rate = (((actual.toFloat()-defective)/actual.toFloat()) *100).toInt().toString()+ "%"
-            val tmp_rate = ((actual-defective).toFloat() / actual.toFloat()) * 100
+            val tmp_rate = if (actual > 0) ((actual-defective).toFloat() / actual.toFloat()) * 100 else 0.0f
             var quality_rate = String.format("%.1f", tmp_rate)
             quality_rate = quality_rate.replace(",", ".") + "%"//??
 //            val work_time = (dif / 1000 / 60 ).toInt()
