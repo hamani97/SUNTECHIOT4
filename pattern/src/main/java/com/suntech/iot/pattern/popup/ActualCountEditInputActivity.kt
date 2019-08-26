@@ -97,19 +97,33 @@ class ActualCountEditInputActivity : BaseActivity() {
             val new_actual = total_actual + inc_count   // 새로 계산된 카운트 최종값
             val seq = row!!["seq"].toString().toInt()
 
-            val uri = "/senddata1.php"
+            var shift_idx = AppGlobal.instance.get_current_shift_idx()
+            if (shift_idx == "") shift_idx = "0"
+
+            // 구서버용
+//            val uri = "/senddata1.php"
+//            var params = listOf(
+//                "mac_addr" to AppGlobal.instance.getMACAddress(),
+//                "didx" to AppGlobal.instance.get_design_info_idx(),
+//                "count" to inc_count.toString(),
+//                "total_count" to new_actual,
+//                "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+//                "factory_idx" to AppGlobal.instance.get_room_idx(),
+//                "line_idx" to AppGlobal.instance.get_line_idx(),
+//                "shift_idx" to  AppGlobal.instance.get_current_shift_idx(),
+//                "seq" to seq,
+//                "max_rpm" to "",
+//                "avr_rpm" to "")
+
+            // 신서버용
+            val uri = "/Scount.php"
             var params = listOf(
                 "mac_addr" to AppGlobal.instance.getMACAddress(),
                 "didx" to AppGlobal.instance.get_design_info_idx(),
                 "count" to inc_count.toString(),
                 "total_count" to new_actual,
-                "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-                "factory_idx" to AppGlobal.instance.get_room_idx(),
-                "line_idx" to AppGlobal.instance.get_line_idx(),
-                "shift_idx" to  AppGlobal.instance.get_current_shift_idx(),
-                "seq" to seq,
-                "max_rpm" to "",
-                "avr_rpm" to "")
+                "shift_idx" to  shift_idx,
+                "seq" to seq)
 
             request(this, uri, true,false, params, { result ->
                 var code = result.getString("code")

@@ -831,7 +831,7 @@ class MainActivity : BaseActivity() {
                             val d2 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned2_stime, _planned2_etime)
 
                             // 디자인의 시작부터 시프트 종료시간까지 (초)
-                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2
+                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2 - 1
 
                             _total_target += (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
                         }
@@ -874,6 +874,7 @@ class MainActivity : BaseActivity() {
                 request(this, uri, true,false, params, { result ->
                     var code = result.getString("code")
                     var msg = result.getString("msg")
+//                    Log.e("Starget result", "= " + msg.toString())
                     if(code != "00"){
                         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                     }
@@ -1362,6 +1363,7 @@ class MainActivity : BaseActivity() {
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
             var msg = result.getString("msg")
+//            Log.e("Scount result", "= "+msg.toString())
             if(code != "00") {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
