@@ -179,7 +179,10 @@ class SettingActivity : BaseActivity() {
         }
 
         // Cancel button click
-        btn_setting_cancel.setOnClickListener { finish() }
+        btn_setting_cancel.setOnClickListener {
+            AppGlobal.instance.set_auto_setting(false)
+            finish()
+        }
 
         if (AppGlobal.instance.isOnline(this)) btn_wifi_state.isSelected = true
         else btn_wifi_state.isSelected = false
@@ -188,7 +191,9 @@ class SettingActivity : BaseActivity() {
         else btn_server_state.isSelected = false
 
         // TODO: TEST
-        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("49.247.205.235")     // 10.10.10.90
+        // 10.10.10.90
+        // 49.247.205.235
+        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
     }
 
@@ -314,7 +319,7 @@ class SettingActivity : BaseActivity() {
             "code" to "time",
             "mac_addr" to AppGlobal.instance.getMACAddress(),
             "start_time" to now.toString("yyyy-MM-dd HH:mm:ss"))
-        request(this, uri, true, params, { result ->
+        request(this, uri, false, params, { result ->
             val code = result.getString("code")
         })
     }

@@ -294,7 +294,7 @@ class CountViewFragment : BaseFragment() {
         // 현재 시프트의 휴식시간 미리 계산
         val shift_time = AppGlobal.instance.get_current_shift_time()
         if (shift_time == null) {
-            refreshScreen("", 0, 0)
+            refreshScreen("", 0, 0, 0)
             return
         }
 
@@ -350,6 +350,7 @@ class CountViewFragment : BaseFragment() {
         val target_type = AppGlobal.instance.get_target_type()  // setting menu 메뉴에서 선택한 타입
         var current_cycle_time = AppGlobal.instance.get_cycle_time()
 
+        var shift_total_target = 0
         var total_target = 0
         var total_actual = 0
 
@@ -367,11 +368,28 @@ class CountViewFragment : BaseFragment() {
 
                 total_actual += actual2
 
-                // 현재 진행중인 디자인
-                if (work_idx == work_idx2) {
+
+                if (work_idx == work_idx2) {        // 현재 진행중인 디자인
+
                     if (current_cycle_time == 0) continue
 
-                    if (target_type == "server_per_accumulate") {
+                    // 끝나는 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
+                    val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
+                    val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
+
+                    // 디자인의 시작부터 시프트 종료시간까지 (초)
+                    val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
+
+                    val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+                    shift_total_target += count
+
+                    if (target_type == "server_per_day_total") {
+                        total_target += count
+                        // target값이 변형되었으면 업데이트
+                        if (work_idx != null && target2 != count) {
+                            db.updateWorkTarget(work_idx, count, count)
+                        }
+                    } else if (target_type == "server_per_accumulate") {
                         val d1 = AppGlobal.instance.compute_time(start_dt, now, _planned1_stime, _planned1_etime)
                         val d2 = AppGlobal.instance.compute_time(start_dt, now, _planned2_stime, _planned2_etime)
 
@@ -385,24 +403,41 @@ class CountViewFragment : BaseFragment() {
                         if (work_idx != null && target2 != count) {
                             db.updateWorkTarget(work_idx, count, count)
                         }
-
-                    } else if (target_type == "server_per_day_total") {
-                        val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
-                        val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
-
-                        // 디자인의 시작부터 시프트 종료시간까지 (초)
-                        val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
-
-                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
-                        total_target += count
-
-                        // target값이 변형되었으면 업데이트
-                        if (work_idx != null && target2 != count) {
-                            db.updateWorkTarget(work_idx, count, count)
-                        }
                     }
 
+//                    if (target_type == "server_per_accumulate") {
+//                        val d1 = AppGlobal.instance.compute_time(start_dt, now, _planned1_stime, _planned1_etime)
+//                        val d2 = AppGlobal.instance.compute_time(start_dt, now, _planned2_stime, _planned2_etime)
+//
+//                        // 디자인의 시작부터 현재까지 시간(초)
+//                        val work_time = ((now.millis - start_dt.millis) / 1000) - d1 - d2 -1
+//
+//                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+//                        total_target += count
+//
+//                        // target값이 변형되었으면 업데이트
+//                        if (work_idx != null && target2 != count) {
+//                            db.updateWorkTarget(work_idx, count, count)
+//                        }
+//
+//                    } else if (target_type == "server_per_day_total") {
+//                        val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
+//                        val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
+//
+//                        // 디자인의 시작부터 시프트 종료시간까지 (초)
+//                        val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
+//
+//                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+//                        total_target += count
+//
+//                        // target값이 변형되었으면 업데이트
+//                        if (work_idx != null && target2 != count) {
+//                            db.updateWorkTarget(work_idx, count, count)
+//                        }
+//                    }
+
                 } else {        // 지난 디자인 작업
+
                     val end_dt2 = OEEUtil.parseDateTime(item?.get("end_dt"))
                     if (end_dt2 != null) {
                         val start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt"))
@@ -417,6 +452,7 @@ class CountViewFragment : BaseFragment() {
 
                             val count = (work_time2 / cycle_time2).toInt() + 1 // 시작할때 1부터 시작이므로 1을 더함
                             total_target += count   // 현재 계산된 카운트를 더한다.
+                            shift_total_target += count   // 현재 계산된 카운트를 시트프 총합에 더한다.
 
                             // target값이 변형되었으면 업데이트
                             if (work_idx2 != null && target2 != count) {
@@ -437,7 +473,7 @@ class CountViewFragment : BaseFragment() {
         }
 
         // 값에 변화가 생겼을 때만 리프레시
-        refreshScreen(shift_idx, total_actual, total_target)
+        refreshScreen(shift_idx, total_actual, total_target, shift_total_target)
 
 
 
@@ -568,7 +604,7 @@ class CountViewFragment : BaseFragment() {
 //        countTarget()
     }
 
-    private fun refreshScreen(shift_idx:String, total_actual:Int, total_target:Int) {
+    private fun refreshScreen(shift_idx:String, total_actual:Int, total_target:Int, shift_total_target:Int) {
         // 값에 변화가 생겼을 때만 리프레시
         if (total_target != last_total_target || total_actual != last_total_actual) {
             var ratio = 0
@@ -602,7 +638,7 @@ class CountViewFragment : BaseFragment() {
             // 타겟 수량이 바뀌면 서버에 통보한다.
             if (total_target != last_total_target) {
                 if (shift_idx != "") {
-                    updateCurrentWorkTarget(shift_idx, total_target)
+                    updateCurrentWorkTarget(shift_idx, total_target, shift_total_target)
                 }
             }
 
@@ -613,15 +649,15 @@ class CountViewFragment : BaseFragment() {
     }
 
     // 현재 target을 서버에 저장
-    private fun updateCurrentWorkTarget(shift_idx: String, target: Int) {
-            Log.e("updateCurrentWorkTarget", "total_target=" + target)
-            if (target > 0) {
+    private fun updateCurrentWorkTarget(shift_idx: String, target: Int, shift_target: Int) {
+            Log.e("updateCurrentWorkTarget", "total_target=" + target + ", shift_total_target=" + shift_target)
+            if (target >= 0) {
                 // 신서버용
                 val uri = "/Starget.php"
                 var params = listOf(
                     "mac_addr" to AppGlobal.instance.getMACAddress(),
                     "didx" to AppGlobal.instance.get_design_info_idx(),
-                    "target" to target,
+                    "target" to shift_target,
                     "shift_idx" to  shift_idx
                 )
 

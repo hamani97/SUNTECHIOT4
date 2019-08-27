@@ -32,6 +32,10 @@ class AppGlobal private constructor() {
     fun set_last_received(value: String) { UtilLocalStorage.setString(instance._context!!, "last_received", value) }
     fun get_last_received() : String { return UtilLocalStorage.getString(instance._context!!, "last_received") }
 
+    // auto setting
+    fun set_auto_setting(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "auto_setting", state) }
+    fun get_auto_setting() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "auto_setting") }
+
     // Default Setting
     fun set_factory_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_factory_idx", idx) }
     fun get_factory_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_factory_idx") }

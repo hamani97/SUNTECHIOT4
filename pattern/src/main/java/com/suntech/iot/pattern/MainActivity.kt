@@ -72,6 +72,10 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         AppGlobal.instance.setContext(this)
 
+        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
+                                                        // Setting -> Operator detail -> Design Info
+                                                        // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
+
         // 시작시 work_idx 값이 없으면 다른 값들도 리셋시킨다.
         val work_idx = AppGlobal.instance.get_product_idx()
         if (work_idx == "") {

@@ -166,7 +166,10 @@ class WorkInfoActivity : BaseActivity() {
             }
             saveWorkTime()
         }
-        btn_setting_cancel.setOnClickListener { finish() }
+        btn_setting_cancel.setOnClickListener {
+            AppGlobal.instance.set_auto_setting(false)
+            finish()
+        }
     }
 
     private fun saveWorkTime() {
