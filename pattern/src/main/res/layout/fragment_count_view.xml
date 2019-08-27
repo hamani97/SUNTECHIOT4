@@ -121,39 +121,55 @@
                                 android:textStyle="bold"/>
 
                         <RelativeLayout
-                                android:layout_width="115dp"
-                                android:layout_height="115dp"
+                                android:layout_width="180dp"
+                                android:layout_height="180dp"
                                 android:layout_gravity="center_vertical"
                                 android:background="@color/transparent">
+
                             <ImageButton
                                     android:id="@+id/btn_defective_plus"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@mipmap/btn_icon_defective"
+                                    android:layout_width="180dp"
+                                    android:layout_height="180dp"
+                                    android:background="@drawable/ic_defective_orange_64dp"
                                     android:stateListAnimator="@null"/>
+                            <!--<ImageButton-->
+                                    <!--android:id="@+id/btn_defective_plus"-->
+                                    <!--android:layout_width="match_parent"-->
+                                    <!--android:layout_height="match_parent"-->
+                                    <!--android:background="@mipmap/btn_icon_defective"-->
+                                    <!--android:stateListAnimator="@null"/>-->
                             <TextView
                                     android:layout_width="18dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="90dp"
                                     android:layout_centerInParent="true"
                                     android:text=" "
                                     android:textSize="40sp"
-                                    android:background="@color/colorWhite"/>
+                                    android:background="#FFCA18"/>
 
                             <TextView
                                     android:id="@+id/tv_defective_count"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
-                                    android:background="@drawable/shape_orange_round_button"
-                                    android:layout_marginTop="42dp"
+                                    android:background="@drawable/shape_red_round_button"
+                                    android:layout_marginTop="55dp"
                                     android:paddingTop="0dp"
                                     android:paddingBottom="0dp"
-                                    android:paddingRight="6dp"
-                                    android:paddingLeft="6dp"
+                                    android:paddingRight="7dp"
+                                    android:paddingLeft="7dp"
                                     android:text="0"
-                                    android:textSize="30sp"
+                                    android:textSize="47sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/colorWhite"/>
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_marginTop="128dp"
+                                    android:text="DEFECTIVE"
+                                    android:textSize="21sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/colorBlack2"/>
                         </RelativeLayout>
                         <TextView
                                 android:id="@+id/tv_count_view_ratio"
@@ -292,7 +308,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="0%"
-                                android:textSize="14sp"
+                                android:textSize="27sp"
                                 android:textColor="#000"/>
                     </RelativeLayout>
 
@@ -330,7 +346,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="0%"
-                                android:textSize="14sp"
+                                android:textSize="27sp"
                                 android:textColor="#000"/>
                     </RelativeLayout>
 
@@ -368,7 +384,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="0%"
-                                android:textSize="14sp"
+                                android:textSize="27sp"
                                 android:textColor="#000"/>
                     </RelativeLayout>
 
@@ -406,7 +422,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:text="0%"
-                                android:textSize="14sp"
+                                android:textSize="27sp"
                                 android:textColor="#000"/>
                     </RelativeLayout>
                 </LinearLayout>

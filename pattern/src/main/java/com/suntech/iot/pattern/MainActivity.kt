@@ -1359,11 +1359,11 @@ class MainActivity : BaseActivity() {
             "total_count" to sum_count,
             "shift_idx" to  shift_idx,
             "seq" to seq)
-//Log.e("params", params.toString())
+Log.e("Scount params", params.toString())
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
             var msg = result.getString("msg")
-//            Log.e("Scount result", "= "+msg.toString())
+            Log.e("Scount result", "= "+msg.toString())
             if(code != "00") {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }

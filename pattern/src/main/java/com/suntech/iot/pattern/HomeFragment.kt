@@ -108,7 +108,7 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onSelected() {
-        activity.tv_title?.visibility = View.GONE
+        activity?.tv_title?.visibility = View.GONE
         updateView()
     }
 

@@ -33,6 +33,8 @@
     <color name="colorButtonDefaultFocus">#333E4D</color>
     <color name="colorButtonGray">#535353</color>
     <color name="colorButtonGrayFocus">#727272</color>
+    <color name="colorButtonRed">#FF1D1D</color>
+    <color name="colorButtonRedFocus">#DB3737</color>
     <color name="colorButtonOrange">#FF9900</color>
     <color name="colorButtonOrangeFocus">#eaae40</color>
     <color name="colorButtonGreen">#87c947</color>

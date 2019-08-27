@@ -615,7 +615,7 @@ class CountViewFragment : BaseFragment() {
     // 현재 target을 서버에 저장
     private fun updateCurrentWorkTarget(shift_idx: String, target: Int) {
             Log.e("updateCurrentWorkTarget", "total_target=" + target)
-            if (_total_target > 0) {
+            if (target > 0) {
                 // 신서버용
                 val uri = "/Starget.php"
                 var params = listOf(
@@ -628,7 +628,7 @@ class CountViewFragment : BaseFragment() {
                 getBaseActivity().request(activity, uri, true,false, params, { result ->
                     var code = result.getString("code")
                     var msg = result.getString("msg")
-//                    Log.e("Starget result", "= " + msg.toString())
+                    Log.e("Starget result", "= " + msg.toString())
                     if(code != "00"){
                         Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
                     }
