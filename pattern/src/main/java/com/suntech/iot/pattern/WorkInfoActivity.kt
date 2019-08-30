@@ -56,10 +56,10 @@ class WorkInfoActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work_info)
-        initView()
         fetchShiftData()
         fetchOperatorData()
         initLastWorkers()
+        initView()
         start_timer()
     }
 
@@ -219,7 +219,8 @@ class WorkInfoActivity : BaseActivity() {
             shift3.put("planned1_etime", "")
         }
         AppGlobal.instance.set_work_time_manual(shift3)
-        finish()
+
+        finish(true, 1, "ok", null)
     }
 
     private fun fetchShiftData() {

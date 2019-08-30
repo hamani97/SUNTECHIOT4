@@ -79,7 +79,7 @@ class SettingActivity : BaseActivity() {
         // widget
         tv_setting_wifi.text = AppGlobal.instance.getWiFiSSID(this)
         tv_setting_ip.text = AppGlobal.instance.get_local_ip()
-        tv_setting_mac.text = AppGlobal.instance.get_mac_address()
+        tv_setting_mac.text = AppGlobal.instance.getMACAddress()
         tv_setting_factory.text = AppGlobal.instance.get_factory()
         tv_setting_room.text = AppGlobal.instance.get_room()
         tv_setting_line.text = AppGlobal.instance.get_line()
@@ -154,10 +154,7 @@ class SettingActivity : BaseActivity() {
         }
         btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
         btn_manual_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
-        btn_manual_hourly.setOnClickListener {
-            Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show();
-//            targetTypeChange("device_per_hourly")
-        }
+        btn_manual_hourly.setOnClickListener { targetTypeChange("device_per_hourly") }
         btn_manual_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
 
         // check server button
@@ -192,8 +189,8 @@ class SettingActivity : BaseActivity() {
 
         // TODO: TEST
         // 10.10.10.90
-        // 49.247.205.235
-        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
+        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("49.247.205.235")
+//        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
     }
 

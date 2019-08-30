@@ -10,6 +10,9 @@ import com.suntech.iot.pattern.util.UtilLocalStorage
 import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.FileReader
+import java.io.IOException
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.net.SocketException
@@ -308,8 +311,8 @@ class AppGlobal private constructor() {
     fun get_last_shift_info() : String { return UtilLocalStorage.getString(instance._context!!, "last_shift_info") }
 
 
-    fun set_target_server_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_server_target_shift_" + shift_no, value) }
-    fun get_target_server_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_server_target_shift_" + shift_no) }
+//    fun set_target_server_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_server_target_shift_" + shift_no, value) }
+//    fun get_target_server_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_server_target_shift_" + shift_no) }
 
     fun set_target_manual_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_target_shift_" + shift_no, value) }
     fun get_target_manual_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_target_shift_" + shift_no) }
@@ -318,13 +321,14 @@ class AppGlobal private constructor() {
         var total_target = ""
         var target_type = get_target_type()
         val shift_idx = get_current_shift_idx()
-        if (target_type=="server_per_hourly" || target_type=="server_per_accumulate" || target_type=="server_per_day_total") {
-            when (shift_idx) {
-                "1" -> total_target = get_target_server_shift("1")
-                "2" -> total_target = get_target_server_shift("2")
-                "3" -> total_target = get_target_server_shift("3")
-            }
-        } else if (target_type=="device_per_hourly" || target_type=="device_per_accumulate" || target_type=="device_per_day_total") {
+        if (target_type.substring(0, 6) == "server") {
+            total_target = "0"
+//            when (shift_idx) {
+//                "1" -> total_target = get_target_server_shift("1")
+//                "2" -> total_target = get_target_server_shift("2")
+//                "3" -> total_target = get_target_server_shift("3")
+//            }
+        } else if (target_type.substring(0, 6) == "device") {
             when (shift_idx) {
                 "1" -> total_target = get_target_manual_shift("1")
                 "2" -> total_target = get_target_manual_shift("2")
@@ -464,12 +468,42 @@ class AppGlobal private constructor() {
         return dif.toInt()
     }
 
-    fun get_mac_address(): String? {
-        var mac = getMACAddress()
-        if (mac == "") mac = "NO_MAC_ADDRESS"
+//    fun get_mac_address(): String? {
+//        var mac = getMACAddress()
+//        if (mac == "") mac = "NO_MAC_ADDRESS"
+//        return mac
+//    }
+
+    // 디바이스
+    @Throws(java.io.IOException::class)
+    fun loadFileAsString(filePath: String): String {
+        val data = StringBuffer(1000)
+        val reader = BufferedReader(FileReader(filePath))
+        val buf = CharArray(1024)
+        var numRead = 0
+        while (true) {
+            numRead = reader.read(buf)
+            if (numRead == -1) break
+            val readData = String(buf, 0, numRead)
+            data.append(readData)
+        }
+        reader.close()
+        return data.toString()
+    }
+    fun getMACAddress(): String? {
+        var mac = ""
+        try {
+            mac = loadFileAsString("/sys/class/net/eth0/address").toUpperCase().substring(0, 17)
+        } catch (e: IOException) {
+            //e.printStackTrace()
+        }
+        if (mac == "") {
+            mac = getMACAddress2()
+            if (mac == "") mac = "NO_MAC_ADDRESS"
+        }
         return mac
     }
-    fun getMACAddress(): String {
+    fun getMACAddress2(): String {
         val interfaceName = "wlan0"
         try {
             val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())

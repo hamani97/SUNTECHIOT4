@@ -142,6 +142,7 @@ class DesignInfoActivity : BaseActivity() {
 //            Log.e("data", ""+_filtered_list[_selected_index].toString())
         }
         btn_setting_cancel.setOnClickListener {
+            AppGlobal.instance.set_auto_setting(false)
             finish(false, 0, "ok", null)
         }
 

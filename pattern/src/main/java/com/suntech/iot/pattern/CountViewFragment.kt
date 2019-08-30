@@ -1,17 +1,16 @@
 package com.suntech.iot.pattern
 
-import android.app.AlertDialog
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.TextView
 import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
@@ -22,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
-import kotlinx.android.synthetic.main.list_item_push.*
 import org.joda.time.DateTime
 import org.json.JSONObject
 import kotlin.math.ceil
@@ -78,15 +76,15 @@ class CountViewFragment : BaseFragment() {
     override fun onSelected() {
         activity?.tv_title?.visibility = View.VISIBLE
 
-        tv_pieces_qty?.text = "" + (activity as MainActivity).pieces_qty
-        tv_pairs_qty?.text = "" + (activity as MainActivity).pairs_qty
+//        tv_pieces_qty?.text = "" + (activity as MainActivity).pieces_qty
+//        tv_pairs_qty?.text = "" + (activity as MainActivity).pairs_qty
 
         // Worker info
-        val no = AppGlobal.instance.get_worker_no()
-        val name = AppGlobal.instance.get_worker_name()
-        if (no == "" || name == "") {
-            Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
+        if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+            if (AppGlobal.instance.get_message_enable()) {
+                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
 //            (activity as MainActivity).changeFragment(0)
+            }
         }
         viewWorkInfo()
         computeCycleTime()
@@ -99,6 +97,16 @@ class CountViewFragment : BaseFragment() {
         tv_count_view_target.text = "0"
         tv_count_view_actual.text = "0"
         tv_count_view_ratio.text = "0%"
+
+        // Server charts
+        oee_progress.progress = 0
+        availability_progress.progress = 0
+        performance_progress.progress = 0
+        quality_progress.progress = 0
+        tv_oee_rate.text = "0%"
+        tv_availability_rate.text = "0%"
+        tv_performance_rate.text = "0%"
+        tv_quality_rate.text = "0%"
 
         // End Work button
 //        btn_exit.setOnClickListener {
@@ -725,11 +733,15 @@ class CountViewFragment : BaseFragment() {
 
             for (i in 0..(_list.size - 1)) {
                 val snumber = _list[i]["snumber"]?.toInt() ?: 0
-                val enumber = _list[i]["enumber"]?.toInt() ?: 0
-                if (snumber <= oee_int && enumber >= oee_int) oee_color_code = _list[i]["color_code"].toString()
-                if (snumber <= availability_int && enumber >= availability_int) availability_color_code = _list[i]["color_code"].toString()
-                if (snumber <= performance_int && enumber >= performance_int) performance_color_code = _list[i]["color_code"].toString()
-                if (snumber <= quality_int && enumber >= quality_int) quality_color_code = _list[i]["color_code"].toString()
+//                val enumber = _list[i]["enumber"]?.toInt() ?: 0
+//                if (snumber <= oee_int && enumber >= oee_int) oee_color_code = _list[i]["color_code"].toString()
+//                if (snumber <= availability_int && enumber >= availability_int) availability_color_code = _list[i]["color_code"].toString()
+//                if (snumber <= performance_int && enumber >= performance_int) performance_color_code = _list[i]["color_code"].toString()
+//                if (snumber <= quality_int && enumber >= quality_int) quality_color_code = _list[i]["color_code"].toString()
+                if (snumber <= oee_int) oee_color_code = _list[i]["color_code"].toString()
+                if (snumber <= availability_int) availability_color_code = _list[i]["color_code"].toString()
+                if (snumber <= performance_int) performance_color_code = _list[i]["color_code"].toString()
+                if (snumber <= quality_int) quality_color_code = _list[i]["color_code"].toString()
             }
 
             oee_progress.progressStartColor = Color.parseColor("#" + oee_color_code)

@@ -18,7 +18,7 @@ class IntroActivity : BaseActivity() {
         AppGlobal.instance.setContext(this)
 
         Log.e("settings", "Server IP = " + AppGlobal.instance.get_server_ip())
-        Log.e("settings", "Mac addr = " + AppGlobal.instance.get_mac_address())
+        Log.e("settings", "Mac addr = " + AppGlobal.instance.getMACAddress())
         Log.e("settings", "IP addr " + AppGlobal.instance.get_local_ip())
         Log.e("settings", "factory = " + AppGlobal.instance.get_factory())
         Log.e("settings", "room = " + AppGlobal.instance.get_room())
