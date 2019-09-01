@@ -65,7 +65,7 @@
                             android:layout_margin="8dp"
                             android:background="#db4030"
                             android:stateListAnimator="@null"
-                            android:text="COUNT VIEW"
+                            android:text="@string/button_count_view"
                             android:textSize="38sp"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold"/>
@@ -77,7 +77,7 @@
                             android:layout_margin="8dp"
                             android:background="#f8ad13"
                             android:stateListAnimator="@null"
-                            android:text="DESIGN INFO"
+                            android:text="@string/button_design_info"
                             android:textColor="@color/colorWhite"
                             android:textSize="38sp"
                             android:textStyle="bold" />
@@ -97,7 +97,7 @@
                             android:layout_margin="8dp"
                             android:background="#3f8cd6"
                             android:stateListAnimator="@null"
-                            android:text="OPERATOR DETAIL"
+                            android:text="@string/button_operator_detail"
                             android:textSize="38sp"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold"/>
@@ -109,7 +109,7 @@
                             android:layout_margin="8dp"
                             android:background="#61c536"
                             android:stateListAnimator="@null"
-                            android:text="SETTING"
+                            android:text="@string/button_setting"
                             android:textSize="38sp"
                             android:textColor="@color/colorWhite"
                             android:textStyle="bold"/>

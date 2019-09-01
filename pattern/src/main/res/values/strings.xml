@@ -94,6 +94,13 @@
     <!-- 제품목록화면 -->
     <string name="title_product_list">Product List</string>
 
+    <!-- Buttons -->
+    <string name="button_count_view">COUNT VIEW</string>
+    <string name="button_work_info">WORK INFO</string>
+    <string name="button_design_info">DESIGN INFO</string>
+    <string name="button_operator_detail">OPERATOR DETAIL</string>
+    <string name="button_setting">SETTING</string>
+
     <!-- 홈화면 -->
     <string name="bottom_label_machine_info">MACHINE INFO</string>
     <string name="bottom_label_operator_info">OPERATOR INFO</string>
