@@ -3,6 +3,7 @@ package com.suntech.iot.pattern.popup
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +69,17 @@ class PushActivity : BaseActivity() {
             "text_idx" to item["idx"],
             "seq" to i,
             "text" to item["text"])
+
+//Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACAddress()+
+//        "&factory_parent_idx=" + AppGlobal.instance.get_factory_idx()+
+//        "&factory_idx=" + AppGlobal.instance.get_room_idx()+
+//        "&line_idx=" + AppGlobal.instance.get_line_idx()+
+//        "&shift_idx=" +  AppGlobal.instance.get_current_shift_idx()+
+//        "&machine_no=" + AppGlobal.instance.get_mc_no1()+
+//        "&mc_model=" + AppGlobal.instance.get_mc_model()+
+//        "&text_idx=" + item["idx"]+
+//        "&seq=" + i+
+//        "&text=" + item["text"])
 
         request(this, uri, true, params, { result ->
 

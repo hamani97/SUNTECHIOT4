@@ -213,6 +213,8 @@ class DesignInfoActivity : BaseActivity() {
     private fun filterData() {
         _filtered_list.removeAll(_filtered_list)
 
+        val cur_design_idx = AppGlobal.instance.get_design_info_idx()
+
         _selected_index = -1
         val filter_text = et_setting_server_ip.text.toString()
 
@@ -232,6 +234,7 @@ class DesignInfoActivity : BaseActivity() {
             val e = component.toUpperCase().contains(filter_text.toUpperCase())
             if (filter_text=="" || a || b || c|| d || e) {
                 _filtered_list.add(item)
+                if (idx == cur_design_idx) _selected_index = i
             }
         }
         list_adapter?.notifyDataSetChanged()

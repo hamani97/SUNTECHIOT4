@@ -89,8 +89,10 @@ class HomeFragment : BaseFragment() {
                 if (!_running) checkAutoSetting()
                 startAutoSettingHandler()
             }
-        }, 800)
+        }, 1000)
     }
+
+    var auto_pos = 0
 
     private fun checkAutoSetting() {
         if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
@@ -98,14 +100,26 @@ class HomeFragment : BaseFragment() {
             getBaseActivity().startActivity(Intent(activity, SettingActivity::class.java), { r, c, m, d ->
                 _running = false
             })
-        } else if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
-            _running = true
-            getBaseActivity().startActivity(Intent(activity, WorkInfoActivity::class.java), { r, c, m, d ->
-                _running = false
-            })
-        } else if (AppGlobal.instance.get_design_info_idx() == "") {
-            designInfofunc()
+        } else {
+            if (auto_pos == 0) {
+                auto_pos = 1
+                _running = true
+                getBaseActivity().startActivity(Intent(activity, WorkInfoActivity::class.java), { r, c, m, d ->
+                    _running = false
+                })
+            } else if (auto_pos == 1) {
+                auto_pos = 2
+                designInfofunc()
+            }
         }
+//        } else if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+//            _running = true
+//            getBaseActivity().startActivity(Intent(activity, WorkInfoActivity::class.java), { r, c, m, d ->
+//                _running = false
+//            })
+//        } else if (AppGlobal.instance.get_design_info_idx() == "") {
+//            designInfofunc()
+//        }
     }
 
     private fun designInfofunc() {
@@ -133,13 +147,13 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun updateView() {
-        tv_factory.text = AppGlobal.instance.get_factory()
-        tv_room.text = AppGlobal.instance.get_room()
-        tv_line.text = AppGlobal.instance.get_line()
-        tv_mc_no.text = AppGlobal.instance.get_mc_no1() //+ "-" + AppGlobal.instance.get_mc_no2()
-//        tv_mc_model.text = AppGlobal.instance.get_mc_model()
-        tv_employee_no.text = AppGlobal.instance.get_worker_no()
-        tv_employee_name.text = AppGlobal.instance.get_worker_name()
-        tv_shift.text = AppGlobal.instance.get_current_shift_name()
+        tv_factory?.text = AppGlobal.instance.get_factory()
+        tv_room?.text = AppGlobal.instance.get_room()
+        tv_line?.text = AppGlobal.instance.get_line()
+        tv_mc_no?.text = AppGlobal.instance.get_mc_no1() //+ "-" + AppGlobal.instance.get_mc_no2()
+//        tv_mc_model?.text = AppGlobal.instance.get_mc_model()
+        tv_employee_no?.text = AppGlobal.instance.get_worker_no()
+        tv_employee_name?.text = AppGlobal.instance.get_worker_name()
+        tv_shift?.text = AppGlobal.instance.get_current_shift_name()
     }
 }
