@@ -35,6 +35,7 @@ import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -753,22 +754,30 @@ class MainActivity : BaseActivity() {
         request(this, uri, false, false, params, { result ->
             var code = result.getString("code")
             if (code == "00") {
-                val availability = result.getString("availability")
-                val performance = result.getString("performance")
-                val quality = result.getString("quality")
+                val availability = result.getString("availability").toString()
+                val performance = result.getString("performance").toString()
+                val quality = result.getString("quality").toString()
+
 //Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
 
 //                Log.e("fetchOEEGraph", "availability = "+availability)
 //                Log.e("fetchOEEGraph", "performance = "+performance)
 //                Log.e("fetchOEEGraph", "quality = "+quality)
 
-                val old_perform = AppGlobal.instance.get_performance().toFloat()
+                val app_perform = AppGlobal.instance.get_performance()
 
                 AppGlobal.instance.set_availability(availability)
                 AppGlobal.instance.set_performance(performance)
                 AppGlobal.instance.set_quality(quality)
 
-                val new_perform = performance.toFloat()
+                var old_perform = 0.0f
+                var new_perform = 0.0f
+
+                try {
+                    old_perform = app_perform as Float
+                    new_perform = performance as Float
+                } catch (e:Exception) {
+                }
 
                 // performance가 100%를 넘었으면 푸시를 보낸다. 단, 이전에 100% 이전인 경우만..
                 if (new_perform >= 100.0f) {

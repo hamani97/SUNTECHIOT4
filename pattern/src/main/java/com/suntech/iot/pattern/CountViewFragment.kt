@@ -699,12 +699,12 @@ class CountViewFragment : BaseFragment() {
 
         // 값에 변화가 있을때만 갱신
         if (_availability != availability || _performance != performance || _quality != quality) {
+            Log.e("drawChartView2", "old : availability="+_availability+", performance="+_performance+", quality="+_quality)
+            Log.e("drawChartView2", "new : availability="+availability+", performance="+performance+", quality="+quality)
+
             _availability = availability
             _performance = performance
             _quality = quality
-
-//            Log.e("drawChartView2", "old : availability="+_availability+", performance="+_performance+", quality"+_quality)
-//            Log.e("drawChartView2", "new : availability="+availability+", performance="+performance+", quality"+quality)
 
             Log.e("drawChartView2", "oee graph redraw")
 
