@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<usb-accessory manufacturer="Google, Inc." model="DemoKit" version="1.0" />
+<!--<usb-accessory manufacturer="Google, Inc." model="DemoKit" version="1.0" />-->
 <!--<usb-device vendor-id="2321" product-id="8584" />-->
 <usb-device vendor-id="1027" product-id="24577" />
 </resources>

@@ -1,6 +1,8 @@
 package com.suntech.iot.pattern
 
 import android.content.*
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
@@ -72,7 +74,7 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         AppGlobal.instance.setContext(this)
 
-        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
+//        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
                                                         // Setting -> Operator detail -> Design Info
                                                         // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
 
@@ -178,6 +180,7 @@ class MainActivity : BaseActivity() {
         vp_fragments.adapter = adapter
         adapter.notifyDataSetChanged()
 
+        vp_fragments.setPagingEnabled(false)
         vp_fragments.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(state: Int) {
                 (adapter.getItem(state) as BaseFragment).onSelected()
@@ -1162,6 +1165,7 @@ class MainActivity : BaseActivity() {
             mActivity = WeakReference(activity)
         }
         override fun handleMessage(msg: Message) {
+//            Log.e("USB Handler", "start -> " + msg.obj.toString())
             when (msg.what) {
                 UsbService.MESSAGE_FROM_SERIAL_PORT -> {
                     val data = msg.obj as String
@@ -1189,12 +1193,12 @@ class MainActivity : BaseActivity() {
             val value = element.asJsonObject.get("value")
 
             ToastOut(this, element.toString())
-            Log.w("test", "usb = " + recvBuffer)
+            Log.e("USB handel", "usb = " + recvBuffer)
 
             saveRowData(cmd, value)
         } else {
             ToastOut(this, "usb parsing error! = " + recvBuffer)
-            Log.e("test", "usb parsing error! = " + recvBuffer)
+            Log.e("USB handel", "usb parsing error! = " + recvBuffer)
         }
     }
     private fun isJSONValid(test: String): Boolean {
@@ -1300,9 +1304,11 @@ class MainActivity : BaseActivity() {
 
             tv_report_count.text = "" + cnt
 
-            _last_count_received_time = DateTime()      // downtime 시간 초기화
+            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
 
-            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss"))
+            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
+
+            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
             sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
@@ -1564,7 +1570,7 @@ Log.e("Scount params", params.toString())
         if (AppGlobal.instance.get_server_ip() == "") return
         if (AppGlobal.instance.get_downtime_idx() == "") return
 
-        val downtime = "99"
+        val downtime = "5"
         val uri = "/downtimedata.php"
         var params = listOf(
             "code" to "end",
@@ -1575,7 +1581,6 @@ Log.e("Scount params", params.toString())
 
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 val idx = AppGlobal.instance.get_downtime_idx()
                 AppGlobal.instance.set_downtime_idx("")
@@ -1587,12 +1592,12 @@ Log.e("Scount params", params.toString())
                 this.sendBroadcast(br_intent)
 
                 // 카운트뷰로 이동
-                if (vp_fragments.currentItem != 1) changeFragment(1)
+//                if (vp_fragments.currentItem != 1) changeFragment(1)
 
             } else if (code == "99") {
                 // ?
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
         })
     }

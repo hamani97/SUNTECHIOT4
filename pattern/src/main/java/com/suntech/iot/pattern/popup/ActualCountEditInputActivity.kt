@@ -131,6 +131,9 @@ class ActualCountEditInputActivity : BaseActivity() {
                     // DB의 Actual 값 갱신
                     db.updateWorkActual(work_idx, actual)
 
+                    // DownTime 초기화
+                    AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss"))
+
 //                    // Total count 의 Actual 값 갱신
 //                    AppGlobal.instance.set_current_shift_actual_cnt(if (new_actual>0) new_actual else 0)
 

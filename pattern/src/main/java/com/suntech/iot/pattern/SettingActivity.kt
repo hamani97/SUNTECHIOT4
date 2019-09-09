@@ -189,8 +189,9 @@ class SettingActivity : BaseActivity() {
 
         // TODO: TEST
         // 10.10.10.90
-        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("49.247.205.235")
-//        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
+        // 49.247.205.235
+        // 36.66.169.221 (8124)
+        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("36.66.169.221")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
     }
 

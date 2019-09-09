@@ -195,6 +195,7 @@ class CountViewFragment : BaseFragment() {
         tv_idx?.text = AppGlobal.instance.get_design_info_idx()
         tv_cycle_time?.text = AppGlobal.instance.get_cycle_time().toString()
         tv_model?.text = AppGlobal.instance.get_model()
+        tv_mc_no?.text = AppGlobal.instance.get_mc_no1()
         tv_material?.text = AppGlobal.instance.get_material_way()
         tv_component?.text = AppGlobal.instance.get_component()
 //        tv_model?.text = AppGlobal.instance.get_compo_model()

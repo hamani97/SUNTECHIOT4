@@ -68,6 +68,29 @@
                         android:text="Pair(s)"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:text="M/C No."
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:id="@+id/tv_mc_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorOrange"/>
             </LinearLayout>
             <LinearLayout
                     android:layout_width="match_parent"
