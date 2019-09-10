@@ -13,12 +13,13 @@
     <string name="title_count_info">COUNT INFO</string>
     <string name="title_target_type">TARGET TYPE</string>
     <string name="title_work_sheet">WORK SHEET</string>
+    <string name="title_production_report">PRODUCTION REPORT</string>
 
-    <string name="title_push_info">PUSH INFO</string>
+    <string name="title_push_info">PUSH MESSAGE INFO</string>
     <string name="title_edit_pieces_pairs_count">EDIT PIECE(S) COUNT</string>
 
     <!-- 카운트화면 -->
-    <string name="bottom_label_pieces">Pieces : \u0020</string>
+    <string name="bottom_label_pieces">Pieces : \\u0020</string>
     <string name="bottom_label_cycle_time">Cycle Time : \u0020</string>
     <string name="bottom_label_article">Article : \u0020</string>
     <string name="bottom_label_model">Model : \u0020</string>
@@ -43,7 +44,7 @@
     <string name="label_server_ip">SERVER IP</string>
     <string name="label_server_port">PORT</string>
     <string name="label_wos_name">WOS name to display</string>
-    <string name="label_worksheet_display_time">WorkSheet Display Time</string>
+    <string name="label_worksheet_display_time" translatable="false">WorkSheet Display Time</string>
     <string name="label_count_trim_qty">Piece(s)</string>
     <string name="label_count_trim_pairs">Pair(s)</string>
 
@@ -58,10 +59,11 @@
     <string name="label_style">STYLE</string>
     <string name="label_target">TARGET</string>
     <string name="label_actual">ACTUAL</string>
+    <string name="label_actual_plus">+ ACTUAL</string>
     <string name="label_rate">RATE</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
-    <string name="label_cycle_time">FROM CYCLE TIME</string>
+    <string name="label_cycle_time" translatable="false">FROM CYCLE TIME</string>
 
     <!-- 디자인인포화면  -->
     <string name="title_design_info">DESIGN INFO</string>
@@ -82,8 +84,8 @@
 
     <!-- 디펙티브 화면-->
     <string name="title_defective_input">Defective input</string>
-    <string name="label_defective_input_qty">Defective Q\'ty</string>
-    <string name="label_defective_input_list">Defective List</string>
+    <string name="label_defective_input_qty" translatable="false">Defective Q\'ty</string>
+    <string name="label_defective_input_list" translatable="false">Defective List</string>
 
     <!-- 다운타임화면 -->
     <string name="title_down_time_info">Down Time Info</string>
@@ -92,7 +94,7 @@
     <string name="msg_has_notcompleted">Info not complete</string>
 
     <!-- 제품목록화면 -->
-    <string name="title_product_list">Product List</string>
+    <string name="title_product_list" translatable="false">Product List</string>
 
     <!-- Buttons -->
     <string name="button_count_view">COUNT VIEW</string>
@@ -117,15 +119,17 @@
     <string name="server">SERVER</string>
     <string name="manual">Manual</string>
     <string name="confirm">Confirm</string>
-    <string name="start_of_display">Display Start</string>
-    <string name="end_of_display">Display Stop</string>
-    <string name="back">Back</string>
+    <string name="start_of_display" translatable="false">Display Start</string>
+    <string name="end_of_display" translatable="false">Display Stop</string>
+    <string name="back" translatable="false">Back</string>
     <string name="exit">Exit</string>
     <string name="edit">EDIT</string>
     <string name="cancel">Cancel</string>
     <string name="check">Check</string>
     <string name="search">SEARCH</string>
     <string name="notice">Notice</string>
+    <string name="defective">Defective</string>
+    <string name="time">Time</string>
 
     <string name="availability">Availability</string>
     <string name="performance">Performance</string>
@@ -169,19 +173,19 @@
     <!-- Message -->
     <string name="msg_no_operator">Operator not found</string>
     <string name="msg_require_info">Info not complete</string>
-    <string name="msg_select_layer1">Please select layer1 value</string>
+    <string name="msg_select_layer1" translatable="false">Please select layer1 value</string>
     <string name="msg_select_component">Please select a component</string>
-    <string name="msg_select_design">Please select a Design</string>
+    <string name="msg_select_design" translatable="false">Please select a Design</string>
     <string name="msg_require_target_quantity">Please enter a target quantity</string>
     <string name="msg_layer_not_selected">Work info not selected</string>
-    <string name="msg_design_not_selected">Design not selected</string>
+    <string name="msg_design_not_selected" translatable="false">Design not selected</string>
     <string name="msg_no_setting">Setting not found</string>
     <string name="msg_data_not_found">Data not found</string>
     <string name="msg_connection_fail">The connection to the server failed.</string>
-    <string name="msg_cannot_input_wos">Cannot input WOS</string>
+    <string name="msg_cannot_input_wos" translatable="false">Cannot input WOS</string>
     <string name="msg_has_notselected">Nothing Selected</string>
     <string name="msg_not_start_work">Checking Working Time</string>
-    <string name="msg_exit_shift">Do you want to exit?</string>
+    <string name="msg_exit_shift" translatable="false">Do you want to exit?</string>
     <string name="msg_has_not_server_info">Cannot find server</string>
     <string name="msg_no_downtime">Downtime message not found</string>
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>

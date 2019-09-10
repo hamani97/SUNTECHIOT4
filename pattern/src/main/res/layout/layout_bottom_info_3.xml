@@ -16,7 +16,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:text="WORK INFO"
+                android:text="@string/button_work_info"
                 android:textSize="26sp"
                 android:textColor="@color/colorWhite"
                 android:textStyle="bold"/>
@@ -43,7 +43,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="Piece(s)"
+                        android:text="@string/label_pieces"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -65,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="Pair(s)"
+                        android:text="@string/label_pairs"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
 
@@ -73,7 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
-                        android:text="M/C No."
+                        android:text="@string/label_mc_no"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -101,7 +101,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="IDX :  "
+                        android:text="@string/list_header_idx"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -116,7 +124,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="Cycle Time :  "
+                        android:text="@string/list_header_cycle_time"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -131,7 +147,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="Model :  "
+                        android:text="@string/list_header_model"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -152,7 +176,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="Material :  "
+                        android:text="@string/list_header_material"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView
@@ -167,7 +199,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:text="Component :  "
+                        android:text="@string/list_header_component"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorWhite"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:text=":"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite"/>
                 <TextView

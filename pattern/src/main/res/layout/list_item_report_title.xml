@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TIME"
+                android:text="@string/time"
                 android:textSize="21sp"
                 android:textColor="#fff"
                 android:textStyle="bold"/>
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TARGET"
+                android:text="@string/list_item_target"
                 android:textSize="21sp"
                 android:textColor="#fff"
                 android:textStyle="bold"/>
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="ACTUAL"
+                android:text="@string/list_item_actual"
                 android:textSize="21sp"
                 android:textColor="#fff"
                 android:textStyle="bold"/>
@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="RATE"
+                android:text="@string/label_rate"
                 android:textSize="21sp"
                 android:textColor="#fff"
                 android:textStyle="bold"/>

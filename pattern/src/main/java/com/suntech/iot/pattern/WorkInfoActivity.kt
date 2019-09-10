@@ -89,7 +89,8 @@ class WorkInfoActivity : BaseActivity() {
 
     private fun initView() {
 
-        tv_title.text = "OPERATOR DETAIL"
+        tv_title.setText(R.string.button_operator_detail)
+//        "OPERATOR DETAIL"
 
         // Shift info
         list_adapter = ListAdapter(this, _list)
