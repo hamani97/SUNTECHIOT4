@@ -89,7 +89,7 @@ class WorkInfoActivity : BaseActivity() {
 
     private fun initView() {
 
-        tv_title.setText(R.string.button_operator_detail)
+        tv_title.setText(R.string.title_operator_detail)
 //        "OPERATOR DETAIL"
 
         // Shift info

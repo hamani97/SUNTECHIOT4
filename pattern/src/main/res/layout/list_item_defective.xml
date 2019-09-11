@@ -17,7 +17,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Shift"
+                android:text="@string/list_item_shift"
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
@@ -28,7 +28,7 @@
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_weight="2"-->
                 <!--android:gravity="center"-->
-                <!--android:text="Work Time"-->
+                <!--android:text="@strimg/list_item_work_time"-->
                 <!--android:textSize="20sp"-->
                 <!--android:textColor="#333"/>-->
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Design IDX"
+                android:text="@string/list_item_design_idx"
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
@@ -50,7 +50,7 @@
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_weight="1"-->
                 <!--android:gravity="center"-->
-                <!--android:text="Target"-->
+                <!--android:text="@string/list_item_target"-->
                 <!--android:textSize="20sp"-->
                 <!--android:textColor="#333"/>-->
 
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Actual"
+                android:text="@string/list_item_actual"
                 android:textSize="20sp"
                 android:textColor="#333"/>
         <!--<TextView-->
@@ -69,7 +69,7 @@
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_weight="1"-->
                 <!--android:gravity="center"-->
-                <!--android:text="Product Rate"-->
+                <!--android:text="@string/list_item_product_rate"-->
                 <!--android:textSize="20sp"-->
                 <!--android:textColor="#333"/>-->
 
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Defective"
+                android:text="@string/list_item_defective"
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Quality Rate"
+                android:text="@string/list_item_qualti_rate"
                 android:textSize="20sp"
                 android:textColor="#333"/>
     </LinearLayout>

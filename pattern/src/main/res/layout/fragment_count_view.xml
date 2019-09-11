@@ -177,7 +177,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerHorizontal="true"
                                     android:layout_marginTop="135dp"
-                                    android:text="DEFECTIVE"
+                                    android:text="@string/list_item_defective"
                                     android:textSize="21sp"
                                     android:textStyle="bold"
                                     android:textColor="@color/colorBlack2"/>

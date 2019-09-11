@@ -60,12 +60,12 @@
                             style="@style/tab_btn_orange"
                             android:layout_width="440dp"
                             android:layout_marginLeft="140dp"
-                            android:text="WORK TIME" />
+                            android:text="@string/list_item_work_time" />
                     <TextView
                             style="@style/tab_btn_on"
                             android:layout_width="440dp"
                             android:layout_marginLeft="30dp"
-                            android:text="PLANNED TIME" />
+                            android:text="@string/list_item_planned_time" />
                 </LinearLayout>
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -83,7 +83,7 @@
                                 android:layout_weight="1"
                                 android:paddingRight="30dp"
                                 android:gravity="center"
-                                android:text="START"
+                                android:text="@string/start"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="20sp" />
                         <TextView
@@ -92,7 +92,7 @@
                                 android:layout_weight="1"
                                 android:paddingLeft="10dp"
                                 android:gravity="center"
-                                android:text="END"
+                                android:text="@string/end"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="20sp" />
                     </LinearLayout>
@@ -107,7 +107,7 @@
                                 android:layout_weight="1"
                                 android:paddingRight="30dp"
                                 android:gravity="center"
-                                android:text="START"
+                                android:text="@string/start"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="20sp" />
                         <TextView
@@ -116,7 +116,7 @@
                                 android:layout_weight="1"
                                 android:paddingLeft="10dp"
                                 android:gravity="center"
-                                android:text="END"
+                                android:text="@string/end"
                                 android:textColor="@color/colorWhite"
                                 android:textSize="20sp" />
                     </LinearLayout>
@@ -132,7 +132,7 @@
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="SHIFT 1"
+                            android:text="@string/list_item_shift1"
                             android:textColor="@color/colorWhite"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -173,7 +173,7 @@
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="SHIFT 2"
+                            android:text="@string/list_item_shift2"
                             android:textColor="@color/colorWhite"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -214,7 +214,7 @@
                             android:layout_width="140dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="SHIFT 3"
+                            android:text="@string/list_item_shift3"
                             android:textColor="@color/colorWhite"
                             android:textSize="20sp"
                             android:textStyle="bold" />

@@ -58,7 +58,7 @@
                 <TextView
                         android:layout_width="90dp"
                         android:layout_height="wrap_content"
-                        android:text="ACTUAL"
+                        android:text="@string/label_actual"
                         android:textSize="21sp"
                         android:textColor="#333"
                         android:textStyle="bold"/>

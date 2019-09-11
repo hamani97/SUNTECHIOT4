@@ -25,7 +25,7 @@ class DefectiveInputActivity : BaseActivity() {
         val design_idx = intent.getStringExtra("design_idx")
         val work_idx = intent.getStringExtra("work_idx")
 
-        tv_design_idx.text = "IDX " + design_idx
+        tv_design_idx.text = "" + design_idx
         et_defective_qty.setText("")
 
         list_adapter = DownTimeInputActivity.ListAdapter(this, _list)

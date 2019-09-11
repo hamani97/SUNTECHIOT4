@@ -36,9 +36,10 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IDX : "
+                        android:text="@string/list_header_idx"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_design_idx"
                         android:layout_width="wrap_content"
@@ -51,13 +52,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_pieces"
+                        android:text="@string/label_pieces"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_pieces"
                         android:layout_width="wrap_content"
@@ -70,13 +73,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_cycle_time"
+                        android:text="@string/list_header_cycle_time"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_cycle_time"
                         android:layout_width="wrap_content"
@@ -90,13 +95,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_model"
+                        android:text="@string/list_header_model"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_model"
                         android:layout_width="wrap_content"
@@ -109,13 +116,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_article"
+                        android:text="@string/list_header_article"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_article"
                         android:layout_width="wrap_content"
@@ -128,13 +137,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_material"
+                        android:text="@string/list_header_material"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_material"
                         android:layout_width="wrap_content"
@@ -147,13 +158,15 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
                     android:orientation="horizontal">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/bottom_label_component"
+                        android:text="@string/list_header_component"
                         android:textSize="20sp"
                         android:textColor="@color/colorWhite" />
+                <TextView style="@style/bottom_colon"/>
                 <TextView
                         android:id="@+id/tv_component"
                         android:layout_width="wrap_content"

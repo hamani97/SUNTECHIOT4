@@ -30,9 +30,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/bottom_label_factory"
+                    android:text="@string/label_factory"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_factory"
                     android:layout_width="wrap_content"
@@ -45,9 +46,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/bottom_label_room"
+                    android:text="@string/label_room"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_room"
                     android:layout_width="wrap_content"
@@ -60,9 +62,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/bottom_label_line"
+                    android:text="@string/label_line"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_line"
                     android:layout_width="wrap_content"
@@ -75,9 +78,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:text="@string/bottom_label_number"
+                    android:text="@string/label_mc_no"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_mc_no"
                     android:layout_width="wrap_content"
@@ -86,20 +90,6 @@
                     android:textSize="20sp"
                     android:textColor="@color/colorOrange"/>
 
-            <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="30dp"-->
-                    <!--android:text="@string/bottom_label_mc_model"-->
-                    <!--android:textSize="20sp"-->
-                    <!--android:textColor="@color/colorWhite"/>-->
-            <!--<TextView-->
-                    <!--android:id="@+id/tv_mc_model"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="-"-->
-                    <!--android:textSize="20sp"-->
-                    <!--android:textColor="@color/colorOrange"/>-->
         </LinearLayout>
 
         <LinearLayout
@@ -123,6 +113,7 @@
                     android:text="@string/bottom_label_employee_number"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_employee_no"
                     android:layout_width="wrap_content"
@@ -138,6 +129,7 @@
                     android:text="@string/bottom_label_employee_name"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
+            <TextView style="@style/bottom_colon"/>
             <TextView
                     android:id="@+id/tv_employee_name"
                     android:layout_width="wrap_content"
