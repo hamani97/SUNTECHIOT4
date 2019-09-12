@@ -39,6 +39,7 @@ class CountViewFragment : BaseFragment() {
         override fun onReceive(context: Context, intent: Intent) {
             computeCycleTime()
             resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
+            viewWorkInfo()
             updateView()
         }
     }
@@ -307,10 +308,11 @@ class CountViewFragment : BaseFragment() {
             return
         }
 
-        val work_stime = shift_time["work_stime"].toString()
+//        val work_stime = shift_time["work_stime"].toString()
         val work_etime = shift_time["work_etime"].toString()
         val shift_idx = shift_time["shift_idx"].toString()
 
+        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
 
         // 디자인이 선택되었는지 체크
         val work_idx = AppGlobal.instance.get_product_idx()
@@ -318,6 +320,7 @@ class CountViewFragment : BaseFragment() {
             if (AppGlobal.instance.get_message_enable() && (DateTime().millis/1000) % 10 == 0L) {  // 10초마다 출력
                 Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
             }
+            Log.e("CountView", "Design not selected.")
 //            refreshScreen(shift_idx, 0, 0)
             return
         }
@@ -333,16 +336,28 @@ class CountViewFragment : BaseFragment() {
 
 
         // 가져온 DB가 현 시프트의 정보가 아니라면 리턴
-        if (db_item["end_dt"].toString() == null) {
-            if (db_item["end_dt"].toString() < work_stime) return
-        } else {
-            if (db_item["start_dt"].toString() < work_stime) return
-        }
+        // 문제점 있음
+//        if (db_item["end_dt"].toString() != null) {
+//            if (db_item["end_dt"].toString() < work_stime) {
+//                Log.e("CountView", "Not work stime1. work_stime = " + work_stime)
+//                Log.e("CountView", "Not work stime1. " + db_item["end_dt"].toString())
+//                return
+//            }
+//        } else {
+            // 디자인을 미리 선택할 수도 있기 때문에 이 부분을 제거
+//            if (db_item["start_dt"].toString() < work_stime) {
+//                Log.e("CountView", "Not work stime2. work_stime = " + work_stime)
+//                Log.e("CountView", "Not work stime2. " + db_item["start_dt"].toString())
+//                return
+//            }
+//        }
 
 
         val now = DateTime()        // 현재
-        val start_dt = OEEUtil.parseDateTime(db_item["start_dt"].toString())    // 디자인의 시작시간
+        var start_dt = OEEUtil.parseDateTime(db_item?.get("start_dt").toString())    // 디자인의 시작시간
         val shift_end_dt = OEEUtil.parseDateTime(work_etime)    // 시프트의 종료 시간
+
+        if (start_dt < shift_stime) start_dt = shift_stime
 
         // 설정되어 있는 휴식 시간
         val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
@@ -355,6 +370,7 @@ class CountViewFragment : BaseFragment() {
 //        var d1 = 0
 //        var d2 = 0
 
+//        Log.e("CountView", "Debug point---")
 
         val target_type = AppGlobal.instance.get_target_type()  // setting menu 메뉴에서 선택한 타입
         var current_cycle_time = AppGlobal.instance.get_cycle_time()
@@ -387,9 +403,11 @@ class CountViewFragment : BaseFragment() {
                     val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
 
                     // 디자인의 시작부터 시프트 종료시간까지 (초)
-                    val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
+                    val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                    val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+                    val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 - start_at_target
+                    val count = (work_time / current_cycle_time).toInt() + start_at_target // 현 시간에 만들어야 할 갯수
+
                     shift_total_target += count
 
                     if (target_type == "server_per_day_total") {
@@ -403,9 +421,11 @@ class CountViewFragment : BaseFragment() {
                         val d2 = AppGlobal.instance.compute_time(start_dt, now, _planned2_stime, _planned2_etime)
 
                         // 디자인의 시작부터 현재까지 시간(초)
-                        val work_time = ((now.millis - start_dt.millis) / 1000) - d1 - d2 -1
+                        val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+                        val work_time = ((now.millis - start_dt.millis) / 1000) - d1 - d2 - start_at_target
+                        val count = (work_time / current_cycle_time).toInt() + start_at_target // 현 시간에 만들어야 할 갯수
+
                         total_target += count
 
                         // target값이 변형되었으면 업데이트
@@ -449,17 +469,21 @@ class CountViewFragment : BaseFragment() {
 
                     val end_dt2 = OEEUtil.parseDateTime(item?.get("end_dt"))
                     if (end_dt2 != null) {
-                        val start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt"))
+                        var start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt"))
                         val cycle_time2 = item?.get("cycle_time").toString().toInt()
 
                         if (start_dt2 != null && cycle_time2 > 0) {
+                            if (start_dt2 < shift_stime) start_dt2 = shift_stime
+
                             // 휴식 시간을 뺀 시간 계산
                             val d1 = AppGlobal.instance.compute_time(start_dt2, end_dt2, _planned1_stime, _planned1_etime)
                             val d2 = AppGlobal.instance.compute_time(start_dt2, end_dt2, _planned2_stime, _planned2_etime)
 
-                            val work_time2 = ((end_dt2.millis - start_dt2.millis) / 1000) - d1 - d2 -1
+                            val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                            val count = (work_time2 / cycle_time2).toInt() + 1 // 시작할때 1부터 시작이므로 1을 더함
+                            val work_time2 = ((end_dt2.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
+                            val count = (work_time2 / cycle_time2).toInt() + start_at_target // 시작할때 1부터 시작이므로 1을 더함
+
                             total_target += count   // 현재 계산된 카운트를 더한다.
                             shift_total_target += count   // 현재 계산된 카운트를 시트프 총합에 더한다.
 
@@ -614,8 +638,10 @@ class CountViewFragment : BaseFragment() {
     }
 
     private fun refreshScreen(shift_idx:String, total_actual:Int, total_target:Int, shift_total_target:Int) {
+        Log.e("refreshScreen", "shift_idx="+shift_idx + ", total_actual="+total_actual + ", total_target="+total_target + ", shift_total_target="+shift_total_target)
         // 값에 변화가 생겼을 때만 리프레시
         if (total_target != last_total_target || total_actual != last_total_actual) {
+            Log.e("refreshScreen", "refresh start..............")
             var ratio = 0
             var ratio_txt = "N/A"
 

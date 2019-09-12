@@ -2,6 +2,7 @@ package com.suntech.iot.pattern.popup
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -71,9 +72,9 @@ class ActualCountEditActivity : BaseActivity() {
 
         for (i in 0..(_list.size - 1)) {
             val item = _list[i]
-
             val start_dt_txt = item["start_dt"]
             val end_dt_txt = item["end_dt"]
+            Log.e("act", "start_dt_txt = " + start_dt_txt + ", end_dt_txt = " + end_dt_txt)
             var start_dt = OEEUtil.parseDateTime(start_dt_txt)
             var end_dt = if (end_dt_txt==null) DateTime() else OEEUtil.parseDateTime(end_dt_txt)
 

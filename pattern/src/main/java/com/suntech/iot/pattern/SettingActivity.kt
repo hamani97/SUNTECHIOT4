@@ -100,6 +100,10 @@ class SettingActivity : BaseActivity() {
 //        sw_without_component.isChecked = AppGlobal.instance.get_without_component()
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
 
+        val start_target = AppGlobal.instance.get_start_at_target()
+        if (start_target==0) sw_start_at_target_1.isChecked = false
+        else sw_start_at_target_1.isChecked = true
+
         // 깜박임 기능. 0일때는 10으로 초기화
         val remain = if (AppGlobal.instance.get_remain_number()==0) "10" else AppGlobal.instance.get_remain_number().toString()
         et_remain_number.setText(remain)
@@ -190,6 +194,8 @@ class SettingActivity : BaseActivity() {
         // TODO: TEST
         // 10.10.10.90
         // 49.247.205.235
+        // 115.68.227.31
+        // 183.81.156.206 : inni
         // 36.66.169.221 (8124)
         if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("36.66.169.221")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
@@ -267,6 +273,9 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_message_enable(sw_message_enable.isChecked)
         AppGlobal.instance.set_sound_at_count(sw_sound_at_count.isChecked)
 //        AppGlobal.instance.set_without_component(sw_without_component.isChecked)
+
+        if (sw_start_at_target_1.isChecked) AppGlobal.instance.set_start_at_target(1)
+        else AppGlobal.instance.set_start_at_target(0)
 
         AppGlobal.instance.set_worksheet_display_time(worksheet_time)
 

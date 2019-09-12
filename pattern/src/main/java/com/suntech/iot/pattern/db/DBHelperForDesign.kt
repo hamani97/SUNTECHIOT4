@@ -209,7 +209,7 @@ class DBHelperForDesign
 
         fun deleteLastDate(date: String) {
             val db = _openHelper.writableDatabase ?: return
-            db.delete("design", "start_dt < ?", arrayOf(date))
+            db.delete("design", "end_dt != null and end_dt < ?", arrayOf(date))
             db.close()
         }
 
@@ -226,6 +226,18 @@ class DBHelperForDesign
             row.put("pieces_info", pieces_info)
             row.put("pairs_info", pairs_info)
             row.put("actual", actual)
+            db.update("design", row, "work_idx = ?", arrayOf(work_idx.toString()))
+            db.close()
+        }
+
+        fun updateDesignInfo(work_idx: String, shift_id: String, shift_name: String, cycle_time: Int, pieces_info: String, pairs_info: String) {
+            val db = _openHelper.writableDatabase ?: return
+            val row = ContentValues()
+            row.put("shift_id", shift_id)
+            row.put("shift_name", shift_name)
+            row.put("cycle_time", cycle_time)
+            row.put("pieces_info", pieces_info)
+            row.put("pairs_info", pairs_info)
             db.update("design", row, "work_idx = ?", arrayOf(work_idx.toString()))
             db.close()
         }

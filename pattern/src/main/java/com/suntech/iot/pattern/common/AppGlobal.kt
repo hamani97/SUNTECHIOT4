@@ -76,6 +76,9 @@ class AppGlobal private constructor() {
     fun set_sound_at_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_sound_count", state) }
     fun get_sound_at_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_sound_count") }
 
+    fun set_start_at_target(value: Int) { UtilLocalStorage.setInt(instance._context!!, "start_at_target", value) }
+    fun get_start_at_target() : Int { return UtilLocalStorage.getInt(instance._context!!, "start_at_target") }
+
 //    fun set_without_component(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_without_component", state) }
 //    fun get_without_component() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_without_component") }
 
@@ -200,7 +203,7 @@ class AppGlobal private constructor() {
     // 패턴용 버전 (이앱에서 사용)
     fun set_product_idx() {
         var product_idx = get_product_idx()
-        val new_product_idx = if (product_idx == "") "1000" else product_idx.toInt() + 1
+        val new_product_idx = if (product_idx == "") 1000 else product_idx.toInt() + 1
         UtilLocalStorage.setString(instance._context!!, "work_idx", new_product_idx.toString())
     }
     fun get_product_idx() : String { return UtilLocalStorage.getString(instance._context!!, "work_idx") }

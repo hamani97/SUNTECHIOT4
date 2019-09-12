@@ -190,6 +190,8 @@ class MainActivity : BaseActivity() {
             override fun onPageScrollStateChanged(position: Int) {}
         })
 
+//        fetchRequiredData()     // 앱 처음 실행시 무조건 한번은 실행하자!!!
+
         // 지난 DownTime과 Design이 있으면 삭제한다.
         RemoveDownTimeData()
         checkDesignData()
@@ -361,19 +363,19 @@ class MainActivity : BaseActivity() {
         if (AppGlobal.instance.get_server_ip() == "") return
 
         val uri = "/getlist1.php"
-        var params = listOf("code" to "design",
+        var params = listOf(
+            "code" to "design",
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
             "factory_idx" to AppGlobal.instance.get_room_idx())
 
         request(this, uri, false, params, { result ->
 
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if(code == "00"){
                 var list = result.getJSONArray("item")
                 AppGlobal.instance.set_design_info(list)
             }else{
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -473,83 +475,104 @@ class MainActivity : BaseActivity() {
      */
     private var is_loop :Boolean = false        // 처리 중일때 중복 처리를 하지 않기 위함
     var _current_shift_etime_millis = 0L        // 현재 Shift 의 종료 시간 저장
-    var _next_shift_stime_millis = 0L           // 다음 Shift 의 시작 시간 저장 (종료 시간이 0L 일때만 세팅된다.)
+                                                // 종료 시간이 있으면 아래 시작 시간은 구할 필요가 없음 (종료되면 로직이 다시 실행되기 때문)
+    var _next_shift_stime_millis = 0L           // 다음 Shift 의 시작 시간 저장 (위의 종료 시간이 0L 일때만 세팅된다.)
     var _last_working = false
 
+    // fetchWorkData() 에서 호출되므로 10분마다 실행되지만
+    // 예외적으로 시프트가 끝나거나 새로운 시프트 시작될때 호출된다.
     private fun compute_work_shift() {
 
         if (is_loop) return
         is_loop = true
 
         val list = AppGlobal.instance.get_current_work_time()
-//Log.e("current work time", list.toString())
+//        Log.e("current work time", list.toString())
 
         // 현재 쉬프트의 종료 시간을 구한다. 자동 종료를 위해
         // 종료 시간이 있으면 다음 시작 시간을 구할 필요없음. 종료되면 이 로직이 실행되므로 자동으로 구해지기 때문..
+
         if (list.length() > 0) {
+
             // DB에 Shift 정보를 저장한다.
             // Production report 때문에 그날의 정보를 모두 저장해야 함.
             var target_type = AppGlobal.instance.get_target_type()
+
             for (i in 0..(list.length() - 1)) {
-                val item = list.getJSONObject(i)
+
+                val work_item = list.getJSONObject(i)
                 var target = "0"
                 var target_int = 0
+
                 if (target_type.substring(0, 6) == "server") {
-                    val shift_time = AppGlobal.instance.get_current_shift_time()
-                    var current_cycle_time = AppGlobal.instance.get_cycle_time()
+
+                    val shift_time = AppGlobal.instance.get_current_shift_time()    // 현 시프트
+                    var current_cycle_time = AppGlobal.instance.get_cycle_time()    // 현재 선택된 디자인의 사이클 타임
+
                     if (shift_time != null && current_cycle_time > 0) {
-                        var work_idx = AppGlobal.instance.get_product_idx()
+                        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
+
+                        var work_idx = AppGlobal.instance.get_product_idx()         // 현재 선택된 디자인
                         if (work_idx == "") work_idx = "0"
 
                         val design_db = DBHelperForDesign(this)
-                        val db_list = design_db.gets()  // 전체 디자인
+                        val db_list = design_db.gets()
 
-                        val work_etime = shift_time["work_etime"].toString()
+                        val work_etime = shift_time["work_etime"].toString()        // 현 시프트의 종료시간
 
                         for (i in 0..((db_list?.size ?: 1) - 1)) {
-                            val item = db_list?.get(i)
-                            val work_idx2 = item?.get("work_idx").toString()
-                            if (work_idx == work_idx2) {        // 현재 진행중인 디자인
-                                val start_dt = OEEUtil.parseDateTime(item?.get("start_dt").toString())    // 디자인의 시작시간
-                                val shift_end_dt = OEEUtil.parseDateTime(work_etime)    // 시프트의 종료 시간
+                            val design_item = db_list?.get(i)
+                            val work_idx2 = design_item?.get("work_idx").toString()
 
-                                // 설정되어 있는 휴식 시간
+                            if (work_idx == work_idx2) {        // 현재 진행중인 디자인
+
+                                var start_dt = OEEUtil.parseDateTime(design_item?.get("start_dt").toString())      // 디자인의 시작시간
+                                val shift_end_dt = OEEUtil.parseDateTime(work_etime)                        // 시프트의 종료 시간
+
+                                if (start_dt < shift_stime) start_dt = shift_stime
+
+                                // 설정되어 있는 휴식 시간 정보
                                 val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
                                 val _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
                                 val _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
                                 val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
 
-                                // 끝나는 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
+                                // 휴식시간 초. 끝나는 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
                                 val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
                                 val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
 
                                 // 디자인의 시작부터 시프트 종료시간까지 (초)
-                                val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
+                                val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                                target_int += ((work_time / current_cycle_time).toInt() + 1) // 현 시간에 만들어야 할 갯수
+                                val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 - start_at_target
+                                target_int += ((work_time / current_cycle_time).toInt() + start_at_target) // 현 시간에 만들어야 할 갯수
 
                             } else {        // 지난 디자인
-                                target_int += item?.get("target").toString().toInt()
+                                target_int += design_item?.get("target").toString().toInt()
                             }
                         }
                         target = target_int.toString()
 //                        target = AppGlobal.instance.get_target_server_shift(item["shift_idx"].toString())
                     }
                 } else {
-                    target = AppGlobal.instance.get_target_manual_shift(item["shift_idx"].toString())
+                    target = AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
                 }
-//                var target = if (target_type=="server_per_hourly" || target_type=="server_per_accumulate" || target_type=="server_per_day_total")
-//                    AppGlobal.instance.get_target_server_shift(item["shift_idx"].toString()) else AppGlobal.instance.get_target_manual_shift(item["shift_idx"].toString())
 
                 if (target == null || target == "") target = "0"
 
-                val row = _target_db.get(item["date"].toString(), item["shift_idx"].toString())
+                val row = _target_db.get(work_item["date"].toString(), work_item["shift_idx"].toString())
+
                 if (row == null) { // insert
 //                    Log.e("db info", "===> " + item["date"].toString() + " : " + item["shift_idx"].toString() + " : null")
-                    _target_db.add(item["date"].toString(), item["shift_idx"].toString(), item["shift_name"].toString(), target, item["work_stime"].toString(), item["work_etime"].toString())
+                    _target_db.add(work_item["date"].toString(), work_item["shift_idx"].toString(), work_item["shift_name"].toString(), target,
+                        work_item["work_stime"].toString(), work_item["work_etime"].toString())
                 } else {           // update
 //                    Log.e("db info", "===> " + item["date"].toString() + " : " + item["shift_idx"].toString() + " : " + row.toString())
-                    _target_db.update(row["idx"].toString(), item["shift_name"].toString(), target, item["work_stime"].toString(), item["work_etime"].toString())
+                    if (target != row?.get("target").toString()) {
+                        _target_db.update(row["idx"].toString(), work_item["shift_name"].toString(), target,
+                            work_item["work_stime"].toString(), work_item["work_etime"].toString()
+                        )
+                    }
                 }
             }
 
@@ -690,15 +713,14 @@ class MainActivity : BaseActivity() {
 
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var value = result.getString("value")
                 AppGlobal.instance.set_downtime_sec(value)
-                val s = value.toInt()
-                if (s > 0) {
-                }
+//                val s = value.toInt()
+//                if (s > 0) {
+//                }
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -714,12 +736,11 @@ class MainActivity : BaseActivity() {
 
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var list = result.getJSONArray("item")
                 AppGlobal.instance.set_color_code(list)
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -861,9 +882,10 @@ class MainActivity : BaseActivity() {
                             val d2 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned2_stime, _planned2_etime)
 
                             // 디자인의 시작부터 시프트 종료시간까지 (초)
-                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2 - 1
+                            val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                            _total_target += (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
+                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
+                            _total_target += (work_time / current_cycle_time).toInt() + start_at_target // 현 시간에 만들어야 할 갯수
                         }
                     } else {        // 지난 디자인
                         _total_target += target2
@@ -1009,6 +1031,9 @@ class MainActivity : BaseActivity() {
                 AppGlobal.instance.set_cycle_time(0)
                 AppGlobal.instance.reset_product_idx()                  // work idx 초기화
 
+                AppGlobal.instance.set_worker_no("")                    // 작업자도 리셋
+                AppGlobal.instance.set_worker_name("")
+
                 var db5 = DBHelperForDesign(this)                       // DB 선택된 디자인 idx 값도 초기화
                 db5.delete()
 
@@ -1067,7 +1092,7 @@ class MainActivity : BaseActivity() {
                 runOnUiThread {
                     checkCurrentShiftEndTime()
                     checkDownTime()
-                    checkToggle()
+                    checkToggle()   // 이미지 선택한 파일 토글하기
 //                    checkExit()
                 }
             }
@@ -1450,15 +1475,9 @@ Log.e("Scount params", params.toString())
 
     fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
 
-        val db = DBHelperForDesign(this)
-
         // 이전 작업과 동일한 디자인 번호이면 새작업이 아님
         val prev_didx = AppGlobal.instance.get_design_info_idx()
-        if (didx == prev_didx) return
-
-        // 이전 작업 완료 처리
-        var prev_work_idx = "" + AppGlobal.instance.get_product_idx()
-        if (prev_work_idx != "") db.updateWorkEnd(prev_work_idx)
+        val prev_work_idx = "" + AppGlobal.instance.get_product_idx()
 
         AppGlobal.instance.set_design_info_idx(didx)
         AppGlobal.instance.set_model(model)
@@ -1469,6 +1488,26 @@ Log.e("Scount params", params.toString())
 
         val pieces_info = AppGlobal.instance.get_pieces_info()
         val pairs_info = AppGlobal.instance.get_pairs_info()
+
+        val db = DBHelperForDesign(this)
+
+        if (didx == prev_didx) {
+            val item = db.get(prev_work_idx)
+            if (item != null) {
+                val work_info = AppGlobal.instance.get_current_shift_time()
+                val shift_idx = work_info?.getString("shift_idx") ?: ""
+                val shift_name = work_info?.getString("shift_name") ?: ""
+
+                Log.e("startNewProduct", "==========================")
+                Log.e("startNewProduct", "work_idx=" + prev_work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time)
+                Log.e("startNewProduct", "==========================")
+
+                db.updateDesignInfo(prev_work_idx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info)
+                return
+            }
+        } else {
+            if (prev_work_idx != "") db.updateWorkEnd(prev_work_idx)    // 이전 작업 완료 처리
+        }
 
         AppGlobal.instance.set_product_idx()
 
@@ -1487,10 +1526,34 @@ Log.e("Scount params", params.toString())
         }
 
         val work_idx = "" + AppGlobal.instance.get_product_idx()
+
+        val now = DateTime().millis
         val work_info = AppGlobal.instance.get_current_shift_time()
-        val shift_idx = work_info?.getString("shift_idx") ?: ""
-        val shift_name = work_info?.getString("shift_name") ?: ""
+        var shift_idx = work_info?.getString("shift_idx") ?: ""
+        var shift_name = work_info?.getString("shift_name") ?: ""
+
+        if (work_info == null) {
+            // 현재 시프트가 없으므로 다가올 시프트 정보를 구한다.
+            val list = AppGlobal.instance.get_current_work_time()
+            for (i in 0..(list.length() - 1)) {
+                val tmp_item = list.getJSONObject(i)
+                var shift_stime = (OEEUtil.parseDateTime(tmp_item["work_stime"].toString())).millis
+
+                if (now <= shift_stime) {
+                    shift_idx = tmp_item?.getString("shift_idx") ?: ""
+                    shift_name = tmp_item?.getString("shift_name") ?: ""
+                    break
+                }
+            }
+        }
+
+        Log.e("startNewProduct", "==========================")
+        Log.e("startNewProduct", "work_idx=" + work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time)
+        Log.e("startNewProduct", "==========================")
         db.add(work_idx, start_dt, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
+
+//        val br_intent = Intent("need.refresh")
+//        this.sendBroadcast(br_intent)
     }
 
     // downtime 발생시 푸시 발송

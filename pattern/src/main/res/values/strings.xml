@@ -51,6 +51,7 @@
     <string name="label_long_touch_enable">Long Touch Enable</string>
     <string name="label_message_enable">Message Enable</string>
     <string name="label_sound_at_count">Sound at Count</string>
+    <string name="label_start_at_target_1" translatable="false">Start at target 1</string>
     <string name="label_seconds">Seconds</string>
 
     <string name="label_screen_blink_effect" translatable="false">SCREEN BLINK EFFECT</string>
