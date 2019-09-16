@@ -28,7 +28,9 @@ import com.suntech.iot.pattern.service.UsbService
 import com.suntech.iot.pattern.util.OEEUtil
 import com.suntech.iot.pattern.util.UtilFile
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_count_view.*
+import kotlinx.android.synthetic.main.layout_bottom_info_3.view.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
 import org.joda.time.DateTime
@@ -135,7 +137,9 @@ class MainActivity : BaseActivity() {
                 workSheetToggle = false
                 workSheetShow = false
                 ll_worksheet_view.visibility = View.GONE
-                wv_view_main.visibility = View.GONE
+//                wv_view_main.visibility = View.GONE
+                val cview = vp_fragments?.getChildAt(1)
+                cview?.btn_toggle_sop?.visibility = View.VISIBLE
                 true
             }
 
@@ -153,13 +157,14 @@ class MainActivity : BaseActivity() {
                     if (ext.toLowerCase()=="pdf") {
                         workSheetToggle = false
                         workSheetShow = false
-                        ll_worksheet_view.visibility = View.GONE
-                        wv_view_main.visibility = View.GONE
+                        ll_worksheet_view?.visibility = View.GONE
+                        wv_view_main?.visibility = View.GONE
                     } else {
                         workSheetToggle = true
                         workSheetShow = true
-                        wv_view_main.visibility = View.VISIBLE
-                        wv_view_main.loadUrl(file_url)
+                        ll_worksheet_view?.visibility = View.VISIBLE
+                        wv_view_main?.visibility = View.VISIBLE
+                        wv_view_main?.loadUrl(file_url)
                         changeFragment(2)
                     }
                 }
@@ -169,8 +174,10 @@ class MainActivity : BaseActivity() {
             btn_worksheet_stop.setOnClickListener {
                 workSheetToggle = false
                 workSheetShow = false
-                ll_worksheet_view.visibility = View.GONE
-                wv_view_main.visibility = View.GONE
+                ll_worksheet_view?.visibility = View.GONE
+//                wv_view_main?.visibility = View.GONE
+                val cview = vp_fragments?.getChildAt(1)
+                cview?.btn_toggle_sop?.visibility = View.VISIBLE
             }
         }
 
@@ -1715,28 +1722,41 @@ Log.e("Scount params", params.toString())
         }
     }
 
+    private var _is_down_loop: Boolean = false
+
     // 신버전
     private fun checkDownTime() {
+        if (_is_down_loop) return
+        _is_down_loop = true
+
         var db = DBHelperForDownTime(this)
         val count = db.counts_for_notcompleted()
 
         if (count > 0) {
             AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss"))
+            _is_down_loop = false
             return
         }
 
         val work_idx = AppGlobal.instance.get_product_idx()
-        if (work_idx == "") return
+        if (work_idx == "") {
+            _is_down_loop = false
+            return
+        }
 
         val downtime_time = AppGlobal.instance.get_downtime_sec()
         if (downtime_time == "") {
             ToastOut(this, R.string.msg_no_downtime)
+            _is_down_loop = false
             return
         }
         val downtime_time_sec = downtime_time.toInt()
 
         val item = AppGlobal.instance.get_current_shift_time()
-        if (item == null) return
+        if (item == null) {
+            _is_down_loop = false
+            return
+        }
 
         var work_stime = OEEUtil.parseDateTime(item["work_stime"].toString())
         var work_etime = OEEUtil.parseDateTime(item["work_etime"].toString())
@@ -1796,6 +1816,7 @@ Log.e("Scount params", params.toString())
 //            Log.e("downtime chk", "planned time")
             }
         }
+        _is_down_loop = false
     }
 
     // 구버전

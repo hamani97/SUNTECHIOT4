@@ -54,8 +54,8 @@
     <string name="label_start_at_target_1" translatable="false">Start at target 1</string>
     <string name="label_seconds">Seconds</string>
 
-    <string name="label_screen_blink_effect" translatable="false">SCREEN BLINK EFFECT</string>
-    <string name="label_remaining_number" translatable="false">REMAINING NUMBER</string>
+    <string name="label_screen_blink_effect">SCREEN BLINK EFFECT</string>
+    <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
     <string name="label_from_cycle_time">FROM CYCLE TIME</string>
@@ -142,9 +142,10 @@
     <string name="end">END</string>
     <string name="start_of_display">Display Start</string>
     <string name="end_of_display">Display Stop</string>
-    <string name="back" translatable="false">Back</string>
+    <string name="back">Back</string>
     <string name="exit">Exit</string>
     <string name="edit">EDIT</string>
+    <string name="sop" translatable="false">SOP</string>
     <string name="cancel">Cancel</string>
     <string name="check">Check</string>
     <string name="search">SEARCH</string>
@@ -199,7 +200,7 @@
     <string name="msg_no_setting">Setting not found</string>
     <string name="msg_data_not_found">Data not found</string>
     <string name="msg_connection_fail">The connection to the server failed.</string>
-    <string name="msg_cannot_input_wos" translatable="false">Cannot input WOS</string>
+    <string name="msg_cannot_input_wos">Cannot input WOS</string>
     <string name="msg_has_notselected">Nothing Selected</string>
     <string name="msg_not_start_work">Checking Working Time</string>
     <string name="msg_exit_shift">Do you want to exit?</string>

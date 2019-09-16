@@ -17,6 +17,7 @@ import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.popup.PiecePairCountEditActivity
 import com.suntech.iot.pattern.util.OEEUtil
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
@@ -109,6 +110,10 @@ class CountViewFragment : BaseFragment() {
         tv_performance_rate.text = "0%"
         tv_quality_rate.text = "0%"
 
+        val version = activity.packageManager.getPackageInfo(activity.packageName, 0).versionName
+        val verArr = version.split(".")
+        tv_app_version2?.text = "Pv" + verArr[verArr.size-1]
+
         // End Work button
 //        btn_exit.setOnClickListener {
 //            Toast.makeText(activity, "Not yet available", Toast.LENGTH_SHORT).show()
@@ -183,6 +188,15 @@ class CountViewFragment : BaseFragment() {
                     })
                 }
             }
+        }
+        btn_toggle_sop.setOnClickListener {
+            (activity as MainActivity).workSheetToggle = true
+            (activity as MainActivity).workSheetShow = false
+            (activity as MainActivity).ll_worksheet_view?.visibility = View.VISIBLE
+//            wv_view_main?.visibility = View.VISIBLE
+            btn_toggle_sop?.visibility = View.GONE
+//            wv_view_main.loadUrl(file_url)
+//            (activity as MainActivity).changeFragment(2)
         }
 
         viewWorkInfo()
@@ -320,7 +334,6 @@ class CountViewFragment : BaseFragment() {
             if (AppGlobal.instance.get_message_enable() && (DateTime().millis/1000) % 10 == 0L) {  // 10초마다 출력
                 Toast.makeText(activity, getString(R.string.msg_design_not_selected), Toast.LENGTH_SHORT).show()
             }
-            Log.e("CountView", "Design not selected.")
 //            refreshScreen(shift_idx, 0, 0)
             return
         }
@@ -638,10 +651,9 @@ class CountViewFragment : BaseFragment() {
     }
 
     private fun refreshScreen(shift_idx:String, total_actual:Int, total_target:Int, shift_total_target:Int) {
-        Log.e("refreshScreen", "shift_idx="+shift_idx + ", total_actual="+total_actual + ", total_target="+total_target + ", shift_total_target="+shift_total_target)
         // 값에 변화가 생겼을 때만 리프레시
         if (total_target != last_total_target || total_actual != last_total_actual) {
-            Log.e("refreshScreen", "refresh start..............")
+            Log.e("refreshScreen", "refresh start... shift_idx="+shift_idx + ", total_actual="+total_actual + ", total_target="+total_target + ", shift_total_target="+shift_total_target)
             var ratio = 0
             var ratio_txt = "N/A"
 

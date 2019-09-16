@@ -164,4 +164,8 @@
     <string name="title_product_list">产品列单</string>
     <string name="msg_select_design">请选择一个设计</string>
     <string name="msg_select_layer1">请选择1层价值</string>
+    <string name="back">返回</string>
+    <string name="label_remaining_number">剩余数字</string>
+    <string name="label_screen_blink_effect">屏幕传输反映</string>
+    <string name="msg_cannot_input_wos">不能输入WOS</string>
 </resources>

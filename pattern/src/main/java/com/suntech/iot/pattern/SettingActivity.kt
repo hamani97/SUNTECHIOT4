@@ -197,7 +197,7 @@ class SettingActivity : BaseActivity() {
         // 115.68.227.31
         // 183.81.156.206 : inni
         // 36.66.169.221 (8124)
-        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("36.66.169.221")
+        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
     }
 
