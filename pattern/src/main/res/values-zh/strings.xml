@@ -168,4 +168,7 @@
     <string name="label_remaining_number">剩余数字</string>
     <string name="label_screen_blink_effect">屏幕传输反映</string>
     <string name="msg_cannot_input_wos">不能输入WOS</string>
+    <string name="button_tab_time_setting">时间设定</string>
+    <string name="label_device_time">设备时间</string>
+    <string name="label_server_time">服务器时间</string>
 </resources>

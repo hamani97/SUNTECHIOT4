@@ -33,6 +33,7 @@
                     android:stateListAnimator="@null"
                     android:text="@string/sop"
                     android:visibility="gone"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -198,7 +199,7 @@
                         android:paddingRight="20dp"
                         android:gravity="right"
                         android:text="1"
-                        android:textSize="16sp"
+                        android:textSize="17sp"
                         android:textColor="@color/colorGray"/>
             </LinearLayout>
 

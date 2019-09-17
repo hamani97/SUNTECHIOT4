@@ -58,6 +58,9 @@
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
+    <string name="label_server_time">Server Time</string>
+    <string name="label_device_time">Device Time</string>
+    <string name="label_automatic_time" translatable="false">Automatic date/time</string>
     <string name="label_from_cycle_time">FROM CYCLE TIME</string>
     <string name="label_target_per_shift">TARGET PER SHIFT</string>
     <string name="label_shift1">1 Shift</string>
@@ -126,6 +129,7 @@
     <string name="button_tab_system_setting">SYSTEM SETTING</string>
     <string name="button_tab_count_setting">COUNT SETTING</string>
     <string name="button_tab_target_setting">TARGET SETTING</string>
+    <string name="button_tab_time_setting">TIME SETTING</string>
 
     <!-- 홈화면 -->
     <string name="bottom_label_machine_info">MACHINE INFO</string>
@@ -209,5 +213,6 @@
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
     <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
     <string name="msg_exit_automatically">Workday ends automatically</string>
+    <string name="msg_failed_to_get_server_time" translatable="false">Failed to get server time</string>
 
 </resources>

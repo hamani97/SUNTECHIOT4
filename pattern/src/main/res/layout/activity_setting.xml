@@ -32,6 +32,12 @@
                     style="@style/tab_btn_off"
                     android:stateListAnimator="@null"
                     android:text="@string/button_tab_target_setting" />
+            <Button
+                    android:id="@+id/btn_setting_time"
+                    style="@style/tab_btn_off"
+                    android:stateListAnimator="@null"
+                    android:text="@string/button_tab_time_setting"
+                    android:visibility="gone"/>
         </LinearLayout>
 
         <FrameLayout
@@ -543,6 +549,91 @@
 
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <!--Time setting-->
+            <LinearLayout
+                    android:id="@+id/layout_setting_time"
+                    android:layout_width="1080dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                <LinearLayout
+                        android:layout_width="520dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
+                        android:orientation="vertical">
+
+                    <TextView style="@style/table_title" android:text="@string/title_counter_device_info" />
+
+                    <!-- System automatic date/time sync -->
+                    <LinearLayout style="@style/table_row">
+                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_automatic_time" />
+                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_auto_time" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:padding="25dp">
+                        <TextView
+                                android:id="@+id/tv_setting_time_auto_msg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="-"
+                                android:textSize="23sp"
+                                android:textColor="@color/colorWhite"
+                                />
+
+                    </LinearLayout>
+
+                    <!-- Device time -->
+                    <LinearLayout style="@style/table_row">
+                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_device_time" />
+                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_time" />
+                    </LinearLayout>
+
+                    <!-- Server time -->
+                    <LinearLayout style="@style/table_row">
+                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_server_time" />
+                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_server_time" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+                        <Button
+                                android:id="@+id/btn_setting_reset_device_time"
+                                android:layout_width="290dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:background="@drawable/shape_orange_rectangle_button"
+                                android:stateListAnimator="@null"
+                                android:text="reset divice time"
+                                android:textSize="24sp"
+                                android:textColor="#fff"
+                                android:textStyle="bold" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- OEE SERVER INFO -->
+                <LinearLayout
+                        android:layout_width="520dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <TextView style="@style/table_title" android:text="@string/title_server_info" />
+
+
+
+
+                </LinearLayout>
             </LinearLayout>
 
         </FrameLayout>

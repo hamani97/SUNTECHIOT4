@@ -1,11 +1,16 @@
 package com.suntech.iot.pattern
 
+import android.Manifest.permission.SET_TIME
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.SystemClock
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.Toast
@@ -15,6 +20,7 @@ import kotlinx.android.synthetic.main.activity_setting.*
 import kotlinx.android.synthetic.main.layout_top_menu_2.*
 import org.joda.time.DateTime
 import java.util.*
+
 
 class SettingActivity : BaseActivity() {
 
@@ -30,6 +36,8 @@ class SettingActivity : BaseActivity() {
     private var _selected_mc_no_idx: String = ""
     private var _selected_mc_model_idx: String = ""
 
+    private var _server_time = -1000L
+
     val _broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.getAction()
@@ -38,6 +46,9 @@ class SettingActivity : BaseActivity() {
                     btn_wifi_state.isSelected = true
                 else
                     btn_wifi_state.isSelected = false
+
+            } else if (action.equals(Intent.ACTION_TIME_CHANGED)) {
+                //
 
             } else if (action.equals("need.refresh.server.state")) {
                 val state = intent.getStringExtra("state")
@@ -56,7 +67,41 @@ class SettingActivity : BaseActivity() {
 
     public override fun onResume() {
         super.onResume()
-        registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
+
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_TIME_CHANGED)
+        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
+
+        registerReceiver(_broadcastReceiver, filter)
+
+        val result = android.provider.Settings.Global.getInt(contentResolver, android.provider.Settings.Global.AUTO_TIME, 0)
+        if (result == 1) {
+            tv_setting_auto_time.text = "On"
+            tv_setting_time_auto_msg.text = "The time setting for this device is set automatically"
+        } else {
+            tv_setting_auto_time.text = "Off"
+            tv_setting_time_auto_msg.text = "The time setting for this device is set manually"
+        }
+    }
+
+    fun startHandler() {
+        val handler = Handler()
+        handler.postDelayed({
+            if (tab_pos == 4) updateView()
+            startHandler()
+        }, 1000)
+    }
+
+    private fun updateView() {
+        val now = DateTime.now()
+        tv_setting_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
+        if (_server_time == -1000L) {
+            tv_setting_server_time?.text = "Failed to get server time"
+        } else if (_server_time == 0L) {
+            tv_setting_server_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
+        } else {
+            tv_setting_server_time?.text = (now + _server_time).toString("yyyy-MM-dd HH:mm:ss")
+        }
     }
 
     public override fun onPause() {
@@ -143,6 +188,7 @@ class SettingActivity : BaseActivity() {
         btn_setting_system.setOnClickListener { tabChange(1) }
         btn_setting_count.setOnClickListener { tabChange(2) }
         btn_setting_target.setOnClickListener { tabChange(3) }
+        btn_setting_time.setOnClickListener { tabChange(4) }
 
         // System setting button listener
         tv_setting_factory.setOnClickListener { fetchDataForFactory() }
@@ -174,6 +220,17 @@ class SettingActivity : BaseActivity() {
             }
         }
 
+        btn_setting_reset_device_time.setOnClickListener {
+            if (_server_time == -1000L) {
+                Toast.makeText(this, R.string.msg_failed_to_get_server_time, Toast.LENGTH_SHORT).show()
+                fetchServerTime()
+            } else if (_server_time != 0L) {
+                val now = DateTime.now().millis + _server_time
+//                tv_setting_server_time?.text = (now + _server_time).toString("yyyy-MM-dd HH:mm:ss")
+                SystemClock.setCurrentTimeMillis(now)
+            }
+        }
+
         // Save button click
         btn_setting_confirm.setOnClickListener {
             saveSettingData()
@@ -199,7 +256,20 @@ class SettingActivity : BaseActivity() {
         // 36.66.169.221 (8124)
         if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
+
+        val permissionCheck = ContextCompat.checkSelfPermission(this, SET_TIME)
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(SET_TIME), REQUEST_READ_PHONE_STATE)
+        } else {
+            //TODO
+        }
+
+        fetchServerTime()
+        startHandler()
     }
+
+    val REQUEST_READ_PHONE_STATE = 1000
 
     private fun checkServer(show_toast:Boolean = false) {
         val url = "http://"+ et_setting_server_ip.text.toString()
@@ -218,6 +288,31 @@ class SettingActivity : BaseActivity() {
         }, {
             btn_server_state.isSelected = false
             if (show_toast) Toast.makeText(this, getString(R.string.msg_connection_fail), Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun fetchServerTime() {
+
+        val currentTimeMillisStart = System.currentTimeMillis()
+
+        val url = "http://"+ et_setting_server_ip.text.toString()
+        val port = et_setting_port.text.toString()
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "current_time")
+
+        request(this, url, port, uri, false, false,false, params, { result ->
+            var code = result.getString("code")
+            if (code == "00") {
+//                val curdatetime = result.getString("curdatetime")
+                val curtimestamp = result.getString("curtimestamp").toLong()
+                if (curtimestamp != null) {
+                    val now = System.currentTimeMillis()
+                    val millis = now - currentTimeMillisStart
+                    _server_time = curtimestamp - now + millis
+                }
+            }
+        }, {
+            Toast.makeText(this, getString(R.string.msg_connection_fail), Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -519,9 +614,12 @@ class SettingActivity : BaseActivity() {
                 btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
                 btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
                 layout_setting_system.visibility = View.VISIBLE
                 layout_setting_count.visibility = View.GONE
                 layout_setting_target.visibility = View.GONE
+                layout_setting_time.visibility = View.GONE
             }
             2 -> {
                 btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
@@ -530,9 +628,12 @@ class SettingActivity : BaseActivity() {
                 btn_setting_count.setBackgroundResource(R.color.colorButtonBlue)
                 btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
                 layout_setting_system.visibility = View.GONE
                 layout_setting_count.visibility = View.VISIBLE
                 layout_setting_target.visibility = View.GONE
+                layout_setting_time.visibility = View.GONE
             }
             3 -> {
                 btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
@@ -541,9 +642,26 @@ class SettingActivity : BaseActivity() {
                 btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
                 btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
                 btn_setting_target.setBackgroundResource(R.color.colorButtonBlue)
+                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
                 layout_setting_system.visibility = View.GONE
                 layout_setting_count.visibility = View.GONE
                 layout_setting_target.visibility = View.VISIBLE
+                layout_setting_time.visibility = View.GONE
+            }
+            4 -> {
+                btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_system.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_count.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                btn_setting_time.setBackgroundResource(R.color.colorButtonBlue)
+                layout_setting_system.visibility = View.GONE
+                layout_setting_count.visibility = View.GONE
+                layout_setting_target.visibility = View.GONE
+                layout_setting_time.visibility = View.VISIBLE
             }
         }
     }
