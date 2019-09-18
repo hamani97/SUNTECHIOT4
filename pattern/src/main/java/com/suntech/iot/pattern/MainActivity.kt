@@ -811,7 +811,7 @@ class MainActivity : BaseActivity() {
                 if (new_perform >= 100.0f) {
                     if (old_perform < 100.0f) {
                         Log.e("fetchOEEGraph", "push send")
-                        sendPush("Best performance", false)
+                        sendPush("SYS: PERFORMANCE", false)
                     }
                 }
             } else {
@@ -1634,7 +1634,7 @@ Log.e("Scount params", params.toString())
 
                 down_db.add(idx, work_idx, didx, shift_idx, shift_name, dt.toString("yyyy-MM-dd HH:mm:ss"))
 
-                sendPush("downtime occurrence", false)
+                sendPush("SYS: DOWNTIME", false)
 
             } else {
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()

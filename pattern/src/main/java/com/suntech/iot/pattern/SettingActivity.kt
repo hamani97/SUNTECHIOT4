@@ -77,10 +77,8 @@ class SettingActivity : BaseActivity() {
         val result = android.provider.Settings.Global.getInt(contentResolver, android.provider.Settings.Global.AUTO_TIME, 0)
         if (result == 1) {
             tv_setting_auto_time.text = "On"
-            tv_setting_time_auto_msg.text = "The time setting for this device is set automatically"
         } else {
             tv_setting_auto_time.text = "Off"
-            tv_setting_time_auto_msg.text = "The time setting for this device is set manually"
         }
     }
 
@@ -138,6 +136,8 @@ class SettingActivity : BaseActivity() {
         // 워크시트 토글 시간(초). 0일때는 5로 초기화
         val sec = if (AppGlobal.instance.get_worksheet_display_time()==0) "5" else AppGlobal.instance.get_worksheet_display_time().toString()
         et_setting_worksheet_display_time.setText(sec)
+
+        et_setting_sop_name.setText(AppGlobal.instance.get_sop_name())
 
         sw_long_touch.isChecked = AppGlobal.instance.get_long_touch()
         sw_message_enable.isChecked = AppGlobal.instance.get_message_enable()
@@ -217,17 +217,6 @@ class SettingActivity : BaseActivity() {
                 tv_setting_room.text = ""
                 tv_setting_line.text = ""
                 tv_setting_mc_model.text = ""
-            }
-        }
-
-        btn_setting_reset_device_time.setOnClickListener {
-            if (_server_time == -1000L) {
-                Toast.makeText(this, R.string.msg_failed_to_get_server_time, Toast.LENGTH_SHORT).show()
-                fetchServerTime()
-            } else if (_server_time != 0L) {
-                val now = DateTime.now().millis + _server_time
-//                tv_setting_server_time?.text = (now + _server_time).toString("yyyy-MM-dd HH:mm:ss")
-                SystemClock.setCurrentTimeMillis(now)
             }
         }
 
@@ -373,6 +362,8 @@ class SettingActivity : BaseActivity() {
         else AppGlobal.instance.set_start_at_target(0)
 
         AppGlobal.instance.set_worksheet_display_time(worksheet_time)
+        AppGlobal.instance.set_sop_name(et_setting_sop_name.text.toString())
+
 
         AppGlobal.instance.set_screen_blink(sw_screen_blink_effect.isChecked)
         AppGlobal.instance.set_remain_number(remain_num)

@@ -51,6 +51,16 @@
                 android:layout_marginRight="40dp"
                 android:orientation="vertical">
 
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <include layout="@layout/list_item_worksheet_title"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <View
                     android:layout_width="match_parent"
@@ -95,7 +105,7 @@
                     android:layout_margin="8dp"
                     android:background="#f8ad13"
                     android:stateListAnimator="@null"
-                    android:text="@string/confirm"
+                    android:text="@string/exit"
                     android:textSize="24sp"
                     android:textColor="#fff"
                     android:textStyle="bold"/>

@@ -67,6 +67,8 @@
     <string name="label_shift2">2 Shift</string>
     <string name="label_shift3">3 Shift</string>
 
+    <string name="label_sop_name" translatable="false">Worksheet Name</string>
+
     <!-- OPERATOR DETAIL 화면 -->
     <string name="list_item_shift">SHIFT</string>
     <string name="list_item_work_time">WORK TIME</string>
@@ -156,6 +158,8 @@
     <string name="notice">Notice</string>
     <string name="defective">Defective</string>
     <string name="time">Time</string>
+    <string name="date" translatable="false">Date</string>
+    <string name="filename" translatable="false">File name</string>
 
     <string name="availability">Availability</string>
     <string name="performance">Performance</string>
@@ -213,6 +217,5 @@
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
     <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
     <string name="msg_exit_automatically">Workday ends automatically</string>
-    <string name="msg_failed_to_get_server_time" translatable="false">Failed to get server time</string>
 
 </resources>

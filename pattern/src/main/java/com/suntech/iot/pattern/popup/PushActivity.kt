@@ -70,16 +70,16 @@ class PushActivity : BaseActivity() {
             "seq" to i,
             "text" to item["text"])
 
-//Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACAddress()+
-//        "&factory_parent_idx=" + AppGlobal.instance.get_factory_idx()+
-//        "&factory_idx=" + AppGlobal.instance.get_room_idx()+
-//        "&line_idx=" + AppGlobal.instance.get_line_idx()+
-//        "&shift_idx=" +  AppGlobal.instance.get_current_shift_idx()+
-//        "&machine_no=" + AppGlobal.instance.get_mc_no1()+
-//        "&mc_model=" + AppGlobal.instance.get_mc_model()+
-//        "&text_idx=" + item["idx"]+
-//        "&seq=" + i+
-//        "&text=" + item["text"])
+Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACAddress()+
+        "&factory_parent_idx=" + AppGlobal.instance.get_factory_idx()+
+        "&factory_idx=" + AppGlobal.instance.get_room_idx()+
+        "&line_idx=" + AppGlobal.instance.get_line_idx()+
+        "&shift_idx=" +  AppGlobal.instance.get_current_shift_idx()+
+        "&machine_no=" + AppGlobal.instance.get_mc_no1()+
+        "&mc_model=" + AppGlobal.instance.get_mc_model()+
+        "&text_idx=" + item["idx"]+
+        "&seq=" + i+
+        "&text=" + item["text"])
 
         request(this, uri, true, params, { result ->
 
@@ -94,8 +94,8 @@ class PushActivity : BaseActivity() {
 
     private fun fetchData() {
 
-        val uri = "/push_text_list.php"
-        var params = listOf("code" to "push_text_list")
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "text")
 
         request(this, uri, false, params, { result ->
 

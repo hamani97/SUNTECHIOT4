@@ -36,8 +36,7 @@
                     android:id="@+id/btn_setting_time"
                     style="@style/tab_btn_off"
                     android:stateListAnimator="@null"
-                    android:text="@string/button_tab_time_setting"
-                    android:visibility="gone"/>
+                    android:text="@string/button_tab_time_setting"/>
         </LinearLayout>
 
         <FrameLayout
@@ -566,27 +565,17 @@
                         android:layout_marginRight="40dp"
                         android:orientation="vertical">
 
+                    <TextView style="@style/table_title" android:text="@string/label_screen_blink_effect" />
+
+
+
+
                     <TextView style="@style/table_title" android:text="@string/title_counter_device_info" />
 
                     <!-- System automatic date/time sync -->
                     <LinearLayout style="@style/table_row">
                         <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_automatic_time" />
                         <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_auto_time" />
-                    </LinearLayout>
-
-                    <LinearLayout android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:padding="25dp">
-                        <TextView
-                                android:id="@+id/tv_setting_time_auto_msg"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="-"
-                                android:textSize="23sp"
-                                android:textColor="@color/colorWhite"
-                                />
-
                     </LinearLayout>
 
                     <!-- Device time -->
@@ -601,25 +590,6 @@
                         <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_server_time" />
                     </LinearLayout>
 
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:orientation="horizontal">
-                        <Button
-                                android:id="@+id/btn_setting_reset_device_time"
-                                android:layout_width="290dp"
-                                android:layout_height="44dp"
-                                android:gravity="center"
-                                android:background="@drawable/shape_orange_rectangle_button"
-                                android:stateListAnimator="@null"
-                                android:text="reset divice time"
-                                android:textSize="24sp"
-                                android:textColor="#fff"
-                                android:textStyle="bold" />
-                    </LinearLayout>
-
                 </LinearLayout>
 
                 <!-- OEE SERVER INFO -->
@@ -630,7 +600,11 @@
 
                     <TextView style="@style/table_title" android:text="@string/title_server_info" />
 
-
+                    <!-- WorkSheet Name -->
+                    <LinearLayout style="@style/table_row">
+                        <TextView style="@style/table_row_title" android:layout_width="210dp" android:text="@string/label_sop_name" />
+                        <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_sop_name" />
+                    </LinearLayout>
 
 
                 </LinearLayout>

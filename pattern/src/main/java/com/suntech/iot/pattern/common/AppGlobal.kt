@@ -87,6 +87,11 @@ class AppGlobal private constructor() {
 //        val name = UtilLocalStorage.getString(instance._context!!, "current_wos_name")
 //        return if (name != "") name else "WOS"
 //    }
+    fun set_sop_name(name: String) { UtilLocalStorage.setString(instance._context!!, "current_sop_name", name) }
+    fun get_sop_name() : String {
+        val name = UtilLocalStorage.getString(instance._context!!, "current_sop_name")
+        return if (name != "") name else "WORK SHEET"
+    }
 
     fun set_worksheet_display_time(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_sheet_disptime", value) }
     fun get_worksheet_display_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_sheet_disptime") }

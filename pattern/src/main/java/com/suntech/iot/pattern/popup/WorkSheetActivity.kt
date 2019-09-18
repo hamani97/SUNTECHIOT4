@@ -35,6 +35,8 @@ class WorkSheetActivity : BaseActivity() {
 
     private fun initView() {
 
+        tv_title?.text = AppGlobal.instance.get_sop_name()
+
         list_adapter = ListAdapter(this, _list)
         lv_work_sheets.adapter = list_adapter
 
@@ -77,7 +79,12 @@ class WorkSheetActivity : BaseActivity() {
 
                     var map=hashMapOf(
                         "date" to item.getString("date"),
-                        "file_url" to item.getString("file_url")
+                        "factory" to item.getString("factory"),
+                        "zone" to item.getString("zone"),
+                        "line" to item.getString("line"),
+                        "machine_no" to item.getString("machine_no"),
+                        "file_url" to item.getString("file_url"),
+                        "file_name" to item.getString("file_name")
                     )
                     _list.add(map)
                 }
@@ -117,17 +124,29 @@ class WorkSheetActivity : BaseActivity() {
                 vh = view.tag as ViewHolder
             }
 
+            vh.tv_item_factory.text = _list[position]["factory"]
+//            vh.tv_item_zone.text = _list[position]["zone"]
+            vh.tv_item_line.text = _list[position]["line"]
+//            vh.tv_item_machine_no.text = _list[position]["machine_no"]
             vh.tv_item_idx.text = _list[position]["date"]
-            vh.tv_item_file_url.text = _list[position]["file_url"]
+            vh.tv_item_file_url.text = _list[position]["file_name"]
 
             return view
         }
 
         private class ViewHolder(row: View?) {
+            val tv_item_factory: TextView
+//            val tv_item_zone: TextView
+            val tv_item_line: TextView
+//            val tv_item_machine_no: TextView
             val tv_item_idx: TextView
             val tv_item_file_url: TextView
 
             init {
+                this.tv_item_factory = row?.findViewById<TextView>(R.id.tv_item_factory) as TextView
+//                this.tv_item_zone = row?.findViewById<TextView>(R.id.tv_item_zone) as TextView
+                this.tv_item_line = row?.findViewById<TextView>(R.id.tv_item_line) as TextView
+//                this.tv_item_machine_no = row?.findViewById<TextView>(R.id.tv_item_machine_no) as TextView
                 this.tv_item_idx = row?.findViewById<TextView>(R.id.tv_item_idx) as TextView
                 this.tv_item_file_url = row?.findViewById<TextView>(R.id.tv_item_file_url) as TextView
             }
