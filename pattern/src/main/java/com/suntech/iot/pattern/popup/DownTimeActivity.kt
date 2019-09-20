@@ -6,14 +6,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
+import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_down_time.*
@@ -21,6 +22,8 @@ import kotlinx.android.synthetic.main.list_item_downtime_total.*
 import java.util.*
 
 class DownTimeActivity : BaseActivity() {
+
+    private var _db = DBHelperForDownTime(this)
 
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
@@ -59,10 +62,9 @@ class DownTimeActivity : BaseActivity() {
 
     private fun initView() {
         btn_confirm.setOnClickListener {
-            var db = DBHelperForDownTime(this)
-            val count = db.counts_for_notcompleted()
+            val count = _db.counts_for_notcompleted()
             if (count>0) {
-                Toast.makeText(this, getString(R.string.msg_has_notcompleted), Toast.LENGTH_SHORT).show()
+                ToastOut(this, R.string.msg_has_notcompleted, true)
                 return@setOnClickListener
             }
             finish(true, 1, "ok", null)
@@ -84,14 +86,13 @@ class DownTimeActivity : BaseActivity() {
     }
 
     private fun updateView() {
-        var db = DBHelperForDownTime(this)
-        _list = db.gets() ?: _list
+        _list = _db.gets() ?: _list
 
         list_adapter = ListAdapter(this, _list)
         lv_downtimes.adapter = list_adapter
 
         var total_downtime = 0
-
+        Log.e("DownTime", "---------------------------------------")
         _list?.forEach { item ->
             item.put("downtime", "")
             val start_dt = OEEUtil.parseDateTime(item["start_dt"])
@@ -102,23 +103,50 @@ class DownTimeActivity : BaseActivity() {
                 val downtime = (dif / 1000 / 60 ).toInt()
                 total_downtime += downtime
                 item.set("downtime", downtime.toString()+ " min")
+
+                Log.e("DownTime", "" + item.toString())
             }
         }
+        Log.e("DownTime", "---------------------------------------")
         tv_item_downtime_total.text = ""+total_downtime + " min"
     }
+
+    private var _count = 0
 
     private fun start_timer () {
         val task1 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    updateView()
+                    checkBlink()
+                    if (_list.size==0 || _count++ >= 5) {
+                        _count = 0
+                        updateView()
+                    }
                 }
             }
         }
-        _timer_task1.schedule(task1, 5000, 10000)
+        _timer_task1.schedule(task1, 1000, 2000)
     }
     private fun cancel_timer () {
         _timer_task1.cancel()
+    }
+
+    var blink_cnt = 0
+
+    private fun checkBlink() {
+        var is_toggle = false
+        if (AppGlobal.instance.get_screen_blink()) {
+            val count = _db.counts_for_notcompleted()
+            if (count > 0) {
+                is_toggle = true
+                blink_cnt = 1 - blink_cnt
+            }
+        }
+        if (is_toggle && blink_cnt==1) {
+            ll_downtime_window.setBackgroundColor(Color.parseColor("#" + AppGlobal.instance.get_blink_color()))
+        } else {
+            ll_downtime_window.setBackgroundResource(R.color.colorWhite)
+        }
     }
 
     private class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
@@ -153,7 +181,7 @@ class DownTimeActivity : BaseActivity() {
 //            vh.tv_item_design_idx.text = _list[position]["design_idx"]
             vh.tv_item_start_time.text = _list[position]["start_dt"]
             vh.tv_item_end_time.text = _list[position]["end_dt"]
-            vh.tv_item_downtime.text = _list[position]["downtime"]
+            vh.tv_item_downtime.text = _list[position]["downtime"] + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
             vh.tv_item_completed.text = _list[position]["completed"]
             vh.tv_item_list.text = _list[position]["list"]
 

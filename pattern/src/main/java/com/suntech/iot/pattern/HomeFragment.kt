@@ -6,11 +6,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -47,6 +45,7 @@ class HomeFragment : BaseFragment() {
 
         btn_count_view.setOnClickListener {
 //            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
+//                (activity as MainActivity).ToastOut(activity, R.string.msg_no_operator, true)
 //                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
 //            } else {
                 (activity as MainActivity).changeFragment(1)
@@ -55,7 +54,7 @@ class HomeFragment : BaseFragment() {
         // 디자인 기능으로 대체됨
         btn_component_info.setOnClickListener {
             if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
-                Toast.makeText(activity, getString(R.string.msg_no_operator), Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).ToastOut(activity, R.string.msg_no_operator, true)
             } else {
                 designInfofunc()
             }
@@ -63,7 +62,7 @@ class HomeFragment : BaseFragment() {
 
         btn_work_info.setOnClickListener {
             if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
-                Toast.makeText(activity, getString(R.string.msg_no_setting), Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).ToastOut(activity, R.string.msg_no_setting, true)
             } else {
                 startActivity(Intent(activity, WorkInfoActivity::class.java))
             }

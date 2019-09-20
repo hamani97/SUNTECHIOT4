@@ -1,7 +1,6 @@
 package com.suntech.iot.pattern.popup
 
 import android.os.Bundle
-import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -56,10 +55,7 @@ class DefectiveInputActivity : BaseActivity() {
 
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
-
             if (code == "00") {
-
                 var list = result.getJSONArray("item")
 
                 for (i in 0..(list.length() - 1)) {
@@ -75,8 +71,8 @@ class DefectiveInputActivity : BaseActivity() {
                 }
                 list_adapter?.notifyDataSetChanged()
 
-            }else{
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            } else {
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -84,11 +80,11 @@ class DefectiveInputActivity : BaseActivity() {
     private fun sendData(count:String, work_idx:String) {
 
         if (AppGlobal.instance.get_server_ip()=="") {
-            Toast.makeText(this, getString(R.string.msg_has_not_server_info), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_not_server_info, true)
             return
         }
         if (_selected_idx < 0) {
-            Toast.makeText(this, getString(R.string.msg_has_notselected), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_notselected, true)
             return
         }
 
@@ -110,9 +106,9 @@ class DefectiveInputActivity : BaseActivity() {
             "seq" to seq)
 
         request(this, uri, true,false, params, { result ->
-
             var code = result.getString("code")
-            var msg = result.getString("msg")
+
+            ToastOut(this, result.getString("msg"), true)
 
             if (code == "00") {
                 val item = db.get(work_idx)
@@ -120,11 +116,7 @@ class DefectiveInputActivity : BaseActivity() {
 
                 db.updateDefective(work_idx, defective + count.toInt())
 
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 finish(true, 0, "ok", null)
-
-            } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
         })
     }

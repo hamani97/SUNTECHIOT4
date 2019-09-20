@@ -67,6 +67,7 @@ class AppGlobal private constructor() {
     fun set_mc_model(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_model", idx) }
     fun get_mc_model() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_model") }
 
+    // Option Setting
     fun set_long_touch(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_long_touch", state) }
     fun get_long_touch() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_long_touch") }
 
@@ -98,10 +99,10 @@ class AppGlobal private constructor() {
 
     fun set_screen_blink(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_screen_blink", state) }
     fun get_screen_blink() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_screen_blink") }
-    fun set_remain_number(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_remain_number", value) }
-    fun get_remain_number() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_remain_number") }
     fun set_blink_color(value: String) { UtilLocalStorage.setString(instance._context!!, "current_blink_color", value) }
     fun get_blink_color() : String { return UtilLocalStorage.getString(instance._context!!, "current_blink_color") }
+//    fun set_remain_number(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_remain_number", value) }
+//    fun get_remain_number() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_remain_number") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
@@ -148,22 +149,8 @@ class AppGlobal private constructor() {
     fun get_worker_name() : String { return UtilLocalStorage.getString(instance._context!!, "current_worker_name") }
 
     fun get_last_workers() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "last_workers") }
-    fun push_last_worker(no: String, name: String) {
-        remove_last_worker(no)
-
-        var list = AppGlobal.instance.get_last_workers()
-        var json = JSONObject()
-        json.put("number", no)
-        json.put("name", name)
-        list.put(json)
-
-        if (list.length() > 4) list.remove(0)
-
-        UtilLocalStorage.setJSONArray(instance._context!!, "last_workers", list)
-    }
     fun remove_last_worker(no:String) {
-        var list = AppGlobal.instance.get_last_workers()
-
+        var list = get_last_workers()
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
             val item_no = item.getString("number")
@@ -174,21 +161,24 @@ class AppGlobal private constructor() {
         }
         UtilLocalStorage.setJSONArray(instance._context!!, "last_workers", list)
     }
+    fun push_last_worker(no: String, name: String) {
+        remove_last_worker(no)
+        var list = get_last_workers()
+        var json = JSONObject()
+        json.put("number", no)
+        json.put("name", name)
+        list.put(json)
+        if (list.length() > 4) list.remove(0)
+        UtilLocalStorage.setJSONArray(instance._context!!, "last_workers", list)
+    }
 
 
     // Design 관련 세팅값
     fun set_design_info(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "design_info", data) }
     fun get_design_info() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "design_info") }
 
-    fun set_pieces_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", idx) }
-    fun get_pieces_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
-    fun set_pairs_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pairs_info", idx) }
-    fun get_pairs_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pairs_info") }
-
-    // 디자인 정보 설정
     fun set_design_info_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_design_info_idx", idx) }
     fun get_design_info_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_design_info_idx") }
-
     fun set_model(data: String) { UtilLocalStorage.setString(instance._context!!, "current_model", data) }
     fun get_model() : String { return UtilLocalStorage.getString(instance._context!!, "current_model") }
     fun set_article(data: String) { UtilLocalStorage.setString(instance._context!!, "current_article", data) }
@@ -199,6 +189,11 @@ class AppGlobal private constructor() {
     fun get_component() : String { return UtilLocalStorage.getString(instance._context!!, "current_component") }
     fun set_cycle_time(idx: Int) { UtilLocalStorage.setInt(instance._context!!, "current_cycle_time", idx) }
     fun get_cycle_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_cycle_time") }
+
+    fun set_pieces_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", idx) }
+    fun get_pieces_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
+    fun set_pairs_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pairs_info", idx) }
+    fun get_pairs_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pairs_info") }
 
 
     // 작업 워크 고유값 설정 (커팅버전. 여기선 안씀)
@@ -291,6 +286,7 @@ class AppGlobal private constructor() {
     fun set_downtime_list(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "downtime_list", data) }
     fun get_downtime_list() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "downtime_list") }
 
+
     // 기타
     fun set_color_code(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "color_code", data) }
     fun get_color_code() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "color_code") }
@@ -303,13 +299,14 @@ class AppGlobal private constructor() {
     fun get_quality() : String { return UtilLocalStorage.getString(instance._context!!, "current_quality") }
 
     // Layer정보 = pair 수
-    fun set_layer_pairs(layer_no: String, pair: String) { UtilLocalStorage.setString(instance._context!!, "current_layer_" + layer_no, pair) }
-    fun get_layer_pairs(layer_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_layer_" + layer_no) }
+//    fun set_layer_pairs(layer_no: String, pair: String) { UtilLocalStorage.setString(instance._context!!, "current_layer_" + layer_no, pair) }
+//    fun get_layer_pairs(layer_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_layer_" + layer_no) }
 
 //    fun set_trim_qty(value: String) { UtilLocalStorage.setString(instance._context!!, "current_trim_qty", value) }
 //    fun get_trim_qty() : String { return UtilLocalStorage.getString(instance._context!!, "current_trim_qty") }
 //    fun set_trim_pairs(pair: String) { UtilLocalStorage.setString(instance._context!!, "current_trim_pair", pair) }
 //    fun get_trim_pairs() : String { return UtilLocalStorage.getString(instance._context!!, "current_trim_pair") }
+
 
     // server, manual 방식
     fun set_target_type(value: String) { UtilLocalStorage.setString(instance._context!!, "target_type", value) }
@@ -383,7 +380,21 @@ class AppGlobal private constructor() {
     }
 
 
+    // 두시간(기간)에서 겹치는 시간을 계산해서 초로 리턴
+    fun compute_time_millis(src_dt_s:Long, src_dt_e:Long, dst_dt_s:Long, dst_dt_e:Long) : Int {
+        var dst_dt_s_cpy = dst_dt_s
+        var dst_dt_e_cpy = dst_dt_e
+        if (src_dt_s > dst_dt_s_cpy ) dst_dt_s_cpy = src_dt_s
+        if (src_dt_e < dst_dt_e_cpy ) dst_dt_e_cpy = src_dt_e
+
+        if (dst_dt_s_cpy >= src_dt_s && dst_dt_s_cpy <= src_dt_e &&
+            dst_dt_e_cpy >= src_dt_s && dst_dt_e_cpy <= src_dt_e) {
+            return ((dst_dt_e_cpy-dst_dt_s_cpy) / 1000 ).toInt()
+        }
+        return 0
+    }
     // 두시간(기간)에서 겹치는 시간을 계산
+    // 위의 compute_time_millis()와 같음.
     fun compute_time(src_dt_s:DateTime, src_dt_e:DateTime, dst_dt_s:DateTime, dst_dt_e:DateTime) : Int {
         var dst_dt_s_cpy = dst_dt_s
         var dst_dt_e_cpy = dst_dt_e
@@ -482,15 +493,15 @@ class AppGlobal private constructor() {
 //        return mac
 //    }
 
+
     // 디바이스
     @Throws(java.io.IOException::class)
     fun loadFileAsString(filePath: String): String {
         val data = StringBuffer(1000)
         val reader = BufferedReader(FileReader(filePath))
         val buf = CharArray(1024)
-        var numRead = 0
         while (true) {
-            numRead = reader.read(buf)
+            val numRead = reader.read(buf)
             if (numRead == -1) break
             val readData = String(buf, 0, numRead)
             data.append(readData)

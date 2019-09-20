@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -87,20 +86,17 @@ Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACA
             if(code == "00"){
                 finish(true, 1, "ok", null)
             } else {
-                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
 
     private fun fetchData() {
-
         val uri = "/getlist1.php"
         var params = listOf("code" to "text")
 
         request(this, uri, false, params, { result ->
-
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if(code == "00"){
 
                 var list = result.getJSONArray("item")
@@ -117,8 +113,8 @@ Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACA
                 }
                 list_adapter?.notifyDataSetChanged()
 
-            }else{
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            } else {
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }

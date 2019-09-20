@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
-import com.suntech.iot.pattern.MainActivity
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -68,15 +66,11 @@ class WorkSheetActivity : BaseActivity() {
         request(this, uri, false, params, { result ->
 
             var code = result.getString("code")
-            var msg = result.getString("msg")
-            if(code == "00"){
-
+            if (code == "00") {
                 var list = result.getJSONArray("item")
 
                 for (i in 0..(list.length() - 1)) {
-
                     val item = list.getJSONObject(i)
-
                     var map=hashMapOf(
                         "date" to item.getString("date"),
                         "factory" to item.getString("factory"),
@@ -90,8 +84,8 @@ class WorkSheetActivity : BaseActivity() {
                 }
                 list_adapter?.notifyDataSetChanged()
 
-            }else{
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            } else {
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }

@@ -1,14 +1,11 @@
 package com.suntech.iot.pattern.popup
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.db.DBHelperForReport
-import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_actual_count_edit_input.*
 import org.joda.time.DateTime
 import org.json.JSONObject
@@ -34,7 +31,7 @@ class ActualCountEditInputActivity : BaseActivity() {
         val row = db.get(work_idx)
 
         if (row == null) {
-            Toast.makeText(this, getString(R.string.msg_has_not_server_info), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_not_server_info, true)
             finish()
         }
 
@@ -65,7 +62,7 @@ class ActualCountEditInputActivity : BaseActivity() {
     private fun sendCountData(count: String, work_idx: String) {
 
         if (AppGlobal.instance.get_server_ip()=="") {
-            Toast.makeText(this, getString(R.string.msg_has_not_server_info), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_not_server_info, true)
             return
         }
 
@@ -73,7 +70,7 @@ class ActualCountEditInputActivity : BaseActivity() {
         val row = db.get(work_idx)
 
         if (row == null) {
-            Toast.makeText(this, getString(R.string.msg_data_not_found), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_data_not_found, true)
             return
 
         } else {
@@ -162,7 +159,7 @@ class ActualCountEditInputActivity : BaseActivity() {
                     finish(true, 0, "ok", null)
 
                 } else {
-                    Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
+                    ToastOut(this, result.getString("msg"), true)
                 }
             })
         }

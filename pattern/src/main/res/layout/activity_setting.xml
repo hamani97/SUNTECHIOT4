@@ -23,20 +23,15 @@
                     android:stateListAnimator="@null"
                     android:text="@string/button_tab_system_setting" />
             <Button
-                    android:id="@+id/btn_setting_count"
-                    style="@style/tab_btn_off"
-                    android:stateListAnimator="@null"
-                    android:text="@string/button_tab_count_setting" />
-            <Button
                     android:id="@+id/btn_setting_target"
                     style="@style/tab_btn_off"
                     android:stateListAnimator="@null"
                     android:text="@string/button_tab_target_setting" />
             <Button
-                    android:id="@+id/btn_setting_time"
+                    android:id="@+id/btn_setting_etc"
                     style="@style/tab_btn_off"
                     android:stateListAnimator="@null"
-                    android:text="@string/button_tab_time_setting"/>
+                    android:text="@string/button_tab_etc_setting"/>
         </LinearLayout>
 
         <FrameLayout
@@ -258,162 +253,6 @@
 
             </LinearLayout>
 
-            <!--Count setting-->
-            <LinearLayout
-                    android:id="@+id/layout_setting_count"
-                    android:layout_width="1080dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                <!--<TextView style="@style/table_title" android:text="@string/title_count_info" />-->
-
-                <!--&lt;!&ndash; Trim &ndash;&gt;-->
-                <!--<LinearLayout style="@style/table_row" android:layout_marginTop="12dp">-->
-                    <!--<EditText android:id="@+id/tv_trim_qty"-->
-                              <!--style="@style/table_row_data_editor1"-->
-                              <!--android:layout_width="100dp"-->
-                              <!--android:singleLine="true"-->
-                              <!--android:gravity="center"-->
-                              <!--android:inputType="number" />-->
-                    <!--<TextView style="@style/table_row_title"-->
-                              <!--android:layout_width="wrap_content"-->
-                              <!--android:paddingLeft="16dp"-->
-                              <!--android:paddingRight="16dp"-->
-                              <!--android:text="@string/label_count_trim_qty"-->
-                              <!--android:layout_marginLeft="8dp" />-->
-                    <!--<ImageView-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:paddingLeft="20dp"-->
-                            <!--android:paddingRight="20dp"-->
-                            <!--android:layout_gravity="center"-->
-                            <!--android:src="@drawable/ic_arrow_right16" />-->
-                    <!--<TextView style="@style/table_row_data_selector"-->
-                              <!--android:id="@+id/tv_trim_pairs"-->
-                              <!--android:gravity="center"-->
-                              <!--android:text=""-->
-                              <!--android:layout_width="100dp"/>-->
-                    <!--<TextView style="@style/table_row_title"-->
-                              <!--android:layout_width="wrap_content"-->
-                              <!--android:paddingLeft="16dp"-->
-                              <!--android:paddingRight="16dp"-->
-                              <!--android:text="@string/label_count_trim_pairs"-->
-                              <!--android:layout_marginLeft="8dp" />-->
-                <!--</LinearLayout>-->
-
-                <!--Screen blinking-->
-                <LinearLayout
-                        android:layout_width="1080dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:orientation="vertical">
-                    <!--android:layout_marginTop="40dp"-->
-
-                    <TextView style="@style/table_title" android:text="@string/label_screen_blink_effect" />
-
-                    <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                        <LinearLayout
-                                android:layout_width="520dp"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout style="@style/table_row">
-                                    <TextView style="@style/table_row_title" android:text="@string/label_screen_blink_effect"
-                                              android:layout_width="240dp" />
-                                    <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:gravity="center_vertical"
-                                            android:background="@color/colorDefault">
-                                        <Switch
-                                                android:id="@+id/sw_screen_blink_effect"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_marginRight="60dp"
-                                                android:layout_marginLeft="12dp"
-                                                android:checked="false"/>
-                                    </LinearLayout>
-                                </LinearLayout>
-                                <LinearLayout style="@style/table_row">
-                                    <TextView style="@style/table_row_title" android:text="@string/label_remaining_number"
-                                              android:layout_width="240dp" />
-                                    <EditText
-                                            style="@style/table_row_data_editor1"
-                                            android:layout_width="120dp"
-                                            android:inputType="number"
-                                            android:id="@+id/et_remain_number" />
-                                    <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="12dp"
-                                            android:text="( 5 ~ 30 )"
-                                            android:textColor="@color/colorGray"
-                                            android:textSize="21sp" />
-                                </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginLeft="16dp"
-                                android:orientation="horizontal">
-                            <TextView
-                                    android:id="@+id/blink_color_f8ad13"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    android:layout_marginLeft="16dp"
-                                    android:gravity="center"
-                                    android:text=""
-                                    android:textSize="24sp"
-                                    android:textColor="@color/colorWhite"
-                                    android:textStyle="bold"
-                                    android:background="@color/colorOrange"/>
-                            <TextView
-                                    android:id="@+id/blink_color_ff0000"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    android:layout_marginLeft="16dp"
-                                    android:gravity="center"
-                                    android:text=""
-                                    android:textSize="24sp"
-                                    android:textColor="@color/colorWhite"
-                                    android:textStyle="bold"
-                                    android:background="@color/colorRed"/>
-                            <TextView
-                                    android:id="@+id/blink_color_0079BA"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    android:layout_marginLeft="16dp"
-                                    android:gravity="center"
-                                    android:text=""
-                                    android:textSize="24sp"
-                                    android:textColor="@color/colorWhite"
-                                    android:textStyle="bold"
-                                    android:background="@color/colorReadonly2"/>
-                            <TextView
-                                    android:id="@+id/blink_color_888888"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    android:layout_marginLeft="16dp"
-                                    android:gravity="center"
-                                    android:text=""
-                                    android:textSize="24sp"
-                                    android:textColor="@color/colorWhite"
-                                    android:textStyle="bold"
-                                    android:background="@color/colorGray"/>
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-
             <!--Target setting-->
             <LinearLayout
                     android:id="@+id/layout_setting_target"
@@ -550,9 +389,9 @@
 
             </LinearLayout>
 
-            <!--Time setting-->
+            <!--Etc setting-->
             <LinearLayout
-                    android:id="@+id/layout_setting_time"
+                    android:id="@+id/layout_setting_etc"
                     android:layout_width="1080dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -565,17 +404,12 @@
                         android:layout_marginRight="40dp"
                         android:orientation="vertical">
 
-                    <TextView style="@style/table_title" android:text="@string/label_screen_blink_effect" />
+                    <TextView style="@style/table_title" android:text="@string/title_time" />
 
-
-
-
-                    <TextView style="@style/table_title" android:text="@string/title_counter_device_info" />
-
-                    <!-- System automatic date/time sync -->
+                    <!-- Server time -->
                     <LinearLayout style="@style/table_row">
-                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_automatic_time" />
-                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_auto_time" />
+                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_server_time" />
+                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_server_time" />
                     </LinearLayout>
 
                     <!-- Device time -->
@@ -584,10 +418,95 @@
                         <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_time" />
                     </LinearLayout>
 
-                    <!-- Server time -->
-                    <LinearLayout style="@style/table_row">
-                        <TextView style="@style/table_row_title" android:layout_width="240dp" android:text="@string/label_server_time" />
-                        <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_server_time" />
+
+
+                    <TextView style="@style/table_title" android:text="@string/title_downtime" android:layout_marginTop="20dp"/>
+
+                    <LinearLayout
+                            android:layout_width="520dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                        <LinearLayout style="@style/table_row">
+                            <TextView style="@style/table_row_title" android:text="@string/label_downtime_blink_effect"
+                                      android:layout_width="240dp" />
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:background="@color/colorDefault">
+                                <Switch
+                                        android:id="@+id/sw_screen_blink_effect"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="60dp"
+                                        android:layout_marginLeft="12dp"
+                                        android:checked="false"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                        <!--<LinearLayout style="@style/table_row">-->
+                            <!--<TextView style="@style/table_row_title" android:text="@string/label_remaining_number"-->
+                                      <!--android:layout_width="240dp" />-->
+                            <!--<EditText-->
+                                    <!--style="@style/table_row_data_editor1"-->
+                                    <!--android:layout_width="120dp"-->
+                                    <!--android:inputType="number"-->
+                                    <!--android:id="@+id/et_remain_number" />-->
+                            <!--<TextView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:layout_marginLeft="12dp"-->
+                                    <!--android:text="( 5 ~ 30 )"-->
+                                    <!--android:textColor="@color/colorGray"-->
+                                    <!--android:textSize="21sp" />-->
+                        <!--</LinearLayout>-->
+
+                        <LinearLayout style="@style/table_row" android:layout_height="wrap_content">
+                            <TextView
+                                    android:id="@+id/blink_color_f8ad13"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textSize="24sp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold"
+                                    android:background="@color/colorOrange"/>
+                            <TextView
+                                    android:id="@+id/blink_color_ff0000"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textSize="24sp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold"
+                                    android:background="@color/colorRed"/>
+                            <TextView
+                                    android:id="@+id/blink_color_0079BA"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textSize="24sp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold"
+                                    android:background="@color/colorReadonly2"/>
+                            <TextView
+                                    android:id="@+id/blink_color_888888"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_marginLeft="16dp"
+                                    android:gravity="center"
+                                    android:text=""
+                                    android:textSize="24sp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold"
+                                    android:background="@color/colorGray"/>
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -598,7 +517,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                    <TextView style="@style/table_title" android:text="@string/title_server_info" />
+                    <TextView style="@style/table_title" android:text="@string/title_work_sheet" />
 
                     <!-- WorkSheet Name -->
                     <LinearLayout style="@style/table_row">

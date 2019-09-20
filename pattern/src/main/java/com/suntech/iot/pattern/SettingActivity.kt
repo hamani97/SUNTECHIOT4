@@ -1,19 +1,15 @@
 package com.suntech.iot.pattern
 
-import android.Manifest.permission.SET_TIME
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import kotlinx.android.synthetic.main.activity_setting.*
@@ -36,7 +32,7 @@ class SettingActivity : BaseActivity() {
     private var _selected_mc_no_idx: String = ""
     private var _selected_mc_model_idx: String = ""
 
-    private var _server_time = -1000L
+    private var _server_time = -1000000L
 
     val _broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -73,19 +69,12 @@ class SettingActivity : BaseActivity() {
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
 
         registerReceiver(_broadcastReceiver, filter)
-
-        val result = android.provider.Settings.Global.getInt(contentResolver, android.provider.Settings.Global.AUTO_TIME, 0)
-        if (result == 1) {
-            tv_setting_auto_time.text = "On"
-        } else {
-            tv_setting_auto_time.text = "Off"
-        }
     }
 
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
-            if (tab_pos == 4) updateView()
+            if (tab_pos == 3) updateView()
             startHandler()
         }, 1000)
     }
@@ -93,7 +82,7 @@ class SettingActivity : BaseActivity() {
     private fun updateView() {
         val now = DateTime.now()
         tv_setting_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
-        if (_server_time == -1000L) {
+        if (_server_time == -1000000L) {
             tv_setting_server_time?.text = "Failed to get server time"
         } else if (_server_time == 0L) {
             tv_setting_server_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
@@ -134,7 +123,7 @@ class SettingActivity : BaseActivity() {
         et_setting_port.setText(AppGlobal.instance.get_server_port())
 
         // 워크시트 토글 시간(초). 0일때는 5로 초기화
-        val sec = if (AppGlobal.instance.get_worksheet_display_time()==0) "5" else AppGlobal.instance.get_worksheet_display_time().toString()
+        val sec = if (AppGlobal.instance.get_worksheet_display_time()==0) "10" else AppGlobal.instance.get_worksheet_display_time().toString()
         et_setting_worksheet_display_time.setText(sec)
 
         et_setting_sop_name.setText(AppGlobal.instance.get_sop_name())
@@ -150,10 +139,10 @@ class SettingActivity : BaseActivity() {
         else sw_start_at_target_1.isChecked = true
 
         // 깜박임 기능. 0일때는 10으로 초기화
-        val remain = if (AppGlobal.instance.get_remain_number()==0) "10" else AppGlobal.instance.get_remain_number().toString()
-        et_remain_number.setText(remain)
+//        val remain = if (AppGlobal.instance.get_remain_number()==0) "10" else AppGlobal.instance.get_remain_number().toString()
+//        et_remain_number.setText(remain)
 
-        if (_selected_blink_color == "") _selected_blink_color = "ff0000"
+        if (_selected_blink_color == "") _selected_blink_color = "f8ad13"
         blinkColorChange(_selected_blink_color)
 
         blink_color_f8ad13.setOnClickListener {
@@ -186,9 +175,8 @@ class SettingActivity : BaseActivity() {
         // click listener
         // Tab button
         btn_setting_system.setOnClickListener { tabChange(1) }
-        btn_setting_count.setOnClickListener { tabChange(2) }
-        btn_setting_target.setOnClickListener { tabChange(3) }
-        btn_setting_time.setOnClickListener { tabChange(4) }
+        btn_setting_target.setOnClickListener { tabChange(2) }
+        btn_setting_etc.setOnClickListener { tabChange(3) }
 
         // System setting button listener
         tv_setting_factory.setOnClickListener { fetchDataForFactory() }
@@ -199,7 +187,7 @@ class SettingActivity : BaseActivity() {
         // Target setting button listener
         btn_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
         btn_server_hourly.setOnClickListener {
-            Toast.makeText(this, "Not yet supported.", Toast.LENGTH_SHORT).show();
+            ToastOut(this, "Not yet supported.", true)
 //            targetTypeChange("server_per_hourly")
         }
         btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
@@ -209,7 +197,7 @@ class SettingActivity : BaseActivity() {
 
         // check server button
         btn_setting_check_server.setOnClickListener {
-            checkServer(true)
+            checkServer()
             var new_ip = et_setting_server_ip.text.toString()
             var old_ip = AppGlobal.instance.get_server_ip()
             if (!new_ip.equals(old_ip)) {
@@ -246,21 +234,13 @@ class SettingActivity : BaseActivity() {
         if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
 
-        val permissionCheck = ContextCompat.checkSelfPermission(this, SET_TIME)
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(SET_TIME), REQUEST_READ_PHONE_STATE)
-        } else {
-            //TODO
-        }
-
         fetchServerTime()
         startHandler()
     }
 
     val REQUEST_READ_PHONE_STATE = 1000
 
-    private fun checkServer(show_toast:Boolean = false) {
+    private fun checkServer() {
         val url = "http://"+ et_setting_server_ip.text.toString()
         val port = et_setting_port.text.toString()
         val uri = "/ping.php"
@@ -268,7 +248,7 @@ class SettingActivity : BaseActivity() {
 
         request(this, url, port, uri, false, false,false, params, { result ->
             var code = result.getString("code")
-            if (show_toast) Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
+            ToastOut(this, result.getString("msg"), true)
             if (code == "00") {
                 btn_server_state.isSelected = true
             } else {
@@ -276,7 +256,7 @@ class SettingActivity : BaseActivity() {
             }
         }, {
             btn_server_state.isSelected = false
-            if (show_toast) Toast.makeText(this, getString(R.string.msg_connection_fail), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_connection_fail, true)
         })
     }
 
@@ -298,10 +278,11 @@ class SettingActivity : BaseActivity() {
                     val now = System.currentTimeMillis()
                     val millis = now - currentTimeMillisStart
                     _server_time = curtimestamp - now + millis
+                    Log.e("time","time ================> " + _server_time)
                 }
             }
         }, {
-            Toast.makeText(this, getString(R.string.msg_connection_fail), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_connection_fail, true)
         })
     }
 
@@ -309,33 +290,18 @@ class SettingActivity : BaseActivity() {
         // check value
         if (_selected_factory_idx == "" || _selected_room_idx == "" || _selected_line_idx == "" || tv_setting_mac.text.toString().trim() == "") {
             tabChange(1)
-            Toast.makeText(this, getString(R.string.msg_require_info), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_require_info, true)
             return
         }
-//        if (_selected_layer_1.trim() == "") {
-//            Toast.makeText(this, getString(R.string.msg_select_layer1), Toast.LENGTH_SHORT).show()
-//            return
-//        }
         if (_selected_target_type.substring(0, 6) == "device") {
             if (tv_shift_1.text.toString().trim()=="" || tv_shift_2.text.toString().trim()=="" || tv_shift_3.text.toString().trim()=="") {
-                tabChange(3)
-                Toast.makeText(this, getString(R.string.msg_require_target_quantity), Toast.LENGTH_SHORT).show()
+                tabChange(2)
+                ToastOut(this, R.string.msg_require_target_quantity, true)
                 return
             }
         }
-        val remain_num = if (et_remain_number.text.toString()=="") 10 else et_remain_number.text.toString().toInt()
-        if (remain_num < 5 || remain_num > 30) {
-            Toast.makeText(this, getString(R.string.msg_remain_out_of_range), Toast.LENGTH_SHORT).show()
-            return
-        }
 
-//        if (tv_trim_qty.text.toString().trim()=="" || tv_trim_pairs.text.toString()=="") {
-//            tabChange(2)
-//            Toast.makeText(this, getString(R.string.msg_require_pairs_info), Toast.LENGTH_SHORT).show()
-//            return
-//        }
-
-        val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 5 else et_setting_worksheet_display_time.text.toString().toInt()
+        val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 10 else et_setting_worksheet_display_time.text.toString().toInt()
 
         // setting value
         AppGlobal.instance.set_factory_idx(_selected_factory_idx)
@@ -366,7 +332,7 @@ class SettingActivity : BaseActivity() {
 
 
         AppGlobal.instance.set_screen_blink(sw_screen_blink_effect.isChecked)
-        AppGlobal.instance.set_remain_number(remain_num)
+//        AppGlobal.instance.set_remain_number(remain_num)
         AppGlobal.instance.set_blink_color(_selected_blink_color)
 
         // count setting
@@ -400,7 +366,7 @@ class SettingActivity : BaseActivity() {
                 sendAppStartTime()      // 앱 시작을 알림. 결과에 상관없이 종료
                 finish()
             } else {
-                Toast.makeText(this, result.getString("msg"), Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -442,7 +408,6 @@ class SettingActivity : BaseActivity() {
 
         request(this, url, port, uri, false, false,false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00"){
                 var arr: ArrayList<String> = arrayListOf<String>()
                 var list = result.getJSONArray("item")
@@ -469,7 +434,7 @@ class SettingActivity : BaseActivity() {
                     }
                 })
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -484,7 +449,6 @@ class SettingActivity : BaseActivity() {
 
         request(this, url, port, uri, false, false,false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var arr: ArrayList<String> = arrayListOf<String>()
                 var list = result.getJSONArray("item")
@@ -510,7 +474,7 @@ class SettingActivity : BaseActivity() {
                     }
                 })
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -526,7 +490,6 @@ class SettingActivity : BaseActivity() {
 
         request(this, url, port, uri, false, false,false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var arr: ArrayList<String> = arrayListOf<String>()
                 var list = result.getJSONArray("item")
@@ -551,7 +514,7 @@ class SettingActivity : BaseActivity() {
                     }
                 })
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -564,7 +527,6 @@ class SettingActivity : BaseActivity() {
 
         request(this, url, port, uri, false, false,false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var arr: ArrayList<String> = arrayListOf<String>()
                 var list = result.getJSONArray("item")
@@ -589,7 +551,7 @@ class SettingActivity : BaseActivity() {
                     }
                 })
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }
@@ -601,58 +563,35 @@ class SettingActivity : BaseActivity() {
             1 -> {
                 btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
                 btn_setting_system.setBackgroundResource(R.color.colorButtonBlue)
-                btn_setting_count.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
                 btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_etc.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_etc.setBackgroundResource(R.color.colorButtonDefault)
                 layout_setting_system.visibility = View.VISIBLE
-                layout_setting_count.visibility = View.GONE
                 layout_setting_target.visibility = View.GONE
-                layout_setting_time.visibility = View.GONE
+                layout_setting_etc.visibility = View.GONE
             }
             2 -> {
                 btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_system.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_count.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-                btn_setting_count.setBackgroundResource(R.color.colorButtonBlue)
-                btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
+                btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                btn_setting_target.setBackgroundResource(R.color.colorButtonBlue)
+                btn_setting_etc.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                btn_setting_etc.setBackgroundResource(R.color.colorButtonDefault)
                 layout_setting_system.visibility = View.GONE
-                layout_setting_count.visibility = View.VISIBLE
-                layout_setting_target.visibility = View.GONE
-                layout_setting_time.visibility = View.GONE
+                layout_setting_target.visibility = View.VISIBLE
+                layout_setting_etc.visibility = View.GONE
             }
             3 -> {
                 btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_system.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_count.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-                btn_setting_target.setBackgroundResource(R.color.colorButtonBlue)
-                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_time.setBackgroundResource(R.color.colorButtonDefault)
-                layout_setting_system.visibility = View.GONE
-                layout_setting_count.visibility = View.GONE
-                layout_setting_target.visibility = View.VISIBLE
-                layout_setting_time.visibility = View.GONE
-            }
-            4 -> {
-                btn_setting_system.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_system.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_count.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                btn_setting_count.setBackgroundResource(R.color.colorButtonDefault)
                 btn_setting_target.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
                 btn_setting_target.setBackgroundResource(R.color.colorButtonDefault)
-                btn_setting_time.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
-                btn_setting_time.setBackgroundResource(R.color.colorButtonBlue)
+                btn_setting_etc.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                btn_setting_etc.setBackgroundResource(R.color.colorButtonBlue)
                 layout_setting_system.visibility = View.GONE
-                layout_setting_count.visibility = View.GONE
                 layout_setting_target.visibility = View.GONE
-                layout_setting_time.visibility = View.VISIBLE
+                layout_setting_etc.visibility = View.VISIBLE
             }
         }
     }

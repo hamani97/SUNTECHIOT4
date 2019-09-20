@@ -9,13 +9,11 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.OEEUtil
@@ -123,7 +121,7 @@ class DesignInfoActivity : BaseActivity() {
 
         btn_setting_confirm.setOnClickListener {
             if (tv_design_pieces.text.toString() == "" || tv_design_pairs.text.toString() == "") {
-                Toast.makeText(this, getString(R.string.msg_require_info), Toast.LENGTH_SHORT).show()
+                ToastOut(this, R.string.msg_require_info, true)
                 return@setOnClickListener
             }
             AppGlobal.instance.set_pieces_info(tv_design_pieces.text.toString())
@@ -131,7 +129,7 @@ class DesignInfoActivity : BaseActivity() {
 
             if (_selected_index < 0) {
                 finish(false, 0, "ok", null)
-//                Toast.makeText(this, getString(R.string.msg_has_notselected), Toast.LENGTH_SHORT).show()
+//                ToastOut(this, R.string.msg_has_notselected, true)
 //                return@setOnClickListener
             } else {
                 finish(true, 1, "ok", _filtered_list[_selected_index])

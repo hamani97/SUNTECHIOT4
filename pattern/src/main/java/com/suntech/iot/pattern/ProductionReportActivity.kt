@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForReport

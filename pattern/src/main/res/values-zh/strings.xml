@@ -171,4 +171,9 @@
     <string name="button_tab_time_setting">时间设定</string>
     <string name="label_device_time">设备时间</string>
     <string name="label_server_time">服务器时间</string>
+    <string name="title_downtime">停机时间</string>
+    <string name="title_time">时间</string>
+    <string name="button_tab_etc_setting">联网系统设定</string>
+    <string name="filename">文件名称</string>
+    <string name="label_start_at_target_1">开始目标1</string>
 </resources>

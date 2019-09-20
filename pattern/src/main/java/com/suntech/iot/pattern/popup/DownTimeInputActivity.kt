@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import com.bugfender.sdk.Bugfender.init
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -20,6 +20,8 @@ import org.joda.time.DateTime
 import java.util.*
 
 class DownTimeInputActivity : BaseActivity() {
+
+    private var _db = DBHelperForDownTime(this)
 
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
@@ -82,12 +84,48 @@ class DownTimeInputActivity : BaseActivity() {
 
     private fun sendEndDownTime() {
         if (AppGlobal.instance.get_server_ip() == "") {
-            Toast.makeText(this, getString(R.string.msg_has_not_server_info), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_not_server_info, true)
+            return
+        }
+        if (AppGlobal.instance.get_downtime_idx() == "") {
+            ToastOut(this, R.string.msg_data_not_found, true)
             return
         }
         if (_selected_idx < 0) {
-            Toast.makeText(this, getString(R.string.msg_has_notselected), Toast.LENGTH_SHORT).show()
+            ToastOut(this, R.string.msg_has_notselected, true)
             return
+        }
+        val idx = AppGlobal.instance.get_downtime_idx()
+
+        val now = DateTime()
+        var down_time = 0
+        var real_down_time = 0
+        var target = 0
+
+        val item = _db.get(idx)
+        if (item != null) {
+            val now_millis = now.millis
+            val down_start_millis = OEEUtil.parseDateTime(item["start_dt"].toString()).millis
+
+            var planned1_time = 0
+            var planned2_time = 0
+
+            val shift_time = AppGlobal.instance.get_current_shift_time()
+
+            if (shift_time != null) {
+                val planned1_stime_millis = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString()).millis
+                val planned1_etime_millis = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString()).millis
+                val planned2_stime_millis = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString()).millis
+                val planned2_etime_millis = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString()).millis
+
+                planned1_time = AppGlobal.instance.compute_time_millis(down_start_millis, now_millis, planned1_stime_millis, planned1_etime_millis)
+                planned2_time = AppGlobal.instance.compute_time_millis(down_start_millis, now_millis, planned2_stime_millis, planned2_etime_millis)
+            }
+            down_time = ((now_millis - down_start_millis) / 1000).toInt()
+            real_down_time = down_time - planned1_time - planned2_time
+
+            val ct = AppGlobal.instance.get_cycle_time()
+            if (ct > 0) target = real_down_time / ct
         }
 
         val downtime = _list[_selected_idx]["idx"]
@@ -97,8 +135,8 @@ class DownTimeInputActivity : BaseActivity() {
             "code" to "end",
             "idx" to AppGlobal.instance.get_downtime_idx(),
             "downtime" to downtime,
-            "edate" to DateTime().toString("yyyy-MM-dd"),
-            "etime" to DateTime().toString("HH:mm:ss"))
+            "edate" to now.toString("yyyy-MM-dd"),
+            "etime" to now.toString("HH:mm:ss"))
 
         btn_confirm.isEnabled = false
         btn_cancel.isEnabled = false
@@ -108,11 +146,11 @@ class DownTimeInputActivity : BaseActivity() {
             var msg = result.getString("msg")
             if (code == "00") {
                 val idx = AppGlobal.instance.get_downtime_idx()
+                AppGlobal.instance.set_downtime_idx("")
 
-                var db = DBHelperForDownTime(this)
-                db.updateEnd(idx, _list[_selected_idx]["name"] ?: "")
+                _db.updateEnd(idx, _list[_selected_idx]["name"] ?: "", now.toString("yyyy-MM-dd HH:mm:ss"), down_time, real_down_time, target)
 
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, msg, true)
                 finish(true, 0, "ok", null)
 
             } else if (code == "99") {
@@ -121,7 +159,7 @@ class DownTimeInputActivity : BaseActivity() {
             } else {
                 btn_confirm.isEnabled = true
                 btn_cancel.isEnabled = true
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, msg, true)
             }
         })
     }
@@ -133,8 +171,7 @@ class DownTimeInputActivity : BaseActivity() {
         if (work_idx=="") return
 
         val idx = intent.getStringExtra("idx")
-        var db = DBHelperForDownTime(this)
-        val item = db.get(idx)
+        val item = _db.get(idx)
 
         if (item !=null) {
             val start_dt = item["start_dt"].toString()
@@ -142,7 +179,7 @@ class DownTimeInputActivity : BaseActivity() {
             val shift_idx = item["shift_id"].toString()
             val shift_name = item["shift_name"].toString()
             val dt = OEEUtil.parseDateTime(start_dt)
-            db.delete(idx)
+            _db.delete(idx)
 
 //            var work_db = SimpleDatabaseHelper(this)
 //            val row = work_db.get(work_idx)
@@ -164,17 +201,15 @@ class DownTimeInputActivity : BaseActivity() {
 
             request(this, uri, true, false, params, { result ->
                 var code = result.getString("code")
-                var msg = result.getString("msg")
                 if (code == "00") {
                     var idx = result.getString("idx")
                     AppGlobal.instance.set_downtime_idx(idx)
 
-                    db.add(idx, work_idx, didx, shift_idx, shift_name, start_dt)
+                    _db.add(idx, work_idx, didx, shift_idx, shift_name, start_dt)
 
                     sendEndDownTime()
-
                 } else {
-                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                    ToastOut(this, result.getString("msg"), true)
                 }
             })
         }
@@ -188,14 +223,12 @@ class DownTimeInputActivity : BaseActivity() {
 
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
             if (code == "00") {
                 var list = result.getJSONArray("item")
                 AppGlobal.instance.set_downtime_list(list)
                 updateList()
-
             } else {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                ToastOut(this, result.getString("msg"), true)
             }
         })
     }

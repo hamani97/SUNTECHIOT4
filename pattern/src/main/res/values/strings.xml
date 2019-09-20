@@ -22,10 +22,12 @@
     <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>
     <string name="title_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
     <string name="title_defective_input">Defective input</string>
+    <string name="title_downtime">DOWNTIME</string>
     <string name="title_down_time_info">Down Time Info</string>
     <string name="title_down_time_input">Down Time Input</string>
     <string name="title_down_time_list">Down Time Input</string>
     <string name="title_product_list">Product List</string>
+    <string name="title_time">TIME</string>
 
     <!-- 카운트화면 -->
     <string name="button_total_count_view">Total Count View</string>
@@ -51,10 +53,11 @@
     <string name="label_long_touch_enable">Long Touch Enable</string>
     <string name="label_message_enable">Message Enable</string>
     <string name="label_sound_at_count">Sound at Count</string>
-    <string name="label_start_at_target_1" translatable="false">Start at target 1</string>
+    <string name="label_start_at_target_1">Start at target 1</string>
     <string name="label_seconds">Seconds</string>
 
     <string name="label_screen_blink_effect">SCREEN BLINK EFFECT</string>
+    <string name="label_downtime_blink_effect" translatable="false">Downtime blink effect</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
@@ -132,6 +135,7 @@
     <string name="button_tab_count_setting">COUNT SETTING</string>
     <string name="button_tab_target_setting">TARGET SETTING</string>
     <string name="button_tab_time_setting">TIME SETTING</string>
+    <string name="button_tab_etc_setting">ETC SETTING</string>
 
     <!-- 홈화면 -->
     <string name="bottom_label_machine_info">MACHINE INFO</string>
@@ -159,7 +163,7 @@
     <string name="defective">Defective</string>
     <string name="time">Time</string>
     <string name="date" translatable="false">Date</string>
-    <string name="filename" translatable="false">File name</string>
+    <string name="filename">File name</string>
 
     <string name="availability">Availability</string>
     <string name="performance">Performance</string>
@@ -216,6 +220,6 @@
     <string name="msg_no_downtime">Downtime message not found</string>
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
     <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
-    <string name="msg_exit_automatically">Workday ends automatically</string>
+    <string name="msg_exit_automatically">Shift ends automatically</string>
 
 </resources>
