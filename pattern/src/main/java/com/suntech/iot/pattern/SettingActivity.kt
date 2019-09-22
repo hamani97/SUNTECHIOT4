@@ -10,6 +10,7 @@ import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import kotlinx.android.synthetic.main.activity_setting.*
@@ -59,6 +60,14 @@ class SettingActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
         initView()
+    }
+
+    fun parentSpaceClick(view: View) {
+        var v = this.currentFocus
+        if (v != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(v.windowToken, 0)
+        }
     }
 
     public override fun onResume() {
@@ -119,14 +128,14 @@ class SettingActivity : BaseActivity() {
         tv_setting_mc_no1.setText(AppGlobal.instance.get_mc_no1())
         et_setting_mc_serial.setText(AppGlobal.instance.get_mc_serial())
 
-        et_setting_server_ip.setText(AppGlobal.instance.get_server_ip())
-        et_setting_port.setText(AppGlobal.instance.get_server_port())
+        et_setting_server_ip?.setText(AppGlobal.instance.get_server_ip())
+        et_setting_port?.setText(AppGlobal.instance.get_server_port())
 
         // 워크시트 토글 시간(초). 0일때는 5로 초기화
         val sec = if (AppGlobal.instance.get_worksheet_display_time()==0) "10" else AppGlobal.instance.get_worksheet_display_time().toString()
-        et_setting_worksheet_display_time.setText(sec)
+        et_setting_worksheet_display_time?.setText(sec)
 
-        et_setting_sop_name.setText(AppGlobal.instance.get_sop_name())
+        et_setting_sop_name?.setText(AppGlobal.instance.get_sop_name())
 
         sw_long_touch.isChecked = AppGlobal.instance.get_long_touch()
         sw_message_enable.isChecked = AppGlobal.instance.get_message_enable()

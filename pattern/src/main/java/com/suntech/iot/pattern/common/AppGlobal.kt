@@ -290,6 +290,8 @@ class AppGlobal private constructor() {
     // 기타
     fun set_color_code(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "color_code", data) }
     fun get_color_code() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "color_code") }
+    fun set_comopnent_data(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "comopnent_data", data) }
+    fun get_comopnent_data() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "comopnent_data") }
 
     fun set_availability(value: String) { UtilLocalStorage.setString(instance._context!!, "current_availability", value) }
     fun get_availability() : String { return UtilLocalStorage.getString(instance._context!!, "current_availability") }

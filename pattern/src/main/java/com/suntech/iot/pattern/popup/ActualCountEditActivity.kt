@@ -53,9 +53,9 @@ class ActualCountEditActivity : BaseActivity() {
 
     private fun updateView() {
 
-        tv_item_row0.text = "TOTAL"
-        tv_item_row1.text = ""
-        tv_item_row2.text = ""
+        tv_item_row0?.text = "TOTAL"
+        tv_item_row1?.text = ""
+        tv_item_row2?.text = ""
 
         var db = DBHelperForDesign(this)
         _list = db.gets() ?: _list

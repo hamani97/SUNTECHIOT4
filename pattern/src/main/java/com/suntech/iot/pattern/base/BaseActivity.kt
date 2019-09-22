@@ -85,7 +85,7 @@ open class BaseActivity : AppCompatActivity() {
         intent.putExtra("d", data)
         sendBroadcast(intent)
     }
-    override fun finish () {
+    override fun finish() {
         this.finish(true, 0, "", null)
     }
 

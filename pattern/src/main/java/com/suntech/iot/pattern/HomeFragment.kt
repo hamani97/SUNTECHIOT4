@@ -41,7 +41,7 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun initViews() {
-        tv_app_version.text = "v " + activity.packageManager.getPackageInfo(activity.packageName, 0).versionName
+        tv_app_version?.text = "v " + activity.packageManager.getPackageInfo(activity.packageName, 0).versionName
 
         btn_count_view.setOnClickListener {
 //            if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {

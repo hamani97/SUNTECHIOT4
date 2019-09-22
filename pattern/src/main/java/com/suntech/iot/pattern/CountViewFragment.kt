@@ -87,9 +87,9 @@ class CountViewFragment : BaseFragment() {
         super.initViews()
 
         // Total count view
-        tv_count_view_target.text = "0"
-        tv_count_view_actual.text = "0"
-        tv_count_view_ratio.text = "0%"
+        tv_count_view_target?.text = "0"
+        tv_count_view_actual?.text = "0"
+        tv_count_view_ratio?.text = "0%"
 
         // Server charts
         initOEEGraph()
@@ -261,9 +261,9 @@ class CountViewFragment : BaseFragment() {
     private fun updateView() {
 
         // 기본 출력
-        tv_current_time.text = DateTime.now().toString("yyyy-MM-dd HH:mm:ss")
-        tv_pieces_qty.text = "" + (activity as MainActivity).pieces_qty
-        tv_pairs_qty.text = "" + (activity as MainActivity).pairs_qty
+        tv_current_time?.text = DateTime.now().toString("yyyy-MM-dd HH:mm:ss")
+        tv_pieces_qty?.text = "" + (activity as MainActivity).pieces_qty
+        tv_pairs_qty?.text = "" + (activity as MainActivity).pairs_qty
 
 //        tv_count_view_actual.text = "" + AppGlobal.instance.get_current_shift_actual_cnt()
 
@@ -633,6 +633,14 @@ class CountViewFragment : BaseFragment() {
         val performance_rate = floor(performance * 1000) / 10
 
         if (_performance_rate != performance_rate) {
+
+            // 100% 넘어가면 푸시발송
+            if (performance_rate >= 100.0f) {
+                if (_performance_rate < 100.0f) {
+                    OEEUtil.LogWrite("Best performance Push send...", "refreshOEEGraph")
+                    (activity as MainActivity).sendPush("SYS: PERFORMANCE", false)
+                }
+            }
             _performance_rate = performance_rate
 
             Log.e("refreshOEEGraph", "oee graph redraw : performance = " + (performance * 100) + "%")
@@ -745,80 +753,80 @@ class CountViewFragment : BaseFragment() {
 
 
     // 값에 변화가 생길때만 화면을 리프레쉬 하기 위한 변수
-    var _availability = ""
-    var _performance = ""
-    var _quality = ""
-
-    private fun drawChartView2() {
-        var availability = AppGlobal.instance.get_availability()
-        var performance = AppGlobal.instance.get_performance()
-        var quality = AppGlobal.instance.get_quality()
-
-        if (availability=="") availability = "0"
-        if (performance=="") performance = "0"
-        if (quality=="") quality = "0"
-
-        // 값에 변화가 있을때만 갱신
-        if (_availability != availability || _performance != performance || _quality != quality) {
-            Log.e("drawChartView2", "old : availability="+_availability+", performance="+_performance+", quality="+_quality)
-            Log.e("drawChartView2", "new : availability="+availability+", performance="+performance+", quality="+quality)
-
-            _availability = availability
-            _performance = performance
-            _quality = quality
-
-            Log.e("drawChartView2", "oee graph redraw")
-
-            var oee = availability.toFloat() * performance.toFloat() * quality.toFloat() / 10000.0f
-            var oee2 = String.format("%.1f", oee)
-            oee2 = oee2.replace(",", ".")//??
-
-            tv_oee_rate.text = oee2 + "%"
-            tv_availability_rate.text = availability + "%"
-            tv_performance_rate.text = performance + "%"
-            tv_quality_rate.text = quality + "%"
-
-            val oee_int = oee.toInt()
-            val availability_int = ceil(availability.toFloat()).toInt()
-            val performance_int = ceil(performance.toFloat()).toInt()
-            val quality_int = ceil(quality.toFloat()).toInt()
-
-            oee_progress.progress = oee_int
-            availability_progress.progress = availability_int
-            performance_progress.progress = performance_int
-            quality_progress.progress = quality_int
-
-            var oee_color_code = "ff0000"
-            var availability_color_code = "ff0000"
-            var performance_color_code = "ff0000"
-            var quality_color_code = "ff0000"
-
-            for (i in 0..(_color_list.size - 1)) {
-                val snumber = _color_list[i]["snumber"]?.toInt() ?: 0
-//                val enumber = _list[i]["enumber"]?.toInt() ?: 0
-//                if (snumber <= oee_int && enumber >= oee_int) oee_color_code = _list[i]["color_code"].toString()
-//                if (snumber <= availability_int && enumber >= availability_int) availability_color_code = _list[i]["color_code"].toString()
-//                if (snumber <= performance_int && enumber >= performance_int) performance_color_code = _list[i]["color_code"].toString()
-//                if (snumber <= quality_int && enumber >= quality_int) quality_color_code = _list[i]["color_code"].toString()
-                if (snumber <= oee_int) oee_color_code = _color_list[i]["color_code"].toString()
-                if (snumber <= availability_int) availability_color_code = _color_list[i]["color_code"].toString()
-                if (snumber <= performance_int) performance_color_code = _color_list[i]["color_code"].toString()
-                if (snumber <= quality_int) quality_color_code = _color_list[i]["color_code"].toString()
-            }
-
-            oee_progress.progressStartColor = Color.parseColor("#" + oee_color_code)
-            oee_progress.progressEndColor = Color.parseColor("#" + oee_color_code)
-
-            availability_progress.progressStartColor = Color.parseColor("#" + availability_color_code)
-            availability_progress.progressEndColor = Color.parseColor("#" + availability_color_code)
-
-            performance_progress.progressStartColor = Color.parseColor("#" + performance_color_code)
-            performance_progress.progressEndColor = Color.parseColor("#" + performance_color_code)
-
-            quality_progress.progressStartColor = Color.parseColor("#" + quality_color_code)
-            quality_progress.progressEndColor = Color.parseColor("#" + quality_color_code)
-        }
-    }
+//    var _availability = ""
+//    var _performance = ""
+//    var _quality = ""
+//
+//    private fun drawChartView2() {
+//        var availability = AppGlobal.instance.get_availability()
+//        var performance = AppGlobal.instance.get_performance()
+//        var quality = AppGlobal.instance.get_quality()
+//
+//        if (availability=="") availability = "0"
+//        if (performance=="") performance = "0"
+//        if (quality=="") quality = "0"
+//
+//        // 값에 변화가 있을때만 갱신
+//        if (_availability != availability || _performance != performance || _quality != quality) {
+//            Log.e("drawChartView2", "old : availability="+_availability+", performance="+_performance+", quality="+_quality)
+//            Log.e("drawChartView2", "new : availability="+availability+", performance="+performance+", quality="+quality)
+//
+//            _availability = availability
+//            _performance = performance
+//            _quality = quality
+//
+//            Log.e("drawChartView2", "oee graph redraw")
+//
+//            var oee = availability.toFloat() * performance.toFloat() * quality.toFloat() / 10000.0f
+//            var oee2 = String.format("%.1f", oee)
+//            oee2 = oee2.replace(",", ".")//??
+//
+//            tv_oee_rate.text = oee2 + "%"
+//            tv_availability_rate.text = availability + "%"
+//            tv_performance_rate.text = performance + "%"
+//            tv_quality_rate.text = quality + "%"
+//
+//            val oee_int = oee.toInt()
+//            val availability_int = ceil(availability.toFloat()).toInt()
+//            val performance_int = ceil(performance.toFloat()).toInt()
+//            val quality_int = ceil(quality.toFloat()).toInt()
+//
+//            oee_progress.progress = oee_int
+//            availability_progress.progress = availability_int
+//            performance_progress.progress = performance_int
+//            quality_progress.progress = quality_int
+//
+//            var oee_color_code = "ff0000"
+//            var availability_color_code = "ff0000"
+//            var performance_color_code = "ff0000"
+//            var quality_color_code = "ff0000"
+//
+//            for (i in 0..(_color_list.size - 1)) {
+//                val snumber = _color_list[i]["snumber"]?.toInt() ?: 0
+////                val enumber = _list[i]["enumber"]?.toInt() ?: 0
+////                if (snumber <= oee_int && enumber >= oee_int) oee_color_code = _list[i]["color_code"].toString()
+////                if (snumber <= availability_int && enumber >= availability_int) availability_color_code = _list[i]["color_code"].toString()
+////                if (snumber <= performance_int && enumber >= performance_int) performance_color_code = _list[i]["color_code"].toString()
+////                if (snumber <= quality_int && enumber >= quality_int) quality_color_code = _list[i]["color_code"].toString()
+//                if (snumber <= oee_int) oee_color_code = _color_list[i]["color_code"].toString()
+//                if (snumber <= availability_int) availability_color_code = _color_list[i]["color_code"].toString()
+//                if (snumber <= performance_int) performance_color_code = _color_list[i]["color_code"].toString()
+//                if (snumber <= quality_int) quality_color_code = _color_list[i]["color_code"].toString()
+//            }
+//
+//            oee_progress.progressStartColor = Color.parseColor("#" + oee_color_code)
+//            oee_progress.progressEndColor = Color.parseColor("#" + oee_color_code)
+//
+//            availability_progress.progressStartColor = Color.parseColor("#" + availability_color_code)
+//            availability_progress.progressEndColor = Color.parseColor("#" + availability_color_code)
+//
+//            performance_progress.progressStartColor = Color.parseColor("#" + performance_color_code)
+//            performance_progress.progressEndColor = Color.parseColor("#" + performance_color_code)
+//
+//            quality_progress.progressStartColor = Color.parseColor("#" + quality_color_code)
+//            quality_progress.progressEndColor = Color.parseColor("#" + quality_color_code)
+//        }
+//    }
 
 
     //    var handle_cnt = 0

@@ -10,7 +10,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/colorBackground">
+            android:background="@color/colorBackground"
+            android:onClick="parentSpaceClick">
 
         <include layout="@layout/layout_top_menu_component"
                  android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                         android:orientation="vertical">
 
                     <LinearLayout
-                            android:layout_width="520dp"
+                            android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginBottom="8dp"
                             android:orientation="horizontal">
@@ -58,7 +59,7 @@
 
                         <EditText
                                 android:id="@+id/et_setting_server_ip"
-                                android:layout_width="match_parent"
+                                android:layout_width="390dp"
                                 android:layout_height="match_parent"
                                 android:paddingLeft="10dp"
                                 android:gravity="start|center_vertical"
@@ -67,6 +68,18 @@
                                 android:textSize="20sp"
                                 android:textColor="#fff"
                                 android:background="#87c947"/>
+
+                        <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text=""/>
+                        <ImageButton
+                                android:id="@+id/btn_reload"
+                                android:layout_width="96dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/ic_refresh_white_32dp"
+                                android:background="@drawable/shape_default_rectangle_button"/>
                     </LinearLayout>
 
                     <LinearLayout

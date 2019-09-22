@@ -1,6 +1,9 @@
 package com.suntech.iot.pattern.popup
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -20,6 +23,14 @@ class ActualCountEditInputActivity : BaseActivity() {
         initView()
     }
 
+    fun parentSpaceClick(view: View) {
+        var view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
     private fun initView() {
         val design_idx = intent.getStringExtra("design_idx")
         val work_idx = intent.getStringExtra("work_idx")
@@ -35,8 +46,8 @@ class ActualCountEditInputActivity : BaseActivity() {
             finish()
         }
 
-        tv_work_actual.setText(row!!["actual"].toString())
-        et_defective_qty.setText(row!!["actual"].toString())
+        tv_work_actual?.setText(row!!["actual"].toString())
+        et_defective_qty?.setText(row!!["actual"].toString())
 
         btn_actual_count_edit_plus.setOnClickListener {
             var value = et_defective_qty.text.toString().toInt()

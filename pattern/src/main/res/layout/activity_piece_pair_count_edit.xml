@@ -3,7 +3,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/dialog_bg"
-                android:background="#88000000">
+                android:background="#88000000"
+                android:onClick="parentSpaceClick">
 
 
     <LinearLayout

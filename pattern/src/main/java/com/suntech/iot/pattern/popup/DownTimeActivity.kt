@@ -108,7 +108,7 @@ class DownTimeActivity : BaseActivity() {
             }
         }
         Log.e("DownTime", "---------------------------------------")
-        tv_item_downtime_total.text = ""+total_downtime + " min"
+        tv_item_downtime_total?.text = ""+total_downtime + " min"
     }
 
     private var _count = 0

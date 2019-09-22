@@ -27,6 +27,8 @@ import com.suntech.iot.pattern.popup.*
 import com.suntech.iot.pattern.service.UsbService
 import com.suntech.iot.pattern.util.OEEUtil
 import com.suntech.iot.pattern.util.UtilFile
+import com.suntech.iot.pattern.util.UtilLocalStorage
+import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_count_view.*
@@ -198,6 +200,8 @@ class MainActivity : BaseActivity() {
         // 지난 DownTime과 Design이 있으면 삭제한다.
         RemoveDownTimeData()
         checkDesignData()
+
+        fetchComponentData()    // Parts Cycle Time. 처음 실행후 1시간마다 실행
 
         start_timer()
     }
@@ -754,72 +758,111 @@ class MainActivity : BaseActivity() {
         })
     }
 
-    private fun fetchOEEGraph() {
-        if (AppGlobal.instance.get_server_ip().trim() == "") return
+//    private fun fetchOEEGraph() {
+//        if (AppGlobal.instance.get_server_ip().trim() == "") return
+//
+//        var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
+//        if (item == null) {
+//            AppGlobal.instance.set_availability("0")
+//            AppGlobal.instance.set_performance("0")
+//            AppGlobal.instance.set_quality("0")
+//            return
+//        }
+//
+//        val work_date = item["date"].toString()
+//
+//        val uri = "/getoee.php"
+//        var params = listOf(
+//            "mac_addr" to AppGlobal.instance.getMACAddress(),
+//            "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+//            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+//            "factory_idx" to AppGlobal.instance.get_room_idx(),
+//            "line_idx" to AppGlobal.instance.get_line_idx(),
+//            "work_date" to work_date
+//        )
+//
+////Log.e("oeegraph", "mac_addr="+AppGlobal.instance.getMACAddress()+"&shift_idx="+AppGlobal.instance.get_current_shift_idx()+"&" +
+////        "factory_parent_idx="+AppGlobal.instance.get_factory_idx()+"&factory_idx="+AppGlobal.instance.get_room_idx()+"&line_idx="+AppGlobal.instance.get_line_idx()+
+////        "&work_date="+work_date)
+//
+//        request(this, uri, false, false, params, { result ->
+//            var code = result.getString("code")
+//            if (code == "00") {
+//                val availability = result.getString("availability").toString()
+//                val performance = result.getString("performance").toString()
+//                val quality = result.getString("quality").toString()
+//
+////Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
+//
+////                Log.e("fetchOEEGraph", "availability = "+availability)
+////                Log.e("fetchOEEGraph", "performance = "+performance)
+////                Log.e("fetchOEEGraph", "quality = "+quality)
+//
+//                val app_perform = AppGlobal.instance.get_performance()
+//
+//                AppGlobal.instance.set_availability(availability)
+//                AppGlobal.instance.set_performance(performance)
+//                AppGlobal.instance.set_quality(quality)
+//
+//                var old_perform = 0.0f
+//                var new_perform = 0.0f
+//
+//                try {
+//                    old_perform = app_perform as Float
+//                    new_perform = performance as Float
+//                } catch (e:Exception) {
+//                }
+//
+//                // performance가 100%를 넘었으면 푸시를 보낸다. 단, 이전에 100% 이전인 경우만..
+//                if (new_perform >= 100.0f) {
+//                    if (old_perform < 100.0f) {
+//                        Log.e("fetchOEEGraph", "push send")
+//                        sendPush("SYS: PERFORMANCE", false)
+//                    }
+//                }
+//            } else {
+//                ToastOut(this, result.getString("msg"), true)
+//            }
+//        })
+//    }
 
-        var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
-        if (item == null) {
-            AppGlobal.instance.set_availability("0")
-            AppGlobal.instance.set_performance("0")
-            AppGlobal.instance.set_quality("0")
-            return
-        }
-
-        val work_date = item["date"].toString()
-
-        val uri = "/getoee.php"
-        var params = listOf(
-            "mac_addr" to AppGlobal.instance.getMACAddress(),
-            "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
-            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-            "factory_idx" to AppGlobal.instance.get_room_idx(),
-            "line_idx" to AppGlobal.instance.get_line_idx(),
-            "work_date" to work_date
-        )
-
-//Log.e("oeegraph", "mac_addr="+AppGlobal.instance.getMACAddress()+"&shift_idx="+AppGlobal.instance.get_current_shift_idx()+"&" +
-//        "factory_parent_idx="+AppGlobal.instance.get_factory_idx()+"&factory_idx="+AppGlobal.instance.get_room_idx()+"&line_idx="+AppGlobal.instance.get_line_idx()+
-//        "&work_date="+work_date)
-
-        request(this, uri, false, false, params, { result ->
-            var code = result.getString("code")
-            if (code == "00") {
-                val availability = result.getString("availability").toString()
-                val performance = result.getString("performance").toString()
-                val quality = result.getString("quality").toString()
-
-//Log.e("oeegraph", "avail="+availability+", performance="+performance+", quality="+quality)
-
-//                Log.e("fetchOEEGraph", "availability = "+availability)
-//                Log.e("fetchOEEGraph", "performance = "+performance)
-//                Log.e("fetchOEEGraph", "quality = "+quality)
-
-                val app_perform = AppGlobal.instance.get_performance()
-
-                AppGlobal.instance.set_availability(availability)
-                AppGlobal.instance.set_performance(performance)
-                AppGlobal.instance.set_quality(quality)
-
-                var old_perform = 0.0f
-                var new_perform = 0.0f
-
-                try {
-                    old_perform = app_perform as Float
-                    new_perform = performance as Float
-                } catch (e:Exception) {
-                }
-
-                // performance가 100%를 넘었으면 푸시를 보낸다. 단, 이전에 100% 이전인 경우만..
-                if (new_perform >= 100.0f) {
-                    if (old_perform < 100.0f) {
-                        Log.e("fetchOEEGraph", "push send")
-                        sendPush("SYS: PERFORMANCE", false)
-                    }
-                }
-            } else {
-                ToastOut(this, result.getString("msg"), true)
-            }
-        })
+    // Parts cycle time 이라는 기능
+    private fun fetchComponentData() {
+//        val uri = "/getlist1.php"
+//        var params = listOf("code" to "component",
+//            "mac_addr" to AppGlobal.instance.getMACAddress(),
+//            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+//            "factory_idx" to AppGlobal.instance.get_room_idx(),
+//            "line_idx" to AppGlobal.instance.get_line_idx())
+//
+//        request(this, uri, false, params, { result ->
+//            var code = result.getString("code")
+//            if (code == "00") {
+//                var list = result.getJSONArray("item")
+//                AppGlobal.instance.set_comopnent_data(list)
+//
+//                var notified_component_set = UtilLocalStorage.getStringSet(this, "notified_component_set")
+//
+//                var is_popup = false
+//                for (i in 0..(list.length() - 1)) {
+//                    val item = list.getJSONObject(i)
+//                    val idx = item.getString("idx").toString()
+//                    val total_cycle_time = item.getString("total_cycle_time").toInt()
+//                    val now_cycle_time = item.getString("now_cycle_time").toInt()
+//                    val rt = total_cycle_time - now_cycle_time
+//                    if (rt <= 10 && !notified_component_set.contains(idx)) {
+//                        notified_component_set = notified_component_set.plus(idx)
+//                        is_popup = true
+//                    }
+//                }
+//                if (is_popup) {
+//                    UtilLocalStorage.setStringSet(this, "notified_component_set", notified_component_set)
+////                    startComponentActivity()
+//                }
+//            } else {
+//                ToastOut(this, result.getString("msg"), true)
+//            }
+//        })
     }
 
     private fun sendPing() {
@@ -950,10 +993,14 @@ class MainActivity : BaseActivity() {
 //        AppGlobal.instance.set_compo_size("")
 //        AppGlobal.instance.set_compo_target(0)
 
-        AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
-        AppGlobal.instance.set_downtime_idx("")
         tv_report_count.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
         tv_defective_count.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
+
+        pieces_qty = 0
+        pairs_qty = 0
+
+        AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
+        AppGlobal.instance.set_downtime_idx("")
 
         AppGlobal.instance.set_design_info_idx("")
         AppGlobal.instance.set_model("")
@@ -1064,7 +1111,7 @@ class MainActivity : BaseActivity() {
 //    private val _timer_task1 = Timer()          // 서버 접속 체크 Ping test. Shift의 Target 정보
     private val _timer_task2 = Timer()          // 작업시간, 다운타입, 칼라 Data 가져오기 (workdata, designdata, downtimetype, color)
     private val _timer_task3 = Timer()          // 30초마다. 그래프 그리기 위한 태스크
-//    private val _timer_task4 = Timer()          // 30분마다. 서버로 타겟값 전송 => 타겟값에 변화가 있을때마다 전송으로 변경됨. (CountViewFragment 에서 처리함)
+    private val _timer_task4 = Timer()          // 1시간마다. 서버로 타겟값 전송 => 타겟값에 변화가 있을때마다 전송으로 변경됨. (CountViewFragment 에서 처리함)
 
     private fun start_timer() {
 
@@ -1106,29 +1153,30 @@ class MainActivity : BaseActivity() {
             override fun run() {
                 runOnUiThread {
                     sendPing()
-                    fetchOEEGraph()
+//                    fetchOEEGraph()
                     RemoveDownTimeData()    // Shift가 지난 다운타임 데이터를 삭제한다.
                 }
             }
         }
         _timer_task3.schedule(task3, 3000, 30000)
 
-//        // 30분마다
-//        val task4 = object : TimerTask() {
-//            override fun run() {
-//                runOnUiThread {
-////                    updateCurrentWorkTarget()
-//                }
-//            }
-//        }
-//        _timer_task4.schedule(task4, 600000, 1800000)
+        // 1시간마다
+        val task4 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    fetchComponentData()    // Parts Cycle Time
+//                    updateCurrentWorkTarget()
+                }
+            }
+        }
+        _timer_task4.schedule(task4, 1200000, 3600000)
     }
     private fun cancel_timer () {
         _downtime_timer.cancel()
 //        _timer_task1.cancel()
         _timer_task2.cancel()
         _timer_task3.cancel()
-//        _timer_task4.cancel()
+        _timer_task4.cancel()
     }
 
     ////////// USB
@@ -1238,7 +1286,36 @@ class MainActivity : BaseActivity() {
 
         if (AppGlobal.instance.get_sound_at_count()) AppGlobal.instance.playSound(this)
 
-        if (cmd == "T" || cmd == "count") {
+        if (cmd=="barcode") {
+            val arr = value.asJsonArray
+            val didx = arr[0].asString
+            var number = -1
+
+            if (arr.size() > 1) {
+                val value2 = value.asJsonArray[1].asString
+                number = value2.replace("[^0-9]", "").toInt()
+            }
+            var list = AppGlobal.instance.get_design_info()
+
+            for (i in 0..(list.length() - 1)) {
+                val item = list.getJSONObject(i)
+                val idx = item.getString("idx")
+                if (idx==didx) {
+                    if (number > 0) AppGlobal.instance.set_pieces_info(number.toString())
+
+                    val cycle_time = item.getString("ct").toInt()
+                    val model = item.getString("model").toString()
+                    val article = item.getString("article").toString()
+                    val material_way = item.getString("material_way").toString()
+                    val component = item.getString("component").toString()
+
+                    startNewProduct(didx, cycle_time, model, article, material_way, component)
+                    return
+                }
+            }
+            Toast.makeText(this, getString(R.string.msg_no_design), Toast.LENGTH_SHORT).show()
+
+        } else if (cmd == "T" || cmd == "count") {
 
             var current_actual_cnt = AppGlobal.instance.get_current_shift_actual_cnt()
 
@@ -1484,9 +1561,7 @@ Log.e("Scount params", params.toString())
                 val shift_idx = work_info?.getString("shift_idx") ?: ""
                 val shift_name = work_info?.getString("shift_name") ?: ""
 
-                Log.e("startNewProduct", "==========================")
-                Log.e("startNewProduct", "work_idx=" + prev_work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time)
-                Log.e("startNewProduct", "==========================")
+                OEEUtil.LogWrite("work_idx=" + prev_work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
 
                 db.updateDesignInfo(prev_work_idx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info)
                 return
@@ -1543,7 +1618,7 @@ Log.e("Scount params", params.toString())
     }
 
     // downtime 발생시 푸시 발송
-    private fun sendPush(push_text: String, progress: Boolean) {
+    fun sendPush(push_text: String, progress: Boolean) {
         val uri = "/pushcall.php"
         var params = listOf(
             "code" to "push_text_list",

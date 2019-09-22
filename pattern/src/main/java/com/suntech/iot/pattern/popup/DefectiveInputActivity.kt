@@ -1,6 +1,9 @@
 package com.suntech.iot.pattern.popup
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -20,12 +23,20 @@ class DefectiveInputActivity : BaseActivity() {
         fetchData()
     }
 
+    fun parentSpaceClick(view: View) {
+        var view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
     private fun initView() {
         val design_idx = intent.getStringExtra("design_idx")
         val work_idx = intent.getStringExtra("work_idx")
 
-        tv_design_idx.text = "" + design_idx
-        et_defective_qty.setText("")
+        tv_design_idx?.text = "" + design_idx
+        et_defective_qty?.setText("")
 
         list_adapter = DownTimeInputActivity.ListAdapter(this, _list)
         lv_types.adapter = list_adapter

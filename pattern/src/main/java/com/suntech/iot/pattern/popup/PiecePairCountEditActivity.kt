@@ -1,6 +1,9 @@
 package com.suntech.iot.pattern.popup
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
@@ -36,11 +39,11 @@ class PiecePairCountEditActivity : BaseActivity() {
             "1/8" -> { _max_pairs = 8; pairs_str = "/8" }
         }
 
-        tv_pieces_count.setText(pieces)
-        et_pieces_count.setText(pieces)
+        tv_pieces_count?.setText(pieces)
+        et_pieces_count?.setText(pieces)
 
-        tv_pairs_count.setText(pairs + pairs_str)
-        et_pairs_count.setText(pairs)
+        tv_pairs_count?.setText(pairs + pairs_str)
+        et_pairs_count?.setText(pairs)
 
         btn_trim_count_plus.setOnClickListener {
             if (_pieces + 1 < _max_pieces) {
@@ -71,6 +74,14 @@ class PiecePairCountEditActivity : BaseActivity() {
         }
         btn_cancel.setOnClickListener {
             finish(false, 1, "ok", null)
+        }
+    }
+
+    fun parentSpaceClick(view: View) {
+        var view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

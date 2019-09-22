@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
@@ -56,10 +57,18 @@ class WorkInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work_info)
         fetchShiftData()
-        fetchOperatorData()
+        fetchOperatorData(false)
         initLastWorkers()
         initView()
         start_timer()
+    }
+
+    fun parentSpaceClick(view: View) {
+        var view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
     public override fun onResume() {
@@ -147,6 +156,18 @@ class WorkInfoActivity : BaseActivity() {
         btn_work_info_manual.setOnClickListener { tabChange(2) }
 
         // Command button click
+        btn_reload.setOnClickListener {
+            et_search_text.setText("")
+            list_for_operator_adapter?.select(-1)
+            list_for_last_worker_adapter?.select(-1)
+
+            fetchShiftData()
+            fetchOperatorData(true)
+            initLastWorkers()
+
+            val idx = AppGlobal.instance.get_current_shift_idx()
+            _selected_index = if (idx == "") -1 else (idx.toInt()-1)
+        }
         btn_setting_confirm.setOnClickListener {
             val selected_index = list_for_operator_adapter?.getSelected() ?:-1
             if (selected_index < 0) {
@@ -225,9 +246,9 @@ class WorkInfoActivity : BaseActivity() {
 
     private fun fetchShiftData() {
         val list = AppGlobal.instance.get_current_work_time()
-//        _list_json = list
-
         if (list == null) return
+
+        var tmp: ArrayList<HashMap<String, String>> = arrayListOf()
 
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
@@ -250,8 +271,9 @@ class WorkInfoActivity : BaseActivity() {
                 "shift_idx" to item.getString("shift_idx"),
                 "shift_name" to item.getString("shift_name")
             )
-            _list.add(map)
+            tmp.add(map)
         }
+        _list = tmp
         list_adapter?.notifyDataSetChanged()
 
         initViewManual()
@@ -352,16 +374,18 @@ class WorkInfoActivity : BaseActivity() {
         list_for_operator_adapter?.notifyDataSetChanged()
     }
 
-    private fun fetchOperatorData() {
+    private fun fetchOperatorData(progress: Boolean = false) {
         val uri = "/getlist1.php"
         var params = listOf(
             "code" to "worker",
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
             "factory_idx" to AppGlobal.instance.get_room_idx())
 
-        request(this, uri, false, params, { result ->
+        request(this, uri, progress, params, { result ->
             var code = result.getString("code")
             if (code == "00") {
+                _list_for_operator.removeAll(_list_for_operator)
+
                 var list = result.getJSONArray("item")
                 for (i in 0..(list.length() - 1)) {
                     val item = list.getJSONObject(i)
@@ -383,7 +407,6 @@ class WorkInfoActivity : BaseActivity() {
     private fun initLastWorkers() {
         _list_for_last_worker.removeAll(_list_for_last_worker)
         var list = AppGlobal.instance.get_last_workers()
-
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(list.length() - 1 - i)
             var worker = hashMapOf("number" to item.getString("number"), "name" to item.getString("name"))

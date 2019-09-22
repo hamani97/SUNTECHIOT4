@@ -10,7 +10,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/colorBackground">
+            android:background="@color/colorBackground"
+            android:onClick="parentSpaceClick">
 
         <include layout="@layout/layout_top_menu_2"
                  android:layout_width="match_parent"
@@ -29,6 +30,17 @@
                     android:layout_width="150dp"
                     android:stateListAnimator="@null"
                     android:text="@string/manual" />
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""/>
+            <ImageButton
+                    android:id="@+id/btn_reload"
+                    android:layout_width="80dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_refresh_white_32dp"
+                    android:background="@drawable/shape_default_rectangle_button"/>
         </LinearLayout>
 
         <FrameLayout

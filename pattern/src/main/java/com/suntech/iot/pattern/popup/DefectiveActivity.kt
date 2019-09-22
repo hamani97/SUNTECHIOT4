@@ -29,8 +29,8 @@ class DefectiveActivity : BaseActivity() {
 
     private fun updateView() {
 
-        tv_item_row0.text = "TOTAL"
-        tv_item_row2.text = ""
+        tv_item_row0?.text = "TOTAL"
+        tv_item_row2?.text = ""
 
         var db = DBHelperForDesign(this)
         _list = db.gets() ?: _list

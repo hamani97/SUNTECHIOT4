@@ -12,12 +12,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_design_info.*
+import kotlinx.android.synthetic.main.activity_design_info.btn_reload
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_cancel
 import kotlinx.android.synthetic.main.activity_design_info.btn_setting_confirm
 import kotlinx.android.synthetic.main.layout_top_menu_component.*
@@ -48,8 +50,16 @@ class DesignInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_design_info)
         initView()
-        updateView()
+//        updateView()
         fetchData()
+    }
+
+    fun parentSpaceClick(view: View) {
+        var view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(et_setting_server_ip.windowToken, 0)
+        }
     }
 
     public override fun onResume() {
@@ -100,8 +110,8 @@ class DesignInfoActivity : BaseActivity() {
         list_adapter = ListAdapter(this, _filtered_list)
         lv_design_info.adapter = list_adapter
 
-        tv_design_pieces.text = AppGlobal.instance.get_pieces_info()
-        tv_design_pairs.text = AppGlobal.instance.get_pairs_info()
+        tv_design_pieces?.text = AppGlobal.instance.get_pieces_info()
+        tv_design_pairs?.text = AppGlobal.instance.get_pairs_info()
 
         lv_design_info.setOnItemClickListener { adapterView, view, i, l ->
             _selected_index = i
@@ -109,7 +119,6 @@ class DesignInfoActivity : BaseActivity() {
         }
 
         et_setting_server_ip.addTextChangedListener(object : TextWatcher {
-
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s != "") {
                     filterData()
@@ -118,7 +127,10 @@ class DesignInfoActivity : BaseActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
         })
-
+        btn_reload.setOnClickListener {
+            et_setting_server_ip.setText("")
+            fetchData()
+        }
         btn_setting_confirm.setOnClickListener {
             if (tv_design_pieces.text.toString() == "" || tv_design_pairs.text.toString() == "") {
                 ToastOut(this, R.string.msg_require_info, true)
@@ -150,11 +162,10 @@ class DesignInfoActivity : BaseActivity() {
 
     private fun fetchData() {
         var list = AppGlobal.instance.get_design_info()
+        _list.removeAll(_list)
 
         for (i in 0..(list.length() - 1)) {
-
             val item = list.getJSONObject(i)
-
             var map=hashMapOf(
                 "idx" to item.getString("idx"),
                 "model" to item.getString("model"),
