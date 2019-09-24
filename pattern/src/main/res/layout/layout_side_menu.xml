@@ -15,43 +15,72 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/btn_side_icon_home_on" />
 
         <ImageButton
                 android:id="@+id/btn_push_to_app"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/btn_side_icon_push" />
 
         <ImageButton
                 android:id="@+id/btn_actual_count_edit"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/btn_side_icon_actual_count_edit" />
 
         <ImageButton
                 android:id="@+id/btn_downtime"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/btn_side_icon_downtime" />
 
         <ImageButton
                 android:id="@+id/btn_defective_info"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:background="@drawable/btn_side_icon_defective_info" />
 
         <ImageButton
                 android:id="@+id/btn_worksheet"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/btn_side_icon_worksheet" />
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="70dp"
+                android:background="@color/transparent">
+            <ImageButton
+                    android:id="@+id/btn_component"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/btn_side_icon_component" />
+            <TextView
+                    android:id="@+id/tv_component_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/shape_orange_round_button"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:paddingRight="6dp"
+                    android:paddingLeft="6dp"
+                    android:text="0"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorWhite"/>
+        </RelativeLayout>
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -79,7 +108,7 @@
                     android:paddingBottom="1dp"
                     android:paddingRight="6dp"
                     android:paddingLeft="6dp"
-                    android:text="1"
+                    android:text="0"
                     android:textSize="16sp"
                     android:textColor="@color/colorWhite"/>
         </RelativeLayout>

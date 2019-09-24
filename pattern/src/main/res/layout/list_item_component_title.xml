@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/list_item_no"
+                android:textSize="21sp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:gravity="center"
+                android:text="@string/list_item_name"
+                android:textSize="21sp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/list_header_cycle_time"
+                android:textSize="21sp"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"/>
+
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/list_item_usage_time"
+                android:textSize="21sp"
+                android:textColor="#333"
+                android:textStyle="bold"/>
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/list_item_remain_time"
+                android:textSize="21sp"
+                android:textColor="#333"
+                android:textStyle="bold"/>
+
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/list_item_remain_rate"
+                android:textSize="21sp"
+                android:textColor="#333"
+                android:textStyle="bold"/>
+    </LinearLayout>
+
+</LinearLayout>

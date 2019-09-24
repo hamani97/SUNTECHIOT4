@@ -103,6 +103,8 @@ class AppGlobal private constructor() {
     fun get_blink_color() : String { return UtilLocalStorage.getString(instance._context!!, "current_blink_color") }
 //    fun set_remain_number(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_remain_number", value) }
 //    fun get_remain_number() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_remain_number") }
+    fun set_send_stitch_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "send_stitch_count", state) }
+    fun get_send_stitch_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "send_stitch_count") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
@@ -189,6 +191,9 @@ class AppGlobal private constructor() {
     fun get_component() : String { return UtilLocalStorage.getString(instance._context!!, "current_component") }
     fun set_cycle_time(idx: Int) { UtilLocalStorage.setInt(instance._context!!, "current_cycle_time", idx) }
     fun get_cycle_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_cycle_time") }
+
+    fun set_stitch(data: String) { UtilLocalStorage.setString(instance._context!!, "current_stitch", data) }
+    fun get_stitch() : String { return UtilLocalStorage.getString(instance._context!!, "current_stitch") }
 
     fun set_pieces_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", idx) }
     fun get_pieces_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
@@ -293,12 +298,12 @@ class AppGlobal private constructor() {
     fun set_comopnent_data(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "comopnent_data", data) }
     fun get_comopnent_data() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "comopnent_data") }
 
-    fun set_availability(value: String) { UtilLocalStorage.setString(instance._context!!, "current_availability", value) }
-    fun get_availability() : String { return UtilLocalStorage.getString(instance._context!!, "current_availability") }
-    fun set_performance(value: String) { UtilLocalStorage.setString(instance._context!!, "current_performance", value) }
-    fun get_performance() : String { return UtilLocalStorage.getString(instance._context!!, "current_performance") }
-    fun set_quality(value: String) { UtilLocalStorage.setString(instance._context!!, "current_quality", value) }
-    fun get_quality() : String { return UtilLocalStorage.getString(instance._context!!, "current_quality") }
+//    fun set_availability(value: String) { UtilLocalStorage.setString(instance._context!!, "current_availability", value) }
+//    fun get_availability() : String { return UtilLocalStorage.getString(instance._context!!, "current_availability") }
+//    fun set_performance(value: String) { UtilLocalStorage.setString(instance._context!!, "current_performance", value) }
+//    fun get_performance() : String { return UtilLocalStorage.getString(instance._context!!, "current_performance") }
+//    fun set_quality(value: String) { UtilLocalStorage.setString(instance._context!!, "current_quality", value) }
+//    fun get_quality() : String { return UtilLocalStorage.getString(instance._context!!, "current_quality") }
 
     // Layer정보 = pair 수
 //    fun set_layer_pairs(layer_no: String, pair: String) { UtilLocalStorage.setString(instance._context!!, "current_layer_" + layer_no, pair) }

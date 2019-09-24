@@ -31,6 +31,7 @@ import com.suntech.iot.pattern.util.UtilLocalStorage
 import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.activity_setting.view.*
 import kotlinx.android.synthetic.main.fragment_count_view.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.view.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
@@ -48,6 +49,11 @@ class MainActivity : BaseActivity() {
 //    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
     var workSheetToggle = false     // 워크시트를 토글할 것인지. 토글 시간(초)는 세팅 메뉴에서 설정
     var workSheetShow = false
+
+    var _availability_rate = 0F
+    var _quality_rate = 0F
+    var _performance_rate = 0F
+    var _oee_rate = 0F
 
     //    val _stitch_db = DBHelperForCount(this)     // Count 정보
     val _target_db = DBHelperForTarget(this)    // 날짜의 Shift별 정보, Target 수량 정보 저장
@@ -83,29 +89,27 @@ class MainActivity : BaseActivity() {
                                                         // Setting -> Operator detail -> Design Info
                                                         // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
 
-        // 시작시 work_idx 값이 없으면 다른 값들도 리셋시킨다.
+        // 시작시 work_idx 값이 없으면 초기화 한다.
         val work_idx = AppGlobal.instance.get_product_idx()
         if (work_idx == "") {
-            AppGlobal.instance.set_design_info_idx("")
-            AppGlobal.instance.set_model("")
-            AppGlobal.instance.set_article("")
-            AppGlobal.instance.set_material_way("")
-            AppGlobal.instance.set_component("")
-            AppGlobal.instance.set_cycle_time(0)
+            endTodayWork()
+//            pieces_qty = 0
+//            pairs_qty = 0
+//
+//            AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
+//            AppGlobal.instance.set_downtime_idx("")
+//
+//            AppGlobal.instance.set_design_info_idx("")
+//            AppGlobal.instance.set_model("")
+//            AppGlobal.instance.set_article("")
+//            AppGlobal.instance.set_material_way("")
+//            AppGlobal.instance.set_component("")
+//            AppGlobal.instance.set_cycle_time(0)
+//            AppGlobal.instance.reset_product_idx()
         }
 
         mHandler = MyHandler(this)
 
-//        val db_design = DBHelperForDesign(this)
-//        db_design.delete()
-//        AppGlobal.instance.set_design_info_idx("")
-//        AppGlobal.instance.set_model("")
-//        AppGlobal.instance.set_article("")
-//        AppGlobal.instance.set_material_way("")
-//        AppGlobal.instance.set_component("")
-//        AppGlobal.instance.set_cycle_time(0)
-//        AppGlobal.instance.reset_product_idx()
-//        AppGlobal.instance.reset_product_idx()
 
         // button click event
         if (AppGlobal.instance.get_long_touch()) {
@@ -133,6 +137,7 @@ class MainActivity : BaseActivity() {
                 }
             }); true }
             btn_production_report.setOnLongClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)); true }
+            btn_component.setOnLongClickListener { startComponentActivity(); true }
 
             btn_worksheet_stop.setOnLongClickListener {
                 workSheetToggle = false
@@ -166,10 +171,13 @@ class MainActivity : BaseActivity() {
                         wv_view_main?.visibility = View.VISIBLE
                         wv_view_main?.loadUrl(file_url)
                         changeFragment(2)
+                        val cview = vp_fragments?.getChildAt(1)
+                        cview?.btn_toggle_sop?.visibility = View.GONE
                     }
                 }
             }) }
             btn_production_report.setOnClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)) }
+            btn_component.setOnClickListener { startComponentActivity() }
 
             btn_worksheet_stop.setOnClickListener {
                 workSheetToggle = false
@@ -201,8 +209,6 @@ class MainActivity : BaseActivity() {
         RemoveDownTimeData()
         checkDesignData()
 
-        fetchComponentData()    // Parts Cycle Time. 처음 실행후 1시간마다 실행
-
         start_timer()
     }
 
@@ -231,6 +237,7 @@ class MainActivity : BaseActivity() {
 
         updateView()
         fetchRequiredData()
+        fetchComponentData()    // Parts Cycle Time. 처음 실행후 1시간마다 실행
     }
 
     public override fun onPause() {
@@ -758,6 +765,33 @@ class MainActivity : BaseActivity() {
         })
     }
 
+    private fun sendOeeGraphData() {
+        if (AppGlobal.instance.get_server_ip().trim() == "") return
+        var item: JSONObject? = AppGlobal.instance.get_current_shift_time()
+        if (item == null) return
+
+        val uri = "/Sgraph.php"
+        var params = listOf(
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
+            "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+            "category" to "P",
+            "availability" to _availability_rate.toString(),
+            "performance" to _performance_rate.toString(),
+            "quality" to _quality_rate.toString(),
+            "oee" to _oee_rate.toString()
+        )
+        request(this, uri, true, false, params, { result ->
+            var code = result.getString("code")
+            if (code == "00") {
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
+    }
+
 //    private fun fetchOEEGraph() {
 //        if (AppGlobal.instance.get_server_ip().trim() == "") return
 //
@@ -817,7 +851,7 @@ class MainActivity : BaseActivity() {
 //                if (new_perform >= 100.0f) {
 //                    if (old_perform < 100.0f) {
 //                        Log.e("fetchOEEGraph", "push send")
-//                        sendPush("SYS: PERFORMANCE", false)
+//                        sendPush("SYS: PERFORMANCE")
 //                    }
 //                }
 //            } else {
@@ -828,41 +862,53 @@ class MainActivity : BaseActivity() {
 
     // Parts cycle time 이라는 기능
     private fun fetchComponentData() {
-//        val uri = "/getlist1.php"
-//        var params = listOf("code" to "component",
-//            "mac_addr" to AppGlobal.instance.getMACAddress(),
-//            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-//            "factory_idx" to AppGlobal.instance.get_room_idx(),
-//            "line_idx" to AppGlobal.instance.get_line_idx())
-//
-//        request(this, uri, false, params, { result ->
-//            var code = result.getString("code")
-//            if (code == "00") {
-//                var list = result.getJSONArray("item")
-//                AppGlobal.instance.set_comopnent_data(list)
-//
-//                var notified_component_set = UtilLocalStorage.getStringSet(this, "notified_component_set")
-//
-//                var is_popup = false
-//                for (i in 0..(list.length() - 1)) {
-//                    val item = list.getJSONObject(i)
-//                    val idx = item.getString("idx").toString()
-//                    val total_cycle_time = item.getString("total_cycle_time").toInt()
-//                    val now_cycle_time = item.getString("now_cycle_time").toInt()
-//                    val rt = total_cycle_time - now_cycle_time
-//                    if (rt <= 10 && !notified_component_set.contains(idx)) {
-//                        notified_component_set = notified_component_set.plus(idx)
-//                        is_popup = true
-//                    }
-//                }
-//                if (is_popup) {
-//                    UtilLocalStorage.setStringSet(this, "notified_component_set", notified_component_set)
-////                    startComponentActivity()
-//                }
-//            } else {
-//                ToastOut(this, result.getString("msg"), true)
-//            }
-//        })
+//        UtilLocalStorage.setStringSet(this, "notified_component_set", setOf())
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "component",
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "line_idx" to AppGlobal.instance.get_line_idx())
+
+        request(this, uri, false, params, { result ->
+            var code = result.getString("code")
+            if (code == "00") {
+                var list = result.getJSONArray("item")
+                AppGlobal.instance.set_comopnent_data(list)
+
+                var notified_component_set = UtilLocalStorage.getStringSet(this, "notified_component_set")
+
+                var cnt = 0
+                var is_popup = false
+                for (i in 0..(list.length() - 1)) {
+                    val item = list.getJSONObject(i)
+                    val idx = item.getString("idx").toString()
+                    val total_cycle_time = item.getString("total_cycle_time").toInt()
+                    val now_cycle_time = item.getString("now_cycle_time").toInt()
+                    val rt = total_cycle_time - now_cycle_time
+                    if (rt <= 10) {
+                        if (!notified_component_set.contains(idx)) {
+                            notified_component_set = notified_component_set.plus(idx)
+                            is_popup = true
+                            sendPush("SYS: PCT", item.getString("name").toString())
+                        }
+                        cnt++
+                    }
+                }
+                if (cnt == 0) {
+                    tv_component_count.visibility = View.GONE
+                } else {
+                    tv_component_count.visibility = View.VISIBLE
+                    tv_component_count.text = "" + cnt
+                }
+                if (is_popup) {
+                    UtilLocalStorage.setStringSet(this, "notified_component_set", notified_component_set)
+                    startComponentActivity()
+                }
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
     }
 
     private fun sendPing() {
@@ -993,8 +1039,8 @@ class MainActivity : BaseActivity() {
 //        AppGlobal.instance.set_compo_size("")
 //        AppGlobal.instance.set_compo_target(0)
 
-        tv_report_count.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
-        tv_defective_count.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
+        tv_report_count?.text = "0"                              // 좌측 Report 버튼의 Actual 값도 0으로 초기화
+        tv_defective_count?.text = "0"                           // 카운트 뷰의 Defective 값도 0으로 초기화
 
         pieces_qty = 0
         pairs_qty = 0
@@ -1165,6 +1211,7 @@ class MainActivity : BaseActivity() {
             override fun run() {
                 runOnUiThread {
                     fetchComponentData()    // Parts Cycle Time
+                    sendOeeGraphData()
 //                    updateCurrentWorkTarget()
                 }
             }
@@ -1254,13 +1301,14 @@ class MainActivity : BaseActivity() {
         if (isJSONValid(recvBuffer)) {
             val parser = JsonParser()
             val element = parser.parse(recvBuffer)
-            val cmd = element.asJsonObject.get("cmd").asString
+            val cmd = element?.asJsonObject?.get("cmd")?.asString ?: ""
             val value = element.asJsonObject.get("value")
+            val runtime = element?.asJsonObject?.get("runtime")?.asString ?: ""
 
             ToastOut(this, element.toString())
             Log.e("USB handel", "usb = " + recvBuffer)
 
-            saveRowData(cmd, value)
+            saveRowData(cmd, value, runtime)
         } else {
             ToastOut(this, "usb parsing error! = " + recvBuffer)
             Log.e("USB handel", "usb parsing error! = " + recvBuffer)
@@ -1282,7 +1330,7 @@ class MainActivity : BaseActivity() {
     var pieces_qty = 0
     var pairs_qty = 0
 
-    private fun saveRowData(cmd: String, value: JsonElement) {
+    private fun saveRowData(cmd: String, value: JsonElement, runtime: String) {
 
         if (AppGlobal.instance.get_sound_at_count()) AppGlobal.instance.playSound(this)
 
@@ -1306,10 +1354,11 @@ class MainActivity : BaseActivity() {
                     val cycle_time = item.getString("ct").toInt()
                     val model = item.getString("model").toString()
                     val article = item.getString("article").toString()
+                    val stitch = item.getString("stitch").toString()
                     val material_way = item.getString("material_way").toString()
                     val component = item.getString("component").toString()
 
-                    startNewProduct(didx, cycle_time, model, article, material_way, component)
+                    startNewProduct(didx, cycle_time, model, article, stitch, material_way, component)
                     return
                 }
             }
@@ -1408,7 +1457,7 @@ class MainActivity : BaseActivity() {
             sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
-            sendCountData(value.toString(), inc_count, cnt)  // 서버에 카운트 정보 전송
+            sendCountData(value.toString(), inc_count, cnt, runtime)  // 서버에 카운트 정보 전송
 
 
             // DB에 Actual 저장
@@ -1438,7 +1487,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun sendCountData(count:String, inc_count:Int, sum_count:Int) {
+    private fun sendCountData(count:String, inc_count:Int, sum_count:Int, runtime: String) {
         if (AppGlobal.instance.get_server_ip()=="") return
 
         val work_idx = AppGlobal.instance.get_product_idx()
@@ -1480,7 +1529,9 @@ class MainActivity : BaseActivity() {
             "total_count" to sum_count,
             "shift_idx" to  shift_idx,
             "seq" to seq)
+
 Log.e("Scount params", params.toString())
+
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
             var msg = result.getString("msg")
@@ -1489,6 +1540,31 @@ Log.e("Scount params", params.toString())
                 ToastOut(this, result.getString("msg"), true)
             }
         })
+
+        // 베트남 특별한 경우
+        if (AppGlobal.instance.get_send_stitch_count()) {
+
+            val uri = "/Hcount.php"
+            var params = listOf(
+                "sensing_id" to AppGlobal.instance.get_mc_no1(),
+                "stitching_count" to AppGlobal.instance.get_stitch(),
+                "curing_sec" to runtime,
+                "piece_yn" to "1",
+                "factory_cd" to  AppGlobal.instance.get_factory_idx(),
+                "line_cd" to AppGlobal.instance.get_line_idx(),
+                "factory_nm" to  AppGlobal.instance.get_factory(),
+                "line_nm" to AppGlobal.instance.get_line())
+
+            Log.e("Hcount params", "= "+params.toString())
+
+            request(this, uri, true,false, params, { result ->
+                var code = result.getString("code")
+                if(code != "00") {
+                    ToastOut(this, result.getString("msg"), true)
+                }
+            })
+        }
+
     }
 
 //    fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
@@ -1536,7 +1612,7 @@ Log.e("Scount params", params.toString())
 //        // 현재 shift의 첫생산인데 지각인경우 downtime 처리
 //    }
 
-    fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, material_way:String, component:String) {
+    fun startNewProduct(didx:String, cycle_time:Int, model:String, article:String, stitch:String, material_way:String, component:String) {
 
         // 이전 작업과 동일한 디자인 번호이면 새작업이 아님
         val prev_didx = AppGlobal.instance.get_design_info_idx()
@@ -1545,6 +1621,7 @@ Log.e("Scount params", params.toString())
         AppGlobal.instance.set_design_info_idx(didx)
         AppGlobal.instance.set_model(model)
         AppGlobal.instance.set_article(article)
+        AppGlobal.instance.set_stitch(stitch)
         AppGlobal.instance.set_material_way(material_way)
         AppGlobal.instance.set_component(component)
         AppGlobal.instance.set_cycle_time(cycle_time)
@@ -1578,7 +1655,7 @@ Log.e("Scount params", params.toString())
 
         var start_dt = DateTime().toString("yyyy-MM-dd HH:mm:ss")
 
-        // 처음 시작이므로 Start 시작 시간을 Shift 시작 시간으로 세팅
+        // 처음 시작이면 Start 시작 시간을 Shift 시작 시간으로 세팅
         if (seq == 1) {
             val item = AppGlobal.instance.get_current_shift_time()
             if (item != null) {
@@ -1611,6 +1688,7 @@ Log.e("Scount params", params.toString())
         Log.e("startNewProduct", "==========================")
         Log.e("startNewProduct", "work_idx=" + work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time)
         Log.e("startNewProduct", "==========================")
+
         db.add(work_idx, start_dt, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
 
 //        val br_intent = Intent("need.refresh")
@@ -1618,7 +1696,7 @@ Log.e("Scount params", params.toString())
     }
 
     // downtime 발생시 푸시 발송
-    fun sendPush(push_text: String, progress: Boolean) {
+    fun sendPush(push_text: String, add_text: String = "", progress: Boolean=false) {
         val uri = "/pushcall.php"
         var params = listOf(
             "code" to "push_text_list",
@@ -1630,7 +1708,8 @@ Log.e("Scount params", params.toString())
             "machine_no" to AppGlobal.instance.get_mc_no1(),
             "mc_model" to AppGlobal.instance.get_mc_model(),
             "seq" to "0",
-            "text" to push_text)
+            "text" to push_text,
+            "add_text" to add_text)
 
         request(this, uri, progress, params, { result ->
             var code = result.getString("code")
@@ -1689,7 +1768,7 @@ Log.e("Scount params", params.toString())
 
                 startDowntimeActivity()
 
-                sendPush("SYS: DOWNTIME", false)
+                sendPush("SYS: DOWNTIME")
 
             } else {
                 ToastOut(this, result.getString("msg"), true)
@@ -1795,13 +1874,13 @@ Log.e("Scount params", params.toString())
                 val work_stime = item["work_stime"].toString()
                 db_design.deleteLastDate(work_stime)
             } else {
+                AppGlobal.instance.reset_product_idx()                  // work idx 초기화
                 AppGlobal.instance.set_design_info_idx("")
                 AppGlobal.instance.set_model("")
                 AppGlobal.instance.set_article("")
                 AppGlobal.instance.set_material_way("")
                 AppGlobal.instance.set_component("")
                 AppGlobal.instance.set_cycle_time(0)
-                AppGlobal.instance.reset_product_idx()                  // work idx 초기화
 
                 db_design.delete()
             }
@@ -1902,6 +1981,12 @@ Log.e("Scount params", params.toString())
 //            }
 //        }
         _is_down_loop = false
+    }
+
+    private fun startComponentActivity () {
+        val br_intent = Intent("start.component")
+        this.sendBroadcast(br_intent)
+        startActivity(Intent(this, ComponentActivity::class.java))
     }
 
     private fun startDowntimeActivity() {

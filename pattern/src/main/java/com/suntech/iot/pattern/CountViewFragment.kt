@@ -333,10 +333,6 @@ class CountViewFragment : BaseFragment() {
         val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
 
 
-        // 현 디자인의 휴식 시간 계산
-//        var d1 = 0
-//        var d2 = 0
-
 //        Log.e("CountView", "Debug point---")
 
         val start_at_target = AppGlobal.instance.get_start_at_target()  // 타겟의 시작을 0부터 할지 1부터 할지
@@ -522,16 +518,16 @@ class CountViewFragment : BaseFragment() {
         refreshOEEGraph(total_actual, total_target)
     }
 
-    var _availability_rate = 0F
-    var _quality_rate = 0F
-    var _performance_rate = 0F
-    var _oee_rate = 0F
+//    var _availability_rate = 0F
+//    var _quality_rate = 0F
+//    var _performance_rate = 0F
+//    var _oee_rate = 0F
 
     private fun initOEEGraph() {
-        _availability_rate = 0F
-        _quality_rate = 0F
-        _performance_rate = 0F
-        _oee_rate = 0F
+        (activity as MainActivity)._availability_rate = 0F
+        (activity as MainActivity)._quality_rate = 0F
+        (activity as MainActivity)._performance_rate = 0F
+        (activity as MainActivity)._oee_rate = 0F
 
         // Server charts
         oee_progress.progress = 0
@@ -603,14 +599,14 @@ class CountViewFragment : BaseFragment() {
 
 //        Log.e("refreshOEEGraph", "downtime min : = " + time_sum.toInt()/60 + "min , sec = " + time_sum.toInt())
 
-        Log.e("test", "---------- work time : " + work_time +", down time : " + down_time +", down target : " + down_target)
+//        Log.e("test", "---------- work time : " + work_time +", down time : " + down_time +", down target : " + down_target)
 
         // Availability Check
         val availability = (work_time-down_time).toFloat() / work_time
         val availability_rate = floor(availability * 1000) / 10
 
-        if (_availability_rate != availability_rate) {
-            _availability_rate = availability_rate
+        if ((activity as MainActivity)._availability_rate != availability_rate) {
+            (activity as MainActivity)._availability_rate = availability_rate
 
             Log.e("refreshOEEGraph", "oee graph redraw : availability = " + (availability * 100) + "%")
 
@@ -632,16 +628,16 @@ class CountViewFragment : BaseFragment() {
         val performance = total_actual.toFloat() / (total_target-down_target)
         val performance_rate = floor(performance * 1000) / 10
 
-        if (_performance_rate != performance_rate) {
+        if ((activity as MainActivity)._performance_rate != performance_rate) {
 
             // 100% 넘어가면 푸시발송
             if (performance_rate >= 100.0f) {
-                if (_performance_rate < 100.0f) {
+                if ((activity as MainActivity)._performance_rate < 100.0f) {
                     OEEUtil.LogWrite("Best performance Push send...", "refreshOEEGraph")
-                    (activity as MainActivity).sendPush("SYS: PERFORMANCE", false)
+                    (activity as MainActivity).sendPush("SYS: PERFORMANCE")
                 }
             }
-            _performance_rate = performance_rate
+            (activity as MainActivity)._performance_rate = performance_rate
 
             Log.e("refreshOEEGraph", "oee graph redraw : performance = " + (performance * 100) + "%")
 
@@ -664,11 +660,11 @@ class CountViewFragment : BaseFragment() {
         var defective_count = db.sum_defective_count()
         if (defective_count==null || defective_count<0) defective_count = 0
 
-        val quality = if(total_actual!=0) (total_actual-defective_count).toFloat() / total_actual else 1.0F
+        val quality = if(total_actual!=0) (total_actual-defective_count).toFloat() / total_actual else 0F
         val quality_rate = floor(quality * 1000) / 10
 
-        if (_quality_rate != quality_rate) {
-            _quality_rate = quality_rate
+        if ((activity as MainActivity)._quality_rate != quality_rate) {
+            (activity as MainActivity)._quality_rate = quality_rate
 
             Log.e("refreshOEEGraph", "oee graph redraw : quality = " + (quality*100) + "%")
 
@@ -691,8 +687,8 @@ class CountViewFragment : BaseFragment() {
         var oee = availability_rate * performance_rate * quality_rate / 1000F
         var oee_rate = floor(oee) / 10
 
-        if (_oee_rate != oee_rate) {
-            _oee_rate = oee_rate
+        if ((activity as MainActivity)._oee_rate != oee_rate) {
+            (activity as MainActivity)._oee_rate = oee_rate
 
             Log.e("refreshOEEGraph", "oee graph redraw : OEE = " + (oee/10) + "%")
 

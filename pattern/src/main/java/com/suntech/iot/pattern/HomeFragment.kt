@@ -133,10 +133,11 @@ class HomeFragment : BaseFragment() {
                 val cycle_time = d["ct"]!!.toInt()
                 val model = d["model"]!!.toString()
                 val article = d["article"]!!.toString()
+                val stitch = d["stitch"]!!.toString()
                 val material_way = d["material_way"]!!.toString()
                 val component = d["component"]!!.toString()
 
-                (activity as MainActivity).startNewProduct(idx, cycle_time, model, article, material_way, component)
+                (activity as MainActivity).startNewProduct(idx, cycle_time, model, article, stitch, material_way, component)
             }
             if (AppGlobal.instance.get_auto_setting()) {
                 AppGlobal.instance.set_auto_setting(false)

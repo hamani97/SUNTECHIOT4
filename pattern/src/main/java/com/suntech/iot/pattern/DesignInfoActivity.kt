@@ -170,6 +170,7 @@ class DesignInfoActivity : BaseActivity() {
                 "idx" to item.getString("idx"),
                 "model" to item.getString("model"),
                 "article" to item.getString("article"),
+                "stitch" to item.getString("stitch"),
                 "material_way" to item.getString("material_way"),
                 "component" to item.getString("component"),
                 "remark" to item.getString("remark"),

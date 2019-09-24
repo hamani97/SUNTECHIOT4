@@ -142,6 +142,7 @@ class SettingActivity : BaseActivity() {
         sw_sound_at_count.isChecked = AppGlobal.instance.get_sound_at_count()
 //        sw_without_component.isChecked = AppGlobal.instance.get_without_component()
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
+        sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -309,6 +310,15 @@ class SettingActivity : BaseActivity() {
                 return
             }
         }
+        if (sw_send_stitch_count.isChecked) {
+            val mc_no1 = tv_setting_mc_no1.text.toString()
+            val regex = Regex("""\d+""")
+            if (!regex.matches(mc_no1)) {
+                tabChange(1)
+                ToastOut(this, R.string.msg_enter_only_for_mc_no, true)
+                return
+            }
+        }
 
         val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 10 else et_setting_worksheet_display_time.text.toString().toInt()
 
@@ -343,6 +353,8 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_screen_blink(sw_screen_blink_effect.isChecked)
 //        AppGlobal.instance.set_remain_number(remain_num)
         AppGlobal.instance.set_blink_color(_selected_blink_color)
+
+        AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())
