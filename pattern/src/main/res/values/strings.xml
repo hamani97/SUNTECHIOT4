@@ -60,6 +60,7 @@
     <string name="label_screen_blink_effect">SCREEN BLINK EFFECT</string>
     <string name="label_downtime_blink_effect" translatable="false">Downtime blink effect</string>
     <string name="label_send_stitch_count" translatable="false">Send Stitch Q\'ty</string>
+    <string name="label_planned_count_process" translatable="false">Planned Time Actual Count</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
@@ -224,6 +225,7 @@
     <string name="msg_cannot_input_wos">Cannot input WOS</string>
     <string name="msg_has_notselected">Nothing Selected</string>
     <string name="msg_not_start_work">Checking Working Time</string>
+    <string name="msg_cannot_work_planned_time" translatable="false">You can not work during the Planned Time.</string>
     <string name="msg_exit_shift">Do you want to exit?</string>
     <string name="msg_has_not_server_info">Cannot find server</string>
     <string name="msg_no_downtime">Downtime message not found</string>

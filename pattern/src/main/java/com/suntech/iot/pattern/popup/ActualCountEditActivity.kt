@@ -70,13 +70,16 @@ class ActualCountEditActivity : BaseActivity() {
 //        var total_quality_rate = 0
         var total_work_time = 0
 
+        Log.e("Actual Qty Edit", "---------------------------------------")
+
         for (i in 0..(_list.size - 1)) {
             val item = _list[i]
             val start_dt_txt = item["start_dt"]
             val end_dt_txt = item["end_dt"]
-            Log.e("act", "start_dt_txt = " + start_dt_txt + ", end_dt_txt = " + end_dt_txt)
             var start_dt = OEEUtil.parseDateTime(start_dt_txt)
             var end_dt = if (end_dt_txt==null) DateTime() else OEEUtil.parseDateTime(end_dt_txt)
+
+            Log.e("Actual Qty Edit", item.toString())
 
             var dif = end_dt.millis - start_dt.millis
 

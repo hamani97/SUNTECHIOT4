@@ -266,7 +266,6 @@ class CountViewFragment : BaseFragment() {
         tv_pairs_qty?.text = "" + (activity as MainActivity).pairs_qty
 
 //        tv_count_view_actual.text = "" + AppGlobal.instance.get_current_shift_actual_cnt()
-
 //        drawChartView2()
 
         // 현재 시프트의 휴식시간 미리 계산
@@ -275,12 +274,6 @@ class CountViewFragment : BaseFragment() {
             refreshScreen("", 0, 0, 0)
             return
         }
-
-//        val work_stime = shift_time["work_stime"].toString()
-        val work_etime = shift_time["work_etime"].toString()
-        val shift_idx = shift_time["shift_idx"].toString()
-
-        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
 
         // 디자인이 선택되었는지 체크
         val work_idx = AppGlobal.instance.get_product_idx()
@@ -291,6 +284,11 @@ class CountViewFragment : BaseFragment() {
 //            refreshScreen(shift_idx, 0, 0, 0)
             return
         }
+
+//        val work_stime = shift_time["work_stime"].toString()
+        val work_etime = shift_time["work_etime"].toString()
+        val shift_idx = shift_time["shift_idx"].toString()
+        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
 
         var db = DBHelperForDesign(activity)
 
@@ -321,8 +319,8 @@ class CountViewFragment : BaseFragment() {
 
 
         val now = DateTime()        // 현재
-        var start_dt = OEEUtil.parseDateTime(db_item?.get("start_dt").toString())    // 디자인의 시작시간
-        val shift_end_dt = OEEUtil.parseDateTime(work_etime)    // 시프트의 종료 시간
+        var start_dt = OEEUtil.parseDateTime(db_item?.get("start_dt").toString())   // 디자인의 시작시간
+        val shift_end_dt = OEEUtil.parseDateTime(work_etime)                        // 시프트의 종료 시간
 
         if (start_dt < shift_stime) start_dt = shift_stime
 
@@ -356,7 +354,6 @@ class CountViewFragment : BaseFragment() {
                 val target2 = item?.get("target").toString().toInt()
 
                 total_actual += actual2
-
 
                 if (work_idx == work_idx2) {        // 현재 진행중인 디자인
 
@@ -393,37 +390,6 @@ class CountViewFragment : BaseFragment() {
                             db.updateWorkTarget(work_idx, count, count)
                         }
                     }
-
-//                    if (target_type == "server_per_accumulate") {
-//                        val d1 = AppGlobal.instance.compute_time(start_dt, now, _planned1_stime, _planned1_etime)
-//                        val d2 = AppGlobal.instance.compute_time(start_dt, now, _planned2_stime, _planned2_etime)
-//
-//                        // 디자인의 시작부터 현재까지 시간(초)
-//                        val work_time = ((now.millis - start_dt.millis) / 1000) - d1 - d2 -1
-//
-//                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
-//                        total_target += count
-//
-//                        // target값이 변형되었으면 업데이트
-//                        if (work_idx != null && target2 != count) {
-//                            db.updateWorkTarget(work_idx, count, count)
-//                        }
-//
-//                    } else if (target_type == "server_per_day_total") {
-//                        val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
-//                        val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
-//
-//                        // 디자인의 시작부터 시프트 종료시간까지 (초)
-//                        val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 -1
-//
-//                        val count = (work_time / current_cycle_time).toInt() + 1 // 현 시간에 만들어야 할 갯수
-//                        total_target += count
-//
-//                        // target값이 변형되었으면 업데이트
-//                        if (work_idx != null && target2 != count) {
-//                            db.updateWorkTarget(work_idx, count, count)
-//                        }
-//                    }
 
                 } else {        // 지난 디자인 작업
 
@@ -705,22 +671,6 @@ class CountViewFragment : BaseFragment() {
             oee_progress.progressStartColor = Color.parseColor("#" + oee_color_code)
             oee_progress.progressEndColor = Color.parseColor("#" + oee_color_code)
         }
-
-//        val now_shift_time = AppGlobal.instance.get_current_shift_accumulated_time()    // 현재 쉬프트의 누적 시간을 구함
-//        val now_shift_work_time = AppGlobal.instance.get_current_shift_total_time()     // 현재 쉬프트의 총 작업 시간을 구함 (쉬프트시작시간,종료시간무시)
-//
-//        Log.e("test", "---------- 1 " + now_shift_time +", " + now_shift_work_time)
-
-
-
-//        val work_time = AppGlobal.instance.compute_work_time(shift_stime, shift_etime, false)      // downtime을 빼지 않은 총 근무시간
-//        val real_time = AppGlobal.instance.compute_work_time(shift_stime, shift_etime, false, false)  // downtime 빼고
-
-
-
-
-//        val d1 = AppGlobal.instance.compute_work_time(shift_stime, shift_etime, false)
-
     }
 
     // 현재 target을 서버에 저장

@@ -121,8 +121,8 @@ class DownTimeInputActivity : BaseActivity() {
                 planned1_time = AppGlobal.instance.compute_time_millis(down_start_millis, now_millis, planned1_stime_millis, planned1_etime_millis)
                 planned2_time = AppGlobal.instance.compute_time_millis(down_start_millis, now_millis, planned2_stime_millis, planned2_etime_millis)
             }
-            down_time = ((now_millis - down_start_millis) / 1000).toInt()
-            real_down_time = down_time - planned1_time - planned2_time
+            down_time = ((now_millis - down_start_millis) / 1000).toInt()   // 다운시간
+            real_down_time = down_time - planned1_time - planned2_time      // 휴식시간을 뺀 실제 다운타임
 
             val ct = AppGlobal.instance.get_cycle_time()
             if (ct > 0) target = real_down_time / ct

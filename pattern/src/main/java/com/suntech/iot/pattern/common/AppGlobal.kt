@@ -105,6 +105,8 @@ class AppGlobal private constructor() {
 //    fun get_remain_number() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_remain_number") }
     fun set_send_stitch_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "send_stitch_count", state) }
     fun get_send_stitch_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "send_stitch_count") }
+    fun set_planned_count_process(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "planned_count", state) }
+    fun get_planned_count_process() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "planned_count") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }

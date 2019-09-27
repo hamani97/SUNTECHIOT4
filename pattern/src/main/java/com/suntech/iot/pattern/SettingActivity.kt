@@ -143,6 +143,7 @@ class SettingActivity : BaseActivity() {
 //        sw_without_component.isChecked = AppGlobal.instance.get_without_component()
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
         sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
+        sw_planned_count_process.isChecked = AppGlobal.instance.get_planned_count_process()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -355,6 +356,7 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_blink_color(_selected_blink_color)
 
         AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
+        AppGlobal.instance.set_planned_count_process(sw_planned_count_process.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())

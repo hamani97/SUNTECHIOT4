@@ -226,6 +226,12 @@ class DBHelperForDesign
             db.close()
         }
 
+        fun deleteWorkIdx(id: String) {
+            val db = _openHelper.writableDatabase ?: return
+            db.delete("design", "work_idx = ?", arrayOf(id))
+            db.close()
+        }
+
         /**
          * Updates a row in the database table with new column values, without changing the unique id of the row.
          * For simplicity reasons, nothing happens if this operation fails.

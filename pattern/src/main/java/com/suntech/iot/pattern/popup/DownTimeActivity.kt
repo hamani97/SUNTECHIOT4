@@ -103,9 +103,8 @@ class DownTimeActivity : BaseActivity() {
                 val downtime = (dif / 1000 / 60 ).toInt()
                 total_downtime += downtime
                 item.set("downtime", downtime.toString()+ " min")
-
-                Log.e("DownTime", "" + item.toString())
             }
+            Log.e("DownTime", "" + item.toString())
         }
         tv_item_downtime_total?.text = ""+total_downtime + " min"
     }
@@ -180,7 +179,7 @@ class DownTimeActivity : BaseActivity() {
 //            vh.tv_item_design_idx.text = _list[position]["design_idx"]
             vh.tv_item_start_time.text = _list[position]["start_dt"]
             vh.tv_item_end_time.text = _list[position]["end_dt"]
-            vh.tv_item_downtime.text = _list[position]["downtime"] + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
+            vh.tv_item_downtime.text = _list[position]["downtime"]  //  + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
             vh.tv_item_completed.text = _list[position]["completed"]
             vh.tv_item_list.text = _list[position]["list"]
 
