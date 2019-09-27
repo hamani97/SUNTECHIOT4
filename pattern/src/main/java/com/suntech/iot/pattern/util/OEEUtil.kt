@@ -31,7 +31,7 @@ object OEEUtil {
     }
 
     fun LogWrite(txt: String="No values", title:String="Watching Data") {
-        Log.e(title, "--[ " + title + " ]-------------------------------------")
+        Log.e(title, "--------------------------------------------------------")
         Log.e(title, "" + txt.toString())
         Log.e(title, "--------------------------------------------------------")
     }

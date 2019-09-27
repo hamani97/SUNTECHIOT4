@@ -174,6 +174,19 @@ class DBHelperForDesign
             return cnt
         }
 
+        fun max_seq(): Int {
+            val db = _openHelper.readableDatabase ?: return -1
+            val sql = "select max(seq) as cnt from design "
+            val cur = db.rawQuery(sql, arrayOf())
+            var cnt = 0
+            if (cur.moveToNext()) {
+                cnt = cur.getInt(0)
+            }
+            cur.close()
+            db.close()
+            return cnt
+        }
+
         fun add(work_idx: String, start_dt: String, design_idx: String, shift_id:String, shift_name:String, cycle_time: Int, pieces_info: String, pairs_info: String, target:Int, actual:Int, defective:Int, seq:Int): Long {
             val db = _openHelper.writableDatabase ?: return 0
             val row = ContentValues()

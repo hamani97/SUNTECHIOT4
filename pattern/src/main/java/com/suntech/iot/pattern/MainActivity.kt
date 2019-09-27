@@ -1530,7 +1530,7 @@ class MainActivity : BaseActivity() {
             "shift_idx" to  shift_idx,
             "seq" to seq)
 
-Log.e("Scount params", params.toString())
+//Log.e("Scount params", params.toString())
 
         request(this, uri, true,false, params, { result ->
             var code = result.getString("code")
@@ -1544,25 +1544,31 @@ Log.e("Scount params", params.toString())
         // 베트남 특별한 경우
         if (AppGlobal.instance.get_send_stitch_count()) {
 
-            val uri = "/Hcount.php"
-            var params = listOf(
-                "sensing_id" to AppGlobal.instance.get_mc_no1(),
-                "stitching_count" to AppGlobal.instance.get_stitch(),
-                "curing_sec" to runtime,
-                "piece_yn" to "1",
-                "factory_cd" to  AppGlobal.instance.get_factory_idx(),
-                "line_cd" to AppGlobal.instance.get_line_idx(),
-                "factory_nm" to  AppGlobal.instance.get_factory(),
-                "line_nm" to AppGlobal.instance.get_line())
+            if (runtime=="") {
+                ToastOut(this, R.string.msg_runtime_not_enterd, true)
+                return
+            } else {
+                val uri = "/Hcount.php"
+                var params = listOf(
+                    "sensing_id" to AppGlobal.instance.get_mc_no1(),
+                    "stitching_count" to AppGlobal.instance.get_stitch(),
+                    "curing_sec" to runtime,
+                    "piece_yn" to "1",
+                    "factory_cd" to AppGlobal.instance.get_factory_idx(),
+                    "line_cd" to AppGlobal.instance.get_line_idx(),
+                    "factory_nm" to AppGlobal.instance.get_factory(),
+                    "line_nm" to AppGlobal.instance.get_line()
+                )
 
-            Log.e("Hcount params", "= "+params.toString())
+//                Log.e("Hcount params", "= " + params.toString())
 
-            request(this, uri, true,false, params, { result ->
-                var code = result.getString("code")
-                if(code != "00") {
-                    ToastOut(this, result.getString("msg"), true)
-                }
-            })
+                request(this, uri, true, false, params, { result ->
+                    var code = result.getString("code")
+                    if (code != "00") {
+                        ToastOut(this, result.getString("msg"), true)
+                    }
+                })
+            }
         }
 
     }
@@ -1630,9 +1636,9 @@ Log.e("Scount params", params.toString())
         val pairs_info = AppGlobal.instance.get_pairs_info()
 
         val db = DBHelperForDesign(this)
+        val item = db.get(prev_work_idx)
 
         if (didx == prev_didx) {
-            val item = db.get(prev_work_idx)
             if (item != null) {
                 val work_info = AppGlobal.instance.get_current_shift_time()
                 val shift_idx = work_info?.getString("shift_idx") ?: ""
@@ -1647,19 +1653,26 @@ Log.e("Scount params", params.toString())
             if (prev_work_idx != "") db.updateWorkEnd(prev_work_idx)    // 이전 작업 완료 처리
         }
 
+        // 이전 디자인의 Actual이 0이면 (작업이 하나도 없는 경우, 실수로 선택한 경우 등)
+        // 해당 디자인을 지우고 시작 시간을 새 디자인의 시작 시간으로 업데이트한다.
+        var actual_cnt = item!!["actual"].toString().toInt()
+        if (actual_cnt==0) {
+
+        }
+
         AppGlobal.instance.set_product_idx()
 
-        val s = db.gets()
-        val seq = (s?.size ?: 0) + 1
+        val max_seq = db.max_seq()
+        val seq = max_seq + 1
         Log.e("test", "seq = " + seq)
 
         var start_dt = DateTime().toString("yyyy-MM-dd HH:mm:ss")
 
         // 처음 시작이면 Start 시작 시간을 Shift 시작 시간으로 세팅
         if (seq == 1) {
-            val item = AppGlobal.instance.get_current_shift_time()
-            if (item != null) {
-                start_dt = item["work_stime"].toString()
+            val shift_time = AppGlobal.instance.get_current_shift_time()
+            if (shift_time != null) {
+                start_dt = shift_time["work_stime"].toString()
             }
         }
 
@@ -1674,20 +1687,18 @@ Log.e("Scount params", params.toString())
             // 현재 시프트가 없으므로 다가올 시프트 정보를 구한다.
             val list = AppGlobal.instance.get_current_work_time()
             for (i in 0..(list.length() - 1)) {
-                val tmp_item = list.getJSONObject(i)
-                var shift_stime = (OEEUtil.parseDateTime(tmp_item["work_stime"].toString())).millis
+                val work_time = list.getJSONObject(i)
+                var shift_stime = (OEEUtil.parseDateTime(work_time["work_stime"].toString())).millis
 
                 if (now <= shift_stime) {
-                    shift_idx = tmp_item?.getString("shift_idx") ?: ""
-                    shift_name = tmp_item?.getString("shift_name") ?: ""
+                    shift_idx = work_time?.getString("shift_idx") ?: ""
+                    shift_name = work_time?.getString("shift_name") ?: ""
                     break
                 }
             }
         }
 
-        Log.e("startNewProduct", "==========================")
-        Log.e("startNewProduct", "work_idx=" + work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time)
-        Log.e("startNewProduct", "==========================")
+        OEEUtil.LogWrite("work_idx=" + work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
 
         db.add(work_idx, start_dt, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
 

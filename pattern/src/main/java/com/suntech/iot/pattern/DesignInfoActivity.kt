@@ -141,8 +141,6 @@ class DesignInfoActivity : BaseActivity() {
 
             if (_selected_index < 0) {
                 finish(false, 0, "ok", null)
-//                ToastOut(this, R.string.msg_has_notselected, true)
-//                return@setOnClickListener
             } else {
                 finish(true, 1, "ok", _filtered_list[_selected_index])
             }

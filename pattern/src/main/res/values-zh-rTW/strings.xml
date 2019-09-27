@@ -20,7 +20,7 @@
     <string name="edit">编辑</string>
     <string name="exit">退出</string>
     <string name="guide_pieces">= 1 Count</string>
-    <string name="label_actual">实际生产数量</string>
+    <string name="label_actual">实际产量</string>
     <string name="label_actual_count_edit_input">编辑实际数量</string>
     <string name="label_component">组成（配件）</string>
     <string name="label_count_trim_pairs">双（复数形式）</string>
@@ -45,7 +45,7 @@
     <string name="label_wifi">无线系统</string>
     <string name="label_wos">无线办公系统</string>
     <string name="label_wos_name">显示无线办公设备名称</string>
-    <string name="list_item_actual">实际生产数量</string>
+    <string name="list_item_actual">实际产量</string>
     <string name="list_item_balance">剩余</string>
     <string name="list_item_completed">完成</string>
     <string name="list_item_down_time">停机时间</string>
@@ -109,7 +109,7 @@
     <string name="list_header_model">型号</string>
     <string name="defective">有瑕疵</string>
     <string name="time">时间</string>
-    <string name="label_actual_plus">+ 实际生产数量</string>
+    <string name="label_actual_plus">+ 实际产量</string>
     <string name="title_edit_pieces_pairs_count">编辑多少件记数</string>
     <string name="pieces_count">多少件数记数</string>
     <string name="button_design_info">设计信息</string>

@@ -675,7 +675,7 @@ class CountViewFragment : BaseFragment() {
                 val snumber = _color_list[i]["snumber"]?.toInt() ?: 0
                 if (snumber <= quality_int) quality_color_code = _color_list[i]["color_code"].toString()
             }
-            OEEUtil.LogWrite("Qual value = "+quality_int+", Qual color = "+quality_color_code, "Color")
+//            OEEUtil.LogWrite("Qual value = "+quality_int+", Qual color = "+quality_color_code, "Color")
             tv_quality_rate.text = "" + quality_rate + "%"
             quality_progress.progress = quality_int
             quality_progress.progressStartColor = Color.parseColor("#" + quality_color_code)
@@ -699,7 +699,7 @@ class CountViewFragment : BaseFragment() {
                 val snumber = _color_list[i]["snumber"]?.toInt() ?: 0
                 if (snumber <= oee_int) oee_color_code = _color_list[i]["color_code"].toString()
             }
-            OEEUtil.LogWrite("OEE value = "+oee_int+", OEE color = "+oee_color_code, "Color")
+//            OEEUtil.LogWrite("OEE value = "+oee_int+", OEE color = "+oee_color_code, "Color")
             tv_oee_rate.text = "" + oee_rate + "%"
             oee_progress.progress = oee_int
             oee_progress.progressStartColor = Color.parseColor("#" + oee_color_code)

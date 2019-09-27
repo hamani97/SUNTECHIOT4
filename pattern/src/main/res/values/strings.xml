@@ -215,6 +215,7 @@
     <string name="msg_select_design">Please select a Design</string>
     <string name="msg_require_target_quantity">Please enter a target quantity</string>
     <string name="msg_enter_only_for_mc_no" translatable="false">Please enter only numbers for M/C No</string>
+    <string name="msg_runtime_not_enterd" translatable="false">Runtime value not entered</string>
     <string name="msg_layer_not_selected">Work info not selected</string>
     <string name="msg_design_not_selected">Design not selected</string>
     <string name="msg_no_setting">Setting not found</string>

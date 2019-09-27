@@ -107,7 +107,6 @@ class DownTimeActivity : BaseActivity() {
                 Log.e("DownTime", "" + item.toString())
             }
         }
-        Log.e("DownTime", "---------------------------------------")
         tv_item_downtime_total?.text = ""+total_downtime + " min"
     }
 
