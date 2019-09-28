@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,7 @@ class DownTimeActivity : BaseActivity() {
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
 
-    private val _timer_task1 = Timer()
+//    private val _timer_task1 = Timer()
 
     val _start_down_time_activity = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -41,23 +42,26 @@ class DownTimeActivity : BaseActivity() {
         setContentView(R.layout.activity_down_time)
         initView()
         updateView()
-        start_timer()
+//        start_timer()
     }
 
     override fun onResume() {
         super.onResume()
         registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
+        is_loop = true
+        startHandler()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cancel_timer()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+////        cancel_timer()
+//    }
 
     public override fun onPause() {
         super.onPause()
         overridePendingTransition(0, 0)
         unregisterReceiver(_start_down_time_activity)
+        is_loop = false
     }
 
     private fun initView() {
@@ -71,12 +75,14 @@ class DownTimeActivity : BaseActivity() {
         }
 
         lv_downtimes.setOnItemClickListener { adapterView, view, i, l ->
-            val idx = _list[i]["idx"]
+            val idx = _list[i]["idx"].toString()
+            val start_dt = _list[i]["start_dt"].toString()
             val completed = _list[i]["completed"]
             if (completed=="Y") return@setOnItemClickListener
 
             val intent = Intent(this, DownTimeInputActivity::class.java)
             intent.putExtra("idx", idx)
+            intent.putExtra("start_dt", start_dt)
             startActivity(intent, { r, c, m, d ->
                 if (r) {
                     updateView()
@@ -110,24 +116,39 @@ class DownTimeActivity : BaseActivity() {
     }
 
     private var _count = 0
+    private var is_loop: Boolean = false
 
-    private fun start_timer () {
-        val task1 = object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    checkBlink()
-                    if (_list.size==0 || _count++ >= 5) {
-                        _count = 0
-                        updateView()
-                    }
+    fun startHandler() {
+        val handler = Handler()
+        handler.postDelayed({
+            if (is_loop) {
+                checkBlink()
+                if (_list.size == 0 || _count++ >= 5) {
+                    _count = 0
+                    updateView()
                 }
+                startHandler()
             }
-        }
-        _timer_task1.schedule(task1, 1000, 2000)
+        }, 2000)
     }
-    private fun cancel_timer () {
-        _timer_task1.cancel()
-    }
+
+//    private fun start_timer () {
+//        val task1 = object : TimerTask() {
+//            override fun run() {
+//                runOnUiThread {
+//                    checkBlink()
+//                    if (_list.size==0 || _count++ >= 5) {
+//                        _count = 0
+//                        updateView()
+//                    }
+//                }
+//            }
+//        }
+//        _timer_task1.schedule(task1, 500, 2000)
+//    }
+//    private fun cancel_timer () {
+//        _timer_task1.cancel()
+//    }
 
     var blink_cnt = 0
 

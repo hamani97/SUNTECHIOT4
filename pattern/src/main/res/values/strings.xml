@@ -24,6 +24,7 @@
     <string name="title_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
     <string name="title_defective_input">Defective input</string>
     <string name="title_downtime">DOWNTIME</string>
+    <string name="title_down_time">Down time</string>
     <string name="title_down_time_info">Down Time Info</string>
     <string name="title_down_time_input">Down Time Input</string>
     <string name="title_down_time_list">Down Time Input</string>

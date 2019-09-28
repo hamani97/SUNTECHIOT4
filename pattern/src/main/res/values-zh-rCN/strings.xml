@@ -176,4 +176,5 @@
     <string name="button_tab_etc_setting">联网系统设定</string>
     <string name="filename">文件名称</string>
     <string name="label_start_at_target_1">开始目标1</string>
+    <string name="title_down_time">停机时间</string>
 </resources>

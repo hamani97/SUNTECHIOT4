@@ -1,161 +1,85 @@
 package com.suntech.iot.pattern.popup
 
-import android.content.IntentFilter
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.*
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
-import kotlinx.android.synthetic.main.activity_down_time_input.*
+import kotlinx.android.synthetic.main.activity_down_time_input_old.*
 import org.joda.time.DateTime
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 
-class DownTimeInputActivity : BaseActivity() {
+class DownTimeInputOldActivity : BaseActivity() {
 
     private var _db = DBHelperForDownTime(this)
 
-    var _idx = ""
-    var _start_dt = ""
-    var _start_dt_millis = 0L
+    private var list_adapter: ListAdapter? = null
+    private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
+    private var _selected_idx = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.suntech.iot.pattern.R.layout.activity_down_time_input)
-
-        _idx = intent.getStringExtra("idx")
-        _start_dt = intent.getStringExtra("start_dt")
-        _start_dt_millis = OEEUtil.parseDateTime(_start_dt).millis
-
+        setContentView(com.suntech.iot.pattern.R.layout.activity_down_time_input_old)
+        initView()
         fetchData()
+        updateList()
+    }
 
+    private fun initView() {
+
+        list_adapter = ListAdapter(this, _list)
+        lv_downtimes.adapter = list_adapter
+
+        lv_downtimes.setOnItemClickListener { adapterView, view, i, l ->
+            _selected_idx = i
+            _list.forEach { item ->
+                if (i==_list.indexOf(item)) item.set("selected", "Y")
+                else item.set("selected", "N")
+            }
+            list_adapter?.notifyDataSetChanged()
+        }
+
+        btn_confirm.setOnClickListener {
+            sendEndDownTime()
+        }
         btn_cancel.setOnClickListener {
             finish(false, 1, "ok", null)
         }
     }
 
-    private fun initView() {
-
-        val params = ViewGroup.MarginLayoutParams(ll_base_box.layoutParams)
-        val par_width = (params.width - 60) / 3 - 20 // 200
+    private fun updateList () {
+        _list.removeAll(_list)
 
         var list = AppGlobal.instance.get_downtime_list()
 
         for (i in 0..(list.length() - 1)) {
-
             val item = list.getJSONObject(i)
-            val down_idx = item?.getString("idx").toString()
-            val down_name = item?.getString("name").toString()
-
-            val btn = Button(this)
-            btn.setText(down_name)
-            btn.setTextColor(Color.WHITE)
-            btn.setBackgroundColor(Color.parseColor("#"+item.getString("color")))
-            btn.textSize = 29f
-            btn.setPadding(20, 20, 20, 20)
-            if (i < 3) {
-                ll_btn_list.addView(btn)
-            } else {
-                ll_btn_list2.addView(btn)
-            }
-
-            var p = btn?.getLayoutParams() as LinearLayout.LayoutParams
-            if (p != null) {
-                p.width = par_width
-                p.height = 160
-                p.gravity = Gravity.LEFT
-                p.setMargins(10, 10, 10, 10)
-                btn.setLayoutParams(p)
-            }
-
-            btn.setOnClickListener {
-//                Log.e("DownTime", "Value = " + down_idx + ", " + down_name)
-                sendEndDownTime(down_idx, down_name)
-            }
+            var map = hashMapOf(
+                "idx" to item.getString("idx"),
+                "name" to item.getString("name"),
+                "color" to item.getString("color"),
+                "selected" to "N"
+            )
+            _list.add(map)
         }
 
-        // Exit 버튼
-//        val btn_exit = Button(this)
-//        btn_exit.setText(com.suntech.iot.pattern.R.string.exit)
-//        btn_exit.setTextColor(Color.parseColor("#535353"))
-//        btn_exit.setBackgroundColor(Color.parseColor("#888888"))
-//        btn_exit.textSize = 29f
-//        btn_exit.setPadding(20, 20, 20, 20)
-//
-//        ll_btn_list2.addView(btn_exit)
-//
-//        var p = btn_exit?.getLayoutParams() as LinearLayout.LayoutParams
-//        if (p != null) {
-//            p.width = par_width
-//            p.height = 160
-//            p.gravity = Gravity.LEFT
-//            p.setMargins(10, 10, 10, 10)
-//            btn_exit.setLayoutParams(p)
-//        }
-//        btn_exit.setOnClickListener {
-//            finish(false, 1, "ok", null)
-//        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        is_loop = true
-        startHandler()
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        overridePendingTransition(0, 0)
-        is_loop = false
-    }
-
-    private var is_loop: Boolean = false
-
-    fun startHandler() {
-        val handler = Handler()
-        handler.postDelayed({
-            if (is_loop) {
-                updateView()
-                startHandler()
+        Collections.sort(_list, object : Comparator<HashMap<String, String>> {
+            override fun compare(p0: HashMap<String, String>, p1: HashMap<String, String>): Int {
+                return p0["idx"]!!.compareTo(p1["idx"]!!)
             }
-        }, 1000)
+        })
+
+        list_adapter?.notifyDataSetChanged()
     }
 
-    private fun updateView() {
-
-        var planned1_time = 0
-        var planned2_time = 0
-
-        val now_millis = DateTime().millis
-
-        val shift_time = AppGlobal.instance.get_current_shift_time()
-        if (shift_time != null) {
-            val planned1_stime_millis = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString()).millis
-            val planned1_etime_millis = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString()).millis
-            val planned2_stime_millis = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString()).millis
-            val planned2_etime_millis = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString()).millis
-
-            planned1_time = AppGlobal.instance.compute_time_millis(_start_dt_millis, now_millis, planned1_stime_millis, planned1_etime_millis)
-            planned2_time = AppGlobal.instance.compute_time_millis(_start_dt_millis, now_millis, planned2_stime_millis, planned2_etime_millis)
-        }
-
-        val down_time = ((now_millis - _start_dt_millis) / 1000) - planned1_time - planned2_time   // 휴식시간을 뺀 실제 다운타임
-
-        val h = down_time / 3600
-        val m = down_time / 60 % 60
-        val s = down_time % 60
-
-        down_remain_time.text = String.format("%02d:%02d:%02d", h, m, s)
-    }
-
-    private fun sendEndDownTime(downtime: String = "", down_name: String = "") {
+    private fun sendEndDownTime() {
         if (AppGlobal.instance.get_server_ip() == "") {
             ToastOut(this, com.suntech.iot.pattern.R.string.msg_has_not_server_info, true)
             return
@@ -164,8 +88,7 @@ class DownTimeInputActivity : BaseActivity() {
             ToastOut(this, com.suntech.iot.pattern.R.string.msg_data_not_found, true)
             return
         }
-//        if (_selected_idx < 0) {
-        if (downtime == "") {
+        if (_selected_idx < 0) {
             ToastOut(this, com.suntech.iot.pattern.R.string.msg_has_notselected, true)
             return
         }
@@ -202,7 +125,7 @@ class DownTimeInputActivity : BaseActivity() {
             if (ct > 0) target = real_down_time / ct
         }
 
-//        val downtime = _list[_selected_idx]["idx"]
+        val downtime = _list[_selected_idx]["idx"]
 
         val uri = "/downtimedata.php"
         var params = listOf(
@@ -212,7 +135,7 @@ class DownTimeInputActivity : BaseActivity() {
             "edate" to now.toString("yyyy-MM-dd"),
             "etime" to now.toString("HH:mm:ss"))
 
-//        btn_confirm.isEnabled = false
+        btn_confirm.isEnabled = false
         btn_cancel.isEnabled = false
 
         request(this, uri, true,true, params, { result ->
@@ -222,7 +145,7 @@ class DownTimeInputActivity : BaseActivity() {
                 val idx = AppGlobal.instance.get_downtime_idx()
                 AppGlobal.instance.set_downtime_idx("")
 
-                _db.updateEnd(idx, down_name, now.toString("yyyy-MM-dd HH:mm:ss"), down_time, real_down_time, target)
+                _db.updateEnd(idx, _list[_selected_idx]["name"] ?: "", now.toString("yyyy-MM-dd HH:mm:ss"), down_time, real_down_time, target)
 
                 ToastOut(this, msg, true)
                 finish(true, 0, "ok", null)
@@ -231,7 +154,7 @@ class DownTimeInputActivity : BaseActivity() {
                 resendStartDownTime()
 
             } else {
-//                btn_confirm.isEnabled = true
+                btn_confirm.isEnabled = true
                 btn_cancel.isEnabled = true
                 ToastOut(this, msg, true)
             }
@@ -300,10 +223,57 @@ class DownTimeInputActivity : BaseActivity() {
             if (code == "00") {
                 var list = result.getJSONArray("item")
                 AppGlobal.instance.set_downtime_list(list)
-                initView()
+                updateList()
             } else {
                 ToastOut(this, result.getString("msg"), true)
             }
         })
+    }
+
+    class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
+
+        private var _list: ArrayList<HashMap<String, String>>
+        private val _inflator: LayoutInflater
+        private var _context : Context? =null
+
+        init {
+            this._inflator = LayoutInflater.from(context)
+            this._list = list
+            this._context = context
+        }
+
+        override fun getCount(): Int { return _list.size }
+        override fun getItem(position: Int): Any { return _list[position] }
+        override fun getItemId(position: Int): Long { return position.toLong() }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+            val view: View?
+            val vh: ViewHolder
+            if (convertView == null) {
+                view = this._inflator.inflate(com.suntech.iot.pattern.R.layout.list_item_downtime_type, parent, false)
+                vh = ViewHolder(view)
+                view.tag = vh
+            } else {
+                view = convertView
+                vh = view.tag as ViewHolder
+            }
+
+            vh.tv_item_downtime_name.text = _list[position]["name"]
+            vh.tv_item_downtime_name.setTextColor(Color.parseColor("#"+_list[position]["color"]))
+
+            if (_list[position]["selected"]=="Y") vh.tv_item_downtime_check_box.isSelected = true
+            else vh.tv_item_downtime_check_box.isSelected = false
+            return view
+        }
+
+        private class ViewHolder(row: View?) {
+            val tv_item_downtime_check_box: ImageView
+            val tv_item_downtime_name: TextView
+
+            init {
+                this.tv_item_downtime_check_box = row?.findViewById<ImageView>(com.suntech.iot.pattern.R.id.tv_item_downtime_check_box) as ImageView
+                this.tv_item_downtime_name = row?.findViewById<TextView>(com.suntech.iot.pattern.R.id.tv_item_downtime_name) as TextView
+            }
+        }
     }
 }
