@@ -620,7 +620,7 @@ class MainActivity : BaseActivity() {
 
                 if (shift_stime <= now_millis && now_millis < shift_etime) {
                     // 타이틀 변경
-                    tv_title.setText(item["shift_name"].toString() + "   " +
+                    tv_title?.setText(item["shift_name"].toString() + "   " +
                             OEEUtil.parseDateTime(item["work_stime"].toString()).toString("HH:mm") + " - " +
                             OEEUtil.parseDateTime(item["work_etime"].toString()).toString("HH:mm"))
 
@@ -1924,7 +1924,7 @@ class MainActivity : BaseActivity() {
             val item = AppGlobal.instance.get_current_shift_time()
             if (item != null) {
                 val work_stime = item["work_stime"].toString()
-                db_design.deleteLastDate(work_stime)
+                db_design.deleteLastDate(item["work_stime"].toString())
             } else {
                 AppGlobal.instance.reset_product_idx()                  // work idx 초기화
                 AppGlobal.instance.set_design_info_idx("")
@@ -2046,7 +2046,7 @@ class MainActivity : BaseActivity() {
         _is_down_loop = false
     }
 
-    private fun startComponentActivity () {
+    private fun startComponentActivity() {
         val br_intent = Intent("start.component")
         this.sendBroadcast(br_intent)
         startActivity(Intent(this, ComponentActivity::class.java))
