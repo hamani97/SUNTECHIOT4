@@ -311,15 +311,16 @@ class SettingActivity : BaseActivity() {
                 return
             }
         }
-        if (sw_send_stitch_count.isChecked) {
-            val mc_no1 = tv_setting_mc_no1.text.toString()
-            val regex = Regex("""\d+""")
-            if (!regex.matches(mc_no1)) {
-                tabChange(1)
-                ToastOut(this, R.string.msg_enter_only_for_mc_no, true)
-                return
-            }
-        }
+        // 이 옵션이 켜져있으면 mc no를 숫자만 입력해야 한다.
+//        if (sw_send_stitch_count.isChecked) {
+//            val mc_no1 = tv_setting_mc_no1.text.toString()
+//            val regex = Regex("""\d+""")
+//            if (!regex.matches(mc_no1)) {
+//                tabChange(1)
+//                ToastOut(this, R.string.msg_enter_only_for_mc_no, true)
+//                return
+//            }
+//        }
 
         val worksheet_time = if (et_setting_worksheet_display_time.text.toString()=="") 10 else et_setting_worksheet_display_time.text.toString().toInt()
 

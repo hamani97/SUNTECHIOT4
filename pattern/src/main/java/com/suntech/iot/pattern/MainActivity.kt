@@ -88,6 +88,9 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         AppGlobal.instance.setContext(this)
 
+        val millis = DateTime.now().millis
+
+        OEEUtil.LogWrite(""+millis, "test")
 //        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
                                                         // Setting -> Operator detail -> Design Info
                                                         // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
@@ -1584,9 +1587,11 @@ class MainActivity : BaseActivity() {
                 ToastOut(this, R.string.msg_runtime_not_enterd, true)
                 return
             } else {
+                val sensing_id = DateTime.now().millis
                 val uri = "/Hcount.php"
                 var params = listOf(
-                    "sensing_id" to AppGlobal.instance.get_mc_no1(),
+                    "sensing_id" to sensing_id,
+                    "machine_no" to AppGlobal.instance.get_mc_no1(),
                     "stitching_count" to AppGlobal.instance.get_stitch(),
                     "curing_sec" to runtime,
                     "piece_yn" to "1",
@@ -1595,6 +1600,8 @@ class MainActivity : BaseActivity() {
                     "factory_nm" to AppGlobal.instance.get_factory(),
                     "line_nm" to AppGlobal.instance.get_line()
                 )
+                Toast.makeText(this, "sensing_id="+sensing_id+", curing_sec="+runtime, Toast.LENGTH_SHORT).show()
+                // AppGlobal.instance.get_mc_no1()
 
 //                Log.e("Hcount params", "= " + params.toString())
 
@@ -1816,9 +1823,11 @@ class MainActivity : BaseActivity() {
                 val shift_idx = work_info?.getString("shift_idx") ?: ""
                 val shift_name = work_info?.getString("shift_name") ?: ""
 
-                down_db.add(idx, work_idx, didx, shift_idx, shift_name, dt.toString("yyyy-MM-dd HH:mm:ss"))
+                val start_dt = dt.toString("yyyy-MM-dd HH:mm:ss")
+                down_db.add(idx, work_idx, didx, shift_idx, shift_name, start_dt)
 
-                startDowntimeActivity()
+//                startDowntimeActivity()
+                startDowntimeInputActivity(idx, start_dt)
 
                 sendPush("SYS: DOWNTIME")
 
@@ -2056,6 +2065,17 @@ class MainActivity : BaseActivity() {
         val br_intent = Intent("start.downtime")
         this.sendBroadcast(br_intent)
         val intent = Intent(this, DownTimeActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun startDowntimeInputActivity(idx: String = "", start_dt: String = "") {
+//        val br_intent = Intent("start.downtime")
+//        this.sendBroadcast(br_intent)
+        if (idx == "" || start_dt == "") return
+
+        val intent = Intent(this, DownTimeInputActivity::class.java)
+        intent.putExtra("idx", idx)
+        intent.putExtra("start_dt", start_dt)
         startActivity(intent)
     }
 

@@ -42,14 +42,16 @@ class DownTimeActivity : BaseActivity() {
         setContentView(R.layout.activity_down_time)
         initView()
         updateView()
-//        start_timer()
+
+        is_loop = true
+        startHandler()
     }
 
     override fun onResume() {
         super.onResume()
         registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
         is_loop = true
-        startHandler()
+//        startHandler()
     }
 
 //    override fun onDestroy() {
@@ -62,6 +64,7 @@ class DownTimeActivity : BaseActivity() {
         overridePendingTransition(0, 0)
         unregisterReceiver(_start_down_time_activity)
         is_loop = false
+        ll_downtime_window.setBackgroundResource(R.color.colorWhite)
     }
 
     private fun initView() {
@@ -85,7 +88,9 @@ class DownTimeActivity : BaseActivity() {
             intent.putExtra("start_dt", start_dt)
             startActivity(intent, { r, c, m, d ->
                 if (r) {
-                    updateView()
+                    val count = _db.counts_for_notcompleted()
+                    if (count > 0) updateView()
+                    else finish()
                 }
             })
         }
@@ -121,14 +126,12 @@ class DownTimeActivity : BaseActivity() {
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
-            if (is_loop) {
-                checkBlink()
-                if (_list.size == 0 || _count++ >= 5) {
-                    _count = 0
-                    updateView()
-                }
-                startHandler()
+            if (is_loop) checkBlink()
+            if (_list.size == 0 || _count++ >= 5) {
+                _count = 0
+                updateView()
             }
+            startHandler()
         }, 2000)
     }
 

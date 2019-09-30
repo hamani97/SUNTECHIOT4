@@ -9,10 +9,12 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
+import kotlinx.android.synthetic.main.activity_down_time.*
 import kotlinx.android.synthetic.main.activity_down_time_input.*
 import org.joda.time.DateTime
 import java.util.concurrent.TimeUnit
@@ -36,15 +38,16 @@ class DownTimeInputActivity : BaseActivity() {
 
         fetchData()
 
-        btn_cancel.setOnClickListener {
-            finish(false, 1, "ok", null)
-        }
+//        btn_cancel.setOnClickListener {
+//            finish(false, 1, "ok", null)
+//        }
     }
 
     private fun initView() {
 
         val params = ViewGroup.MarginLayoutParams(ll_base_box.layoutParams)
         val par_width = (params.width - 60) / 3 - 20 // 200
+        val height = par_width / 3 * 2
 
         var list = AppGlobal.instance.get_downtime_list()
 
@@ -69,7 +72,7 @@ class DownTimeInputActivity : BaseActivity() {
             var p = btn?.getLayoutParams() as LinearLayout.LayoutParams
             if (p != null) {
                 p.width = par_width
-                p.height = 160
+                p.height = height
                 p.gravity = Gravity.LEFT
                 p.setMargins(10, 10, 10, 10)
                 btn.setLayoutParams(p)
@@ -114,18 +117,42 @@ class DownTimeInputActivity : BaseActivity() {
         super.onPause()
         overridePendingTransition(0, 0)
         is_loop = false
+        ll_base_box.setBackgroundResource(R.color.colorWhite)
     }
 
     private var is_loop: Boolean = false
+    private var _count = 0
 
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
             if (is_loop) {
                 updateView()
+                if (_count++ >= 2) {
+                    _count = 0
+                    checkBlink()
+                }
                 startHandler()
             }
         }, 1000)
+    }
+
+    var blink_cnt = 0
+
+    private fun checkBlink() {
+        var is_toggle = false
+        if (AppGlobal.instance.get_screen_blink()) {
+            val count = _db.counts_for_notcompleted()
+            if (count > 0) {
+                is_toggle = true
+                blink_cnt = 1 - blink_cnt
+            }
+        }
+        if (is_toggle && blink_cnt==1) {
+            ll_base_box.setBackgroundColor(Color.parseColor("#" + AppGlobal.instance.get_blink_color()))
+        } else {
+            ll_base_box.setBackgroundResource(R.color.colorWhite)
+        }
     }
 
     private fun updateView() {
@@ -213,7 +240,7 @@ class DownTimeInputActivity : BaseActivity() {
             "etime" to now.toString("HH:mm:ss"))
 
 //        btn_confirm.isEnabled = false
-        btn_cancel.isEnabled = false
+//        btn_cancel.isEnabled = false
 
         request(this, uri, true,true, params, { result ->
             var code = result.getString("code")
@@ -232,7 +259,7 @@ class DownTimeInputActivity : BaseActivity() {
 
             } else {
 //                btn_confirm.isEnabled = true
-                btn_cancel.isEnabled = true
+//                btn_cancel.isEnabled = true
                 ToastOut(this, msg, true)
             }
         })
