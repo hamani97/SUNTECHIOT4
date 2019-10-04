@@ -203,7 +203,8 @@ class DownTimeActivity : BaseActivity() {
 //            vh.tv_item_design_idx.text = _list[position]["design_idx"]
             vh.tv_item_start_time.text = _list[position]["start_dt"]
             vh.tv_item_end_time.text = _list[position]["end_dt"]
-            vh.tv_item_downtime.text = _list[position]["downtime"]  //  + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
+            vh.tv_item_downtime.text = _list[position]["downtime"] + "\n(" + (_list[position]["real_millis"].toString().toInt() / 60) + " m)"
+                    //  + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
             vh.tv_item_completed.text = _list[position]["completed"]
             vh.tv_item_list.text = _list[position]["list"]
 

@@ -19,13 +19,13 @@ import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_design_info.*
-import kotlinx.android.synthetic.main.activity_design_info.btn_reload
-import kotlinx.android.synthetic.main.activity_design_info.btn_setting_cancel
-import kotlinx.android.synthetic.main.activity_design_info.btn_setting_confirm
 import kotlinx.android.synthetic.main.layout_top_menu_component.*
 import org.joda.time.DateTime
+import java.util.*
 
 class DesignInfoActivity : BaseActivity() {
+
+    private var usb_state = false
 
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
@@ -51,6 +51,7 @@ class DesignInfoActivity : BaseActivity() {
         setContentView(R.layout.activity_design_info)
         initView()
 //        updateView()
+        start_timer()
         fetchData()
     }
 
@@ -70,6 +71,11 @@ class DesignInfoActivity : BaseActivity() {
     public override fun onPause() {
         super.onPause()
         unregisterReceiver(_broadcastReceiver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancel_timer()
     }
 
     private fun updateView() {
@@ -246,6 +252,30 @@ class DesignInfoActivity : BaseActivity() {
             }
         }
         list_adapter?.notifyDataSetChanged()
+    }
+
+    /////// 쓰레드
+    private val _timer_task2 = Timer()
+
+    private fun start_timer() {
+        val task2 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    checkUSB()
+                }
+            }
+        }
+        _timer_task2.schedule(task2, 500, 1000)
+    }
+    private fun cancel_timer () {
+        _timer_task2.cancel()
+    }
+
+    private fun checkUSB() {
+        if (usb_state != AppGlobal.instance._usb_state) {
+            usb_state = AppGlobal.instance._usb_state
+            btn_usb_state2.isSelected = usb_state
+        }
     }
 
     private class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {

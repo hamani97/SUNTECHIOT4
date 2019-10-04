@@ -26,6 +26,7 @@ import java.util.*
 class WorkInfoActivity : BaseActivity() {
 
     private var tab_pos : Int = 1
+    private var usb_state = false
 
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
@@ -74,6 +75,10 @@ class WorkInfoActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
+
+        // USB state
+        btn_usb_state2.isSelected = AppGlobal.instance._usb_state
+
         updateView()
     }
 
@@ -433,6 +438,7 @@ class WorkInfoActivity : BaseActivity() {
 
     /////// 쓰레드
     private val _timer_task1 = Timer()          // 서버 접속 체크 ping test.
+    private val _timer_task2 = Timer()
 
     private fun start_timer() {
         val task1 = object : TimerTask() {
@@ -443,9 +449,26 @@ class WorkInfoActivity : BaseActivity() {
             }
         }
         _timer_task1.schedule(task1, 5000, 10000)
+
+        val task2 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    checkUSB()
+                }
+            }
+        }
+        _timer_task2.schedule(task2, 500, 1000)
     }
     private fun cancel_timer () {
         _timer_task1.cancel()
+        _timer_task2.cancel()
+    }
+
+    private fun checkUSB() {
+        if (usb_state != AppGlobal.instance._usb_state) {
+            usb_state = AppGlobal.instance._usb_state
+            btn_usb_state2.isSelected = usb_state
+        }
     }
 
     private class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {

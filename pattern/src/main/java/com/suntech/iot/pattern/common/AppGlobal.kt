@@ -23,6 +23,7 @@ class AppGlobal private constructor() {
     private var _context : Context? = null
     var deviceToken : String = ""           // 디바이스 정보
     var _server_state : Boolean = false
+    var _usb_state : Boolean = false
 
     private object Holder { val INSTANCE = AppGlobal() }
 
@@ -107,6 +108,8 @@ class AppGlobal private constructor() {
     fun get_send_stitch_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "send_stitch_count") }
     fun set_planned_count_process(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "planned_count", state) }
     fun get_planned_count_process() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "planned_count") }
+    fun set_target_stop_when_downtime(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_stop_downtime", state) }
+    fun get_target_stop_when_downtime() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_stop_downtime") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
@@ -286,6 +289,11 @@ class AppGlobal private constructor() {
     // 다운 타임
     fun set_downtime_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_downtime_idx", idx) }
     fun get_downtime_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_downtime_idx") }
+
+    // downtime 값이 Cycle Time 이라는 문자로 들어올 수도 있음
+    // 그외 숫자가 들어오면 "" 빈값
+    fun set_downtime_type(value: String) { UtilLocalStorage.setString(instance._context!!, "downtime_type", value) }
+    fun get_downtime_type() : String { return UtilLocalStorage.getString(instance._context!!, "downtime_type") }
 
     fun set_downtime_sec(value: String) { UtilLocalStorage.setString(instance._context!!, "current_downtime_sec", value) }
     fun get_downtime_sec() : String { return UtilLocalStorage.getString(instance._context!!, "current_downtime_sec") }

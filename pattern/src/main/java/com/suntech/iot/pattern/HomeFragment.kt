@@ -55,6 +55,8 @@ class HomeFragment : BaseFragment() {
         btn_component_info.setOnClickListener {
             if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
                 (activity as MainActivity).ToastOut(activity, R.string.msg_no_operator, true)
+            } else if (AppGlobal.instance.get_design_info() == null) {
+                (activity as MainActivity).ToastOut(activity, R.string.msg_please_wait_for_loading, true)
             } else {
                 designInfofunc()
             }
@@ -63,6 +65,8 @@ class HomeFragment : BaseFragment() {
         btn_work_info.setOnClickListener {
             if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
                 (activity as MainActivity).ToastOut(activity, R.string.msg_no_setting, true)
+            } else if (AppGlobal.instance.get_current_work_time() == null) {
+                (activity as MainActivity).ToastOut(activity, R.string.msg_please_wait_for_loading, true)
             } else {
                 startActivity(Intent(activity, WorkInfoActivity::class.java))
             }

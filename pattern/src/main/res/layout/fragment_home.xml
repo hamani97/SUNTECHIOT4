@@ -83,10 +83,10 @@
                             android:layout_width="400dp"
                             android:layout_height="180dp"
                             android:layout_margin="8dp"
-                            android:background="#f8ad13"
+                            android:background="@color/colorReadonly"
                             android:stateListAnimator="@null"
                             android:text="@string/button_design_info"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/colorGray"
                             android:textSize="38sp"
                             android:textStyle="bold" />
 
@@ -97,17 +97,18 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="center">
-
+                    <!--#3f8cd6-->
+<!--                    @color/colorWhite-->
                     <Button
                             android:id="@+id/btn_work_info"
                             android:layout_width="400dp"
                             android:layout_height="180dp"
                             android:layout_margin="8dp"
-                            android:background="#3f8cd6"
+                            android:background="@color/colorReadonly"
                             android:stateListAnimator="@null"
                             android:text="@string/button_operator_detail"
                             android:textSize="38sp"
-                            android:textColor="@color/colorWhite"
+                            android:textColor="@color/colorGray"
                             android:textStyle="bold"/>
 
                     <Button

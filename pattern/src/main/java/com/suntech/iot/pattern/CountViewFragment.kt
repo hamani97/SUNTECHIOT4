@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
 import org.joda.time.DateTime
 import org.json.JSONObject
-import kotlin.math.ceil
 import kotlin.math.floor
 
 class CountViewFragment : BaseFragment() {
@@ -49,7 +48,7 @@ class CountViewFragment : BaseFragment() {
     fun resetDefectiveCount() {
         val db = DBHelperForDesign(activity)
         val count = db.sum_defective_count()
-        tv_defective_count.text = if (count==null || count<0) "0" else count.toString()
+        tv_defective_count.text = if (count<0) "0" else count.toString()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -299,7 +298,6 @@ class CountViewFragment : BaseFragment() {
             return
         }
 
-
         // 가져온 DB가 현 시프트의 정보가 아니라면 리턴
         // 문제점 있음
 //        if (db_item["end_dt"].toString() != null) {
@@ -429,6 +427,17 @@ class CountViewFragment : BaseFragment() {
             }
         }
 
+        if (AppGlobal.instance.get_target_stop_when_downtime()) {
+            // Downtime
+            val down_db = DBHelperForDownTime(activity)
+            val down_list = down_db.gets()
+            var down_target = 0
+            down_list?.forEach { item ->
+                down_target += item["target"].toString().toInt()
+            }
+            total_target -= down_target
+        }
+
         refreshScreen(shift_idx, total_actual, total_target, shift_total_target)
     }
 
@@ -533,24 +542,6 @@ class CountViewFragment : BaseFragment() {
         // 현재까지의 작업시간
         val work_time = ((now_millis - shift_stime_millis) / 1000) - planned1_time - planned2_time
 
-
-
-
-//        // 시프트 시작/끝
-//        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
-//        val shift_etime = OEEUtil.parseDateTime(shift_time["work_etime"].toString())
-//
-//        // 휴식시간
-//        val planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
-//        val planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
-//        val planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
-//        val planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
-//
-//        val d1 = AppGlobal.instance.compute_time(shift_stime, now, planned1_stime, planned1_etime)
-//        val d2 = AppGlobal.instance.compute_time(shift_stime, now, planned2_stime, planned2_etime)
-//
-//        // 현재까지의 작업시간
-//        val work_time = ((now.millis - shift_stime.millis) / 1000) - d1 - d2
 
         // Downtime
         var down_time = 0

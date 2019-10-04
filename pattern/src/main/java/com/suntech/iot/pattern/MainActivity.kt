@@ -1,8 +1,7 @@
 package com.suntech.iot.pattern
 
 import android.content.*
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager
+import android.graphics.Color
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +10,7 @@ import android.os.Message
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.util.Log
@@ -29,11 +29,9 @@ import com.suntech.iot.pattern.service.UsbService
 import com.suntech.iot.pattern.util.OEEUtil
 import com.suntech.iot.pattern.util.UtilFile
 import com.suntech.iot.pattern.util.UtilLocalStorage
-import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
-import kotlinx.android.synthetic.main.activity_setting.view.*
 import kotlinx.android.synthetic.main.fragment_count_view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.layout_bottom_info_3.view.*
 import kotlinx.android.synthetic.main.layout_side_menu.*
 import kotlinx.android.synthetic.main.layout_top_menu.*
@@ -41,7 +39,6 @@ import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -94,6 +91,9 @@ class MainActivity : BaseActivity() {
 //        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
                                                         // Setting -> Operator detail -> Design Info
                                                         // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
+
+        // USB state
+        btn_usb_state.isSelected = false
 
         // 시작시 work_idx 값이 없으면 초기화 한다.
         val work_idx = AppGlobal.instance.get_product_idx()
@@ -227,6 +227,14 @@ class MainActivity : BaseActivity() {
         checkDesignData()
 
         start_timer()
+
+        val filter = IntentFilter()
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED)
+        filter.addAction(UsbService.ACTION_NO_USB)
+        filter.addAction(UsbService.ACTION_USB_DISCONNECTED)
+        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED)
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED)
+        registerReceiver(mUsbReceiver, filter)
     }
 
     override fun onDestroy() {
@@ -237,13 +245,13 @@ class MainActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
 
-        val filter = IntentFilter()
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED)
-        filter.addAction(UsbService.ACTION_NO_USB)
-        filter.addAction(UsbService.ACTION_USB_DISCONNECTED)
-        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED)
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED)
-        registerReceiver(mUsbReceiver, filter)
+//        val filter = IntentFilter()
+//        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED)
+//        filter.addAction(UsbService.ACTION_NO_USB)
+//        filter.addAction(UsbService.ACTION_USB_DISCONNECTED)
+//        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED)
+//        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED)
+//        registerReceiver(mUsbReceiver, filter)
 
         startService(UsbService::class.java, usbConnection, null) // Start UsbService(if it was not started before) and Bind it
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
@@ -252,6 +260,9 @@ class MainActivity : BaseActivity() {
         // Actual 값을 좌측에 표시
         tv_report_count.text = "" + AppGlobal.instance.get_current_shift_actual_cnt()
 
+        // USB state
+        btn_usb_state.isSelected = AppGlobal.instance._usb_state
+
         updateView()
         fetchRequiredData()
         fetchComponentData()    // Parts Cycle Time. 처음 실행후 1시간마다 실행
@@ -259,7 +270,7 @@ class MainActivity : BaseActivity() {
 
     public override fun onPause() {
         super.onPause()
-        unregisterReceiver(mUsbReceiver)
+//        unregisterReceiver(mUsbReceiver)
         unbindService(usbConnection)
         unregisterReceiver(_broadcastReceiver)
     }
@@ -349,6 +360,10 @@ class MainActivity : BaseActivity() {
             if (code == "00"){
                 var list = result.getJSONArray("item")
                 AppGlobal.instance.set_design_info(list)
+
+                btn_component_info?.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                btn_component_info?.setBackgroundColor(Color.parseColor("#f8ad13"))
+
             } else {
                 ToastOut(this, result.getString("msg"), true)
             }
@@ -415,6 +430,9 @@ class MainActivity : BaseActivity() {
                 // Log 확인
 //                OEEUtil.LogWrite(list1.toString(), "Today Shift info")
 //                OEEUtil.LogWrite(list2.toString(), "Yester Shift info")
+
+                btn_work_info?.setTextColor(ContextCompat.getColor(this, R.color.colorWhite))
+                btn_work_info?.setBackgroundColor(Color.parseColor("#3f8cd6"))
 
                 compute_work_shift()
 
@@ -754,7 +772,16 @@ class MainActivity : BaseActivity() {
             var code = result.getString("code")
             if (code == "00") {
                 var value = result.getString("value")
+                if (value == "Cycle Time") {
+                    AppGlobal.instance.set_downtime_type("Cycle Time")
+                    val sec = AppGlobal.instance.get_cycle_time()
+                    value = if (sec==0 || sec==null) "600" else sec.toString()
+                } else {
+                    AppGlobal.instance.set_downtime_type("")
+                }
                 AppGlobal.instance.set_downtime_sec(value)
+
+                OEEUtil.LogWrite(value, "Down time Sec")
 //                val s = value.toInt()
 //                if (s > 0) {
 //                }
@@ -1258,9 +1285,22 @@ class MainActivity : BaseActivity() {
                 UsbService.ACTION_USB_NOT_SUPPORTED // USB NOT SUPPORTED
                 -> ToastOut(context, "USB device not supported")
             }
+            when (intent.action) {
+                UsbService.ACTION_USB_PERMISSION_GRANTED // USB PERMISSION GRANTED
+                -> {
+                    btn_usb_state.isSelected = true
+                    AppGlobal.instance._usb_state = true
+                    tv_usb.setTextColor(Color.parseColor("#f8ad13"))
+                }
+                else -> {
+                    btn_usb_state.isSelected = false
+                    AppGlobal.instance._usb_state = false
+                    tv_usb.setTextColor(Color.parseColor("#EEEEEE"))
+                }
+            }
         }
     }
-
+    
     private var usbService: UsbService? = null
     private var mHandler: MyHandler? = null
 
@@ -1350,6 +1390,7 @@ class MainActivity : BaseActivity() {
 
     var pieces_qty = 0
     var pairs_qty = 0
+    var runtime_total = 0
 
     private fun saveRowData(cmd: String, value: JsonElement, runtime: String) {
 
@@ -1357,12 +1398,13 @@ class MainActivity : BaseActivity() {
 
         if (cmd=="barcode") {
             val arr = value.asJsonArray
-            val didx = arr[0].asString
-            var number = -1
+            var didx = arr[0].asString      // design idx
+//            var number = -1
 
             if (arr.size() > 1) {
-                val value2 = value.asJsonArray[1].asString
-                number = value2.replace("[^0-9]", "").toInt()
+                didx = value.asJsonArray[0].asString
+//                val value2 = value.asJsonArray[1].asString
+//                number = value2.replace("[^0-9]", "").toInt()
             }
             var list = AppGlobal.instance.get_design_info()
 
@@ -1370,7 +1412,7 @@ class MainActivity : BaseActivity() {
                 val item = list.getJSONObject(i)
                 val idx = item.getString("idx")
                 if (idx==didx) {
-                    if (number > 0) AppGlobal.instance.set_pieces_info(number.toString())
+//                    if (number > 0) AppGlobal.instance.set_pieces_info(number.toString())
 
                     val cycle_time = item.getString("ct").toInt()
                     val model = item.getString("model").toString()
@@ -1479,6 +1521,8 @@ class MainActivity : BaseActivity() {
                 }
             }
 
+            if (runtime != null && runtime != "") runtime_total += runtime.toInt()
+
             if (inc_count <= 0) return
 
             // total count
@@ -1496,8 +1540,9 @@ class MainActivity : BaseActivity() {
             sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
-            sendCountData(value.toString(), inc_count, cnt, runtime)  // 서버에 카운트 정보 전송
+            sendCountData(value.toString(), inc_count, cnt, runtime_total.toString())  // 서버에 카운트 정보 전송
 
+            runtime_total = 0
 
             // DB에 Actual 저장
             var db = DBHelperForDesign(this)

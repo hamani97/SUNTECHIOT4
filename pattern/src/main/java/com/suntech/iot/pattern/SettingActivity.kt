@@ -21,6 +21,8 @@ import java.util.*
 
 class SettingActivity : BaseActivity() {
 
+    private var usb_state = false
+
     private var tab_pos: Int = 1
     private var _selected_target_type: String = "device"
     private var _selected_blink_color: String = AppGlobal.instance.get_blink_color()
@@ -83,9 +85,17 @@ class SettingActivity : BaseActivity() {
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
+            checkUSB()
             if (tab_pos == 3) updateView()
             startHandler()
         }, 1000)
+    }
+
+    private fun checkUSB() {
+        if (usb_state != AppGlobal.instance._usb_state) {
+            usb_state = AppGlobal.instance._usb_state
+            btn_usb_state2.isSelected = usb_state
+        }
     }
 
     private fun updateView() {
@@ -144,6 +154,7 @@ class SettingActivity : BaseActivity() {
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
         sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
         sw_planned_count_process.isChecked = AppGlobal.instance.get_planned_count_process()
+        sw_target_stop_when_downtime.isChecked = AppGlobal.instance.get_target_stop_when_downtime()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -245,8 +256,9 @@ class SettingActivity : BaseActivity() {
         if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
 
-        fetchServerTime()
         startHandler()
+
+        fetchServerTime()
     }
 
     val REQUEST_READ_PHONE_STATE = 1000
@@ -358,6 +370,7 @@ class SettingActivity : BaseActivity() {
 
         AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
         AppGlobal.instance.set_planned_count_process(sw_planned_count_process.isChecked)
+        AppGlobal.instance.set_target_stop_when_downtime(sw_target_stop_when_downtime.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())

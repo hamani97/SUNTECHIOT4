@@ -16,6 +16,8 @@ import android.util.Log;
 import com.felhr.usbserial.CDCSerialDevice;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
+import com.suntech.iot.pattern.MainActivity;
+import com.suntech.iot.pattern.common.AppGlobal;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

@@ -59,9 +59,10 @@
     <string name="label_seconds">Seconds</string>
 
     <string name="label_screen_blink_effect">SCREEN BLINK EFFECT</string>
-    <string name="label_downtime_blink_effect" translatable="false">Downtime blink effect</string>
+    <string name="label_downtime_blink_effect" translatable="false">Downtime Blink Effect</string>
     <string name="label_send_stitch_count" translatable="false">Send Stitch Q\'ty</string>
     <string name="label_planned_count_process" translatable="false">Planned Time Actual Count</string>
+    <string name="label_target_stop_when_downtime" translatable="false">Target Q\'ty Stop When DownTime</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
@@ -221,6 +222,7 @@
     <string name="msg_layer_not_selected">Work info not selected</string>
     <string name="msg_design_not_selected">Design not selected</string>
     <string name="msg_no_setting">Setting not found</string>
+    <string name="msg_please_wait_for_loading" translatable="false">Please wait for loading</string>
     <string name="msg_data_not_found">Data not found</string>
     <string name="msg_connection_fail">The connection to the server failed.</string>
     <string name="msg_cannot_input_wos">Cannot input WOS</string>

@@ -7,7 +7,7 @@
             android:layout_width="match_parent"
             android:layout_height="92dp"
             android:paddingLeft="30dp"
-            android:paddingRight="70dp"
+            android:paddingRight="60dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:background="@color/colorBackgroundTop">
@@ -45,10 +45,16 @@
                 android:background="@color/transparent"
                 android:orientation="horizontal">
             <ImageButton
-                    android:id="@+id/btn_server_state"
+                    android:id="@+id/btn_usb_state2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginRight="70dp"
+                    android:background="@drawable/btn_icon_usb_state"/>
+            <ImageButton
+                    android:id="@+id/btn_server_state"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="60dp"
                     android:background="@drawable/btn_icon_server_state"/>
             <ImageButton
                     android:id="@+id/btn_wifi_state"

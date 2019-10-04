@@ -8,7 +8,7 @@
             android:layout_width="match_parent"
             android:layout_height="92dp"
             android:paddingLeft="30dp"
-            android:paddingRight="70dp"
+            android:paddingRight="60dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:background="@color/colorBackgroundTop">
@@ -49,9 +49,33 @@
                 android:orientation="horizontal">
 
             <RelativeLayout
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="0dp"
+                    android:background="@color/transparent">
+
+                <ImageButton
+                        android:id="@+id/btn_usb_state"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/btn_icon_usb_state"/>
+                <TextView
+                        android:id="@+id/tv_usb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="6dp"
+                        android:text="USB"
+                        android:textSize="12sp"
+                        android:textColor="@color/colorOrange"/>
+            </RelativeLayout>
+
+            <RelativeLayout
                     android:layout_width="120dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginRight="20dp"
                     android:background="@color/transparent">
 
                 <ImageButton
