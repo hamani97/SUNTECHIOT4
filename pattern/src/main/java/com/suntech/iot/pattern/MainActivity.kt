@@ -781,7 +781,7 @@ class MainActivity : BaseActivity() {
                 }
                 AppGlobal.instance.set_downtime_sec(value)
 
-                OEEUtil.LogWrite(value, "Down time Sec")
+                OEEUtil.LogWrite(AppGlobal.instance.get_downtime_type() + " = " + value, "Down time Sec")
 //                val s = value.toInt()
 //                if (s > 0) {
 //                }
@@ -1658,7 +1658,6 @@ class MainActivity : BaseActivity() {
                 })
             }
         }
-
     }
 
 //    fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
@@ -1723,6 +1722,13 @@ class MainActivity : BaseActivity() {
         val pieces_info = AppGlobal.instance.get_pieces_info()
         val pairs_info = AppGlobal.instance.get_pairs_info()
 
+        // 서버에서 받은 다운타임 타입이 초단위가 아니고 "Cycle Time" 이면 선택된 디자인의 Cycle Time 으로 세팅된다.
+        if (AppGlobal.instance.get_downtime_type()=="Cycle Time") {
+            AppGlobal.instance.set_downtime_sec(cycle_time.toString())
+            OEEUtil.LogWrite(AppGlobal.instance.get_downtime_type() + " = " + cycle_time.toString(), "Reset Downtime Sec")
+        }
+
+
         val db = DBHelperForDesign(this)
         val item = db.get(prev_work_idx)
 
@@ -1732,7 +1738,7 @@ class MainActivity : BaseActivity() {
                 val shift_idx = work_info?.getString("shift_idx") ?: ""
                 val shift_name = work_info?.getString("shift_name") ?: ""
 
-                OEEUtil.LogWrite("work_idx=" + prev_work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
+                OEEUtil.LogWrite("work_idx=" + prev_work_idx + ", shift_idx="+shift_idx+", stitch="+stitch+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
 
                 db.updateDesignInfo(prev_work_idx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info)
                 return
@@ -1791,7 +1797,7 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        OEEUtil.LogWrite("work_idx=" + work_idx + ", shift_idx="+shift_idx+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
+        OEEUtil.LogWrite("work_idx=" + work_idx + ", shift_idx="+shift_idx+", stitch="+stitch+", shift_name="+shift_name+", didx="+didx+", cycle_time="+cycle_time, "startNewProduct")
 
         db.add(work_idx, start_dt, didx, shift_idx, shift_name, cycle_time, pieces_info, pairs_info,0, 0, 0, seq)
 

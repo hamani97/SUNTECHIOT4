@@ -32,13 +32,13 @@
                     android:orientation="vertical">
 
                 <!-- DESIGN INFO -->
-                <TextView style="@style/table_title2" android:text="@string/title_design_info" />
+                <TextView style="@style/table_title2" android:text="@string/title_design_info" android:layout_marginTop="22dp"/>
 
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="4dp"
                         android:orientation="vertical">
 
                     <LinearLayout
@@ -76,7 +76,7 @@
                                 android:text=""/>
                         <ImageButton
                                 android:id="@+id/btn_reload"
-                                android:layout_width="96dp"
+                                android:layout_width="88dp"
                                 android:layout_height="50dp"
                                 android:src="@drawable/ic_refresh_white_32dp"
                                 android:background="@drawable/shape_default_rectangle_button"/>
@@ -140,7 +140,7 @@
 
                     <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="220dp"
+                            android:layout_height="230dp"
                             android:layout_marginBottom="8dp"
                             android:orientation="horizontal"
                             android:background="#fff">
@@ -171,7 +171,7 @@
                         <TextView style="@style/table_title" android:text="@string/title_pieces_info" />
 
                         <!-- Trim -->
-                        <LinearLayout style="@style/table_row" android:layout_marginTop="6dp">
+                        <LinearLayout style="@style/table_row" android:layout_marginTop="2dp">
                             <TextView style="@style/table_row_data_selector"
                                       android:id="@+id/tv_design_pieces"
                                       android:gravity="center"
@@ -203,6 +203,35 @@
                                       android:layout_marginLeft="8dp" />
                         </LinearLayout>
 
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="30dp"
+                            android:gravity="right"
+                            android:orientation="horizontal">
+                        <ImageButton
+                                android:id="@+id/img_last_design"
+                                style="@style/btn_default"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_margin="0dp"
+                                android:paddingLeft="18dp"
+                                android:paddingRight="18dp"
+                                android:src="@drawable/ic_list_add_check_white_40dp"/>
+                        <Button
+                                android:id="@+id/btn_last_design"
+                                style="@style/btn_default"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:textStyle="normal"
+                                android:layout_margin="0dp"
+                                android:paddingRight="20dp"
+                                android:stateListAnimator="@null"
+                                android:text="Last Design"
+                                android:textSize="21sp"/>
                     </LinearLayout>
 
                 </LinearLayout>

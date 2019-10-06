@@ -17,6 +17,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.popup.DesignInfoInputActivity
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_design_info.*
 import kotlinx.android.synthetic.main.layout_top_menu_component.*
@@ -137,6 +138,13 @@ class DesignInfoActivity : BaseActivity() {
             et_setting_server_ip.setText("")
             fetchData()
         }
+        img_last_design.setOnClickListener {
+            lastDesign()
+        }
+        btn_last_design.setOnClickListener {
+            lastDesign()
+        }
+
         btn_setting_confirm.setOnClickListener {
             if (tv_design_pieces.text.toString() == "" || tv_design_pairs.text.toString() == "") {
                 ToastOut(this, R.string.msg_require_info, true)
@@ -148,6 +156,15 @@ class DesignInfoActivity : BaseActivity() {
             if (_selected_index < 0) {
                 finish(false, 0, "ok", null)
             } else {
+                val idx = _filtered_list[_selected_index]["idx"]!!
+                val model = _filtered_list[_selected_index]["model"]!!
+                val article = _filtered_list[_selected_index]["article"]!!
+                val material_way = _filtered_list[_selected_index]["material_way"]!!
+                val component = _filtered_list[_selected_index]["component"]!!
+                val ct = _filtered_list[_selected_index]["ct"]!!
+
+                AppGlobal.instance.push_last_design(idx, model, article, material_way, component, ct)   // history 저장
+
                 finish(true, 1, "ok", _filtered_list[_selected_index])
             }
 
@@ -162,6 +179,39 @@ class DesignInfoActivity : BaseActivity() {
 
         tv_design_pieces.setOnClickListener { fetchPiecesData() }
         tv_design_pairs.setOnClickListener { fetchPairsData() }
+    }
+
+    fun lastDesign() {
+        val intent = Intent(this, DesignInfoInputActivity::class.java)
+        startActivity(intent, { r, c, m, d ->
+            if (r && d!=null) {
+                val idx = d!!["idx"]!!.toString()
+                val model = d["model"]!!.toString()
+                val article = d["article"]!!.toString()
+                val material_way = d["material_way"]!!.toString()
+                val component = d["component"]!!.toString()
+                val ct = d["ct"]!!.toString()
+
+                for (j in 0..(_list.size-1)) {
+                    val item = _list[j]
+                    val item_idx = item["idx"] ?: ""
+                    val item_model = item["model"] ?: ""
+                    val item_article = item["article"] ?: ""
+                    val item_material_way = item["material_way"] ?: ""
+                    val item_component = item["component"] ?: ""
+                    val item_ct = item["ct"] ?: ""
+                    if (idx == item_idx && model == item_model && article == item_article &&
+                        material_way == item_material_way && component == item_component && ct == item_ct) {
+                        et_setting_server_ip.setText("")
+                        _selected_index = j
+                        list_adapter?.notifyDataSetChanged()
+                        lv_design_info.smoothScrollToPosition(j)
+                        break
+                    }
+                }
+//                    OEEUtil.LogWrite(d.toString(), "selected")
+            }
+        })
     }
 
     private fun fetchData() {

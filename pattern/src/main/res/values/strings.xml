@@ -7,6 +7,7 @@
     <string name="title_operator_info">OPERATOR INFO</string>
     <string name="title_operator_detail">OPERATOR DETAIL</string>
     <string name="title_last_worker">LAST WORKER</string>
+    <string name="title_last_design" translatable="false">LAST DESIGN</string>
     <string name="title_setting">SETTING</string>
     <string name="title_counter_device_info">COUNTER DEVICE INFO</string>
     <string name="title_server_info">SERVER INFO</string>

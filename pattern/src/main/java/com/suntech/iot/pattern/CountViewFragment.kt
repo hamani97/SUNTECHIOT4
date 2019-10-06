@@ -274,20 +274,20 @@ class CountViewFragment : BaseFragment() {
             return
         }
 
+//        val work_stime = shift_time["work_stime"].toString()
+        val work_etime = shift_time["work_etime"].toString()
+        val shift_idx = shift_time["shift_idx"].toString()
+        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
+
         // 디자인이 선택되었는지 체크
         val work_idx = AppGlobal.instance.get_product_idx()
         if (work_idx == "") {
             if ((DateTime().millis/1000) % 10 == 0L) {  // 10초마다 출력
                 (activity as MainActivity).ToastOut(activity, R.string.msg_design_not_selected)
             }
-//            refreshScreen(shift_idx, 0, 0, 0)
+            refreshScreen(shift_idx, 0, 0, 0)
             return
         }
-
-//        val work_stime = shift_time["work_stime"].toString()
-        val work_etime = shift_time["work_etime"].toString()
-        val shift_idx = shift_time["shift_idx"].toString()
-        val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
 
         var db = DBHelperForDesign(activity)
 
@@ -582,7 +582,7 @@ class CountViewFragment : BaseFragment() {
 
 
         // Performance Check
-        val performance = total_actual.toFloat() / (total_target-down_target)
+        val performance = if (total_target-down_target != 0) total_actual.toFloat() / (total_target - down_target) else 0F
         val performance_rate = floor(performance * 1000) / 10
 
         if ((activity as MainActivity)._performance_rate != performance_rate) {

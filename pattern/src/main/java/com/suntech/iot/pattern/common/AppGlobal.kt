@@ -179,6 +179,34 @@ class AppGlobal private constructor() {
         UtilLocalStorage.setJSONArray(instance._context!!, "last_workers", list)
     }
 
+    fun get_last_designs() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "last_designs") }
+    fun remove_last_design(no:String) {
+        var list = get_last_designs()
+        for (i in 0..(list.length() - 1)) {
+            val item = list.getJSONObject(i)
+            val item_no = item.getString("idx")
+            if (item_no==no) {
+                list.remove(i)
+                break
+            }
+        }
+        UtilLocalStorage.setJSONArray(instance._context!!, "last_designs", list)
+    }
+    fun push_last_design(idx: String, model: String, article: String, material_way: String, component: String, ct: String) {
+        remove_last_design(idx)
+        var list = get_last_designs()
+        var json = JSONObject()
+        json.put("idx", idx)
+        json.put("model", model)
+        json.put("article", article)
+        json.put("material_way", material_way)
+        json.put("component", component)
+        json.put("ct", ct)
+        list.put(json)
+        if (list.length() > 5) list.remove(0)
+        UtilLocalStorage.setJSONArray(instance._context!!, "last_designs", list)
+    }
+
 
     // Design 관련 세팅값
     fun set_design_info(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "design_info", data) }
