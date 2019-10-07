@@ -1,10 +1,8 @@
 package com.suntech.iot.pattern.popup
 
-import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,10 +12,8 @@ import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
-import kotlinx.android.synthetic.main.activity_down_time.*
 import kotlinx.android.synthetic.main.activity_down_time_input.*
 import org.joda.time.DateTime
-import java.util.concurrent.TimeUnit
 
 
 class DownTimeInputActivity : BaseActivity() {
@@ -121,17 +117,17 @@ class DownTimeInputActivity : BaseActivity() {
     }
 
     private var is_loop: Boolean = false
-    private var _count = 0
+//    private var _count = 0
 
     fun startHandler() {
         val handler = Handler()
         handler.postDelayed({
             if (is_loop) {
                 updateView()
-                if (_count++ >= 2) {
-                    _count = 0
+//                if (_count++ >= 2) {
+//                    _count = 0
                     checkBlink()
-                }
+//                }
                 startHandler()
             }
         }, 1000)

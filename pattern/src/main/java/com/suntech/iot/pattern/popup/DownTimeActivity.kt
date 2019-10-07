@@ -127,12 +127,12 @@ class DownTimeActivity : BaseActivity() {
         val handler = Handler()
         handler.postDelayed({
             if (is_loop) checkBlink()
-            if (_list.size == 0 || _count++ >= 5) {
+            if (_list.size == 0 || _count++ >= 10) {
                 _count = 0
                 updateView()
             }
             startHandler()
-        }, 2000)
+        }, 1000)
     }
 
 //    private fun start_timer () {

@@ -584,9 +584,6 @@ class CountViewFragment : BaseFragment() {
 
         // Performance Check
         // performance = 현재까지의 Actual / (현시점까지 작업시간 - 다운타임 시간)의 타겟
-        (work_time-down_time) / _current_cycle_time
-
-
         val performance = if (AppGlobal.instance.get_target_stop_when_downtime()) {
             if (total_target > 0) total_actual.toFloat() / total_target else 0F
         } else {
