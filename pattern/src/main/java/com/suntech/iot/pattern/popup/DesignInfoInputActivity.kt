@@ -65,7 +65,7 @@ class DesignInfoInputActivity : BaseActivity() {
 
     private fun initLastDesign() {
         _list.removeAll(_list)
-        var list = AppGlobal.instance.get_last_designs()
+        val list = AppGlobal.instance.get_last_designs()
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(list.length() - 1 - i)
             var design = hashMapOf(

@@ -1648,7 +1648,7 @@ class MainActivity : BaseActivity() {
                 Toast.makeText(this, "sensing_id="+sensing_id+", curing_sec="+runtime, Toast.LENGTH_SHORT).show()
                 // AppGlobal.instance.get_mc_no1()
 
-//                Log.e("Hcount params", "= " + params.toString())
+                Log.e("Hcount params", "= " + params.toString())
 
                 request(this, uri, true, false, params, { result ->
                     var code = result.getString("code")

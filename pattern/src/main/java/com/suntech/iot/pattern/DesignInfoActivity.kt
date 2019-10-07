@@ -57,7 +57,7 @@ class DesignInfoActivity : BaseActivity() {
     }
 
     fun parentSpaceClick(view: View) {
-        var view = this.currentFocus
+        val view = this.currentFocus
         if (view != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(et_setting_server_ip.windowToken, 0)

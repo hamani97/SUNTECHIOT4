@@ -559,6 +559,7 @@ class CountViewFragment : BaseFragment() {
 //        Log.e("test", "---------- work time : " + work_time +", down time : " + down_time +", down target : " + down_target)
 
         // Availability Check
+        // availity = (현시점까지 작업시간 - 다운타임 시간) / 현시점까지 작업시간(초)
         val availability = (work_time-down_time).toFloat() / work_time
         val availability_rate = floor(availability * 1000) / 10
 
@@ -582,7 +583,16 @@ class CountViewFragment : BaseFragment() {
 
 
         // Performance Check
-        val performance = if (total_target-down_target != 0) total_actual.toFloat() / (total_target - down_target) else 0F
+        // performance = 현재까지의 Actual / (현시점까지 작업시간 - 다운타임 시간)의 타겟
+        (work_time-down_time) / _current_cycle_time
+
+
+        val performance = if (AppGlobal.instance.get_target_stop_when_downtime()) {
+            if (total_target > 0) total_actual.toFloat() / total_target else 0F
+        } else {
+            if (total_target-down_target > 0) total_actual.toFloat() / (total_target-down_target) else 0F
+        }
+
         val performance_rate = floor(performance * 1000) / 10
 
         if ((activity as MainActivity)._performance_rate != performance_rate) {
@@ -613,6 +623,7 @@ class CountViewFragment : BaseFragment() {
 
 
         // Quality Check
+        // qulity = (현시점의 actual - defective) / Actual
         val db = DBHelperForDesign(activity)
         var defective_count = db.sum_defective_count()
         if (defective_count==null || defective_count<0) defective_count = 0
