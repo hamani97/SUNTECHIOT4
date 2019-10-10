@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
@@ -78,17 +77,30 @@ class SettingActivity : BaseActivity() {
         val filter = IntentFilter()
         filter.addAction(Intent.ACTION_TIME_CHANGED)
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
-
         registerReceiver(_broadcastReceiver, filter)
+        start_timer()
     }
 
-    fun startHandler() {
-        val handler = Handler()
-        handler.postDelayed({
-            checkUSB()
-            if (tab_pos == 3) updateView()
-            startHandler()
-        }, 1000)
+    public override fun onPause() {
+        super.onPause()
+        unregisterReceiver(_broadcastReceiver)
+        cancel_timer()
+    }
+
+    private val _timer_task1 = Timer()
+    private fun start_timer() {
+        val task1 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    checkUSB()
+                    if (tab_pos == 3) updateView()
+                }
+            }
+        }
+        _timer_task1.schedule(task1, 200, 1000)
+    }
+    private fun cancel_timer () {
+        _timer_task1.cancel()
     }
 
     private fun checkUSB() {
@@ -108,11 +120,6 @@ class SettingActivity : BaseActivity() {
         } else {
             tv_setting_server_time?.text = (now + _server_time).toString("yyyy-MM-dd HH:mm:ss")
         }
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        unregisterReceiver(_broadcastReceiver)
     }
 
     private fun initView() {
@@ -208,13 +215,8 @@ class SettingActivity : BaseActivity() {
 
         // Target setting button listener
         btn_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
-        btn_server_hourly.setOnClickListener {
-            ToastOut(this, "Not yet supported.", true)
-//            targetTypeChange("server_per_hourly")
-        }
         btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
         btn_manual_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
-        btn_manual_hourly.setOnClickListener { targetTypeChange("device_per_hourly") }
         btn_manual_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
 
         // check server button
@@ -256,12 +258,8 @@ class SettingActivity : BaseActivity() {
         if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
 
-        startHandler()
-
         fetchServerTime()
     }
-
-    val REQUEST_READ_PHONE_STATE = 1000
 
     private fun checkServer() {
         val url = "http://"+ et_setting_server_ip.text.toString()
@@ -637,10 +635,8 @@ class SettingActivity : BaseActivity() {
         if (_selected_target_type == v) return
         when (_selected_target_type) {
             "server_per_accumulate" -> btn_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-            "server_per_hourly" -> btn_server_hourly.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
             "server_per_day_total" -> btn_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
             "device_per_accumulate" -> btn_manual_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-            "device_per_hourly" -> btn_manual_hourly.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
             "device_per_day_total" -> btn_manual_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
         }
         when (_selected_target_type.substring(0, 6)) {
@@ -650,10 +646,8 @@ class SettingActivity : BaseActivity() {
         _selected_target_type = v
         when (_selected_target_type) {
             "server_per_accumulate" -> btn_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-            "server_per_hourly" -> btn_server_hourly.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
             "server_per_day_total" -> btn_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
             "device_per_accumulate" -> btn_manual_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-            "device_per_hourly" -> btn_manual_hourly.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
             "device_per_day_total" -> btn_manual_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
         }
         when (_selected_target_type.substring(0, 6)) {

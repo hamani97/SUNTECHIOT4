@@ -85,13 +85,6 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         AppGlobal.instance.setContext(this)
 
-        val millis = DateTime.now().millis
-
-        OEEUtil.LogWrite(""+millis, "test")
-//        AppGlobal.instance.set_auto_setting(true)       // 앱실행시 세팅값 화면으로 자동이동하기 위한 변수 true면 자동으로 실행
-                                                        // Setting -> Operator detail -> Design Info
-                                                        // 해당 화면에서 취소(Cancel)를 할때 fasle 로 바뀐다.
-
         // USB state
         btn_usb_state.isSelected = false
 
@@ -202,7 +195,7 @@ class MainActivity : BaseActivity() {
                 startActivity(Intent(this, WatchingActivity::class.java))
             }
             watching_count++
-            Log.e("watching", "" + watching_count)
+//            Log.e("watching", "" + watching_count)
             Handler().postDelayed({ watching_count = 0 }, 2000)
         }
 
@@ -388,7 +381,7 @@ class MainActivity : BaseActivity() {
             "today" to dt.toString("yyyy-MM-dd"),
             "yesterday" to dt.minusDays(1).toString("yyyy-MM-dd"))  // 전일 데이터
 
-        OEEUtil.LogWrite(params.toString(), "Shift worktime Request params")
+//        OEEUtil.LogWrite(params.toString(), "Shift worktime Request params")
 
         request(this, uri, false, params, { result ->
             var code = result.getString("code")
@@ -794,7 +787,7 @@ class MainActivity : BaseActivity() {
     /*
      *  칼라코드 가져오기
      *  color_name = 'yellow'
-     *  color_cole = 'FFBC34'
+     *  color_code = 'FFBC34'
      */
     private fun fetchColorData() {
         val uri = "/getlist1.php"
@@ -993,7 +986,7 @@ class MainActivity : BaseActivity() {
         if (item != null) {
             var _total_target = 0
             var target_type = AppGlobal.instance.get_target_type()
-            if (target_type=="server_per_hourly" || target_type=="server_per_accumulate" || target_type=="server_per_day_total") {
+            if (target_type=="server_per_accumulate" || target_type=="server_per_day_total") {
                 // 신서버용
                 val work_idx = AppGlobal.instance.get_product_idx()
 
@@ -1039,7 +1032,7 @@ class MainActivity : BaseActivity() {
 //                    "2" -> _total_target = AppGlobal.instance.get_target_server_shift("2").toInt()
 //                    "3" -> _total_target = AppGlobal.instance.get_target_server_shift("3").toInt()
 //                }
-            } else if (target_type=="device_per_hourly" || target_type=="device_per_accumulate" || target_type=="device_per_day_total") {
+            } else if (target_type=="device_per_accumulate" || target_type=="device_per_day_total") {
                 when (item["shift_idx"]) {
                     "1" -> _total_target = AppGlobal.instance.get_target_manual_shift("1").toInt()
                     "2" -> _total_target = AppGlobal.instance.get_target_manual_shift("2").toInt()
@@ -1447,8 +1440,7 @@ class MainActivity : BaseActivity() {
                 val planned2_etime = OEEUtil.parseDateTime(cur_shift["planned2_etime_dt"].toString())
                 val now_millis = DateTime().millis
 
-                // 워크 타임안에 있으면서 휴식 시간이 아니고,
-                // 지정된 downtime 이 지났으면 downtime을 발생시킨다.
+                // 워크 타임안에 있으면서 휴식 시간 안에 있다면,
                 if ((planned1_stime.millis < now_millis && planned1_etime.millis > now_millis ) ||
                     (planned2_stime.millis < now_millis && planned2_etime.millis > now_millis )) {
                     ToastOut(this, R.string.msg_cannot_work_planned_time, true)

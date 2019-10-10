@@ -20,11 +20,10 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Handler
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
-import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.UtilString
 import org.json.JSONObject
-import java.util.HashMap
+import java.util.*
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -174,7 +173,7 @@ open class BaseActivity : AppCompatActivity() {
     private fun handle_network_error(context: Context, error:String) {
         Log.e("BaseActivity", error)
 //        Toast.makeText(context, R.string.msg_connection_fail, Toast.LENGTH_SHORT).show()
-        ToastOut(context, R.string.msg_connection_fail)
+//        ToastOut(context, R.string.msg_connection_fail)   // 너무 자주 표시됨
         hideProgressDialog()
     }
 

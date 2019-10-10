@@ -55,6 +55,7 @@
         <activity android:name=".popup.ActualCountEditActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.ActualCountEditInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.PiecePairCountEditActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DefectiveEditActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.DownTimeActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.DownTimeInputActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.DefectiveActivity" android:theme="@style/AppTheme.PopupOverlay" />

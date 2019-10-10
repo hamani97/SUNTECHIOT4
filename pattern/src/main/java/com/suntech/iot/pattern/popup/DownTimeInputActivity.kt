@@ -1,8 +1,11 @@
 package com.suntech.iot.pattern.popup
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -14,6 +17,7 @@ import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_down_time_input.*
 import org.joda.time.DateTime
+import java.util.*
 
 
 class DownTimeInputActivity : BaseActivity() {
@@ -24,19 +28,21 @@ class DownTimeInputActivity : BaseActivity() {
     var _start_dt = ""
     var _start_dt_millis = 0L
 
+    val _start_down_time_activity = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            finish(true, 0, "ok", null)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.suntech.iot.pattern.R.layout.activity_down_time_input)
+        setContentView(R.layout.activity_down_time_input)
 
         _idx = intent.getStringExtra("idx")
         _start_dt = intent.getStringExtra("start_dt")
         _start_dt_millis = OEEUtil.parseDateTime(_start_dt).millis
 
         fetchData()
-
-//        btn_cancel.setOnClickListener {
-//            finish(false, 1, "ok", null)
-//        }
     }
 
     private fun initView() {
@@ -101,50 +107,50 @@ class DownTimeInputActivity : BaseActivity() {
 //        btn_exit.setOnClickListener {
 //            finish(false, 1, "ok", null)
 //        }
+
+//        btn_cancel.setOnClickListener {
+//            finish(false, 1, "ok", null)
+//        }
     }
 
     override fun onResume() {
         super.onResume()
-        is_loop = true
-        startHandler()
+        registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
+        start_timer()
     }
 
     public override fun onPause() {
         super.onPause()
         overridePendingTransition(0, 0)
-        is_loop = false
+        unregisterReceiver(_start_down_time_activity)
         ll_base_box.setBackgroundResource(R.color.colorWhite)
+        cancel_timer()
     }
 
-    private var is_loop: Boolean = false
-//    private var _count = 0
+    private val _timer_task1 = Timer()
 
-    fun startHandler() {
-        val handler = Handler()
-        handler.postDelayed({
-            if (is_loop) {
-                updateView()
-//                if (_count++ >= 2) {
-//                    _count = 0
+    private fun start_timer() {
+        val task1 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    updateView()
                     checkBlink()
-//                }
-                startHandler()
+                }
             }
-        }, 1000)
+        }
+        _timer_task1.schedule(task1, 0, 1000)
+    }
+    private fun cancel_timer () {
+        _timer_task1.cancel()
     }
 
     var blink_cnt = 0
 
     private fun checkBlink() {
-        var is_toggle = false
-        if (AppGlobal.instance.get_screen_blink()) {
-            val count = _db.counts_for_notcompleted()
-            if (count > 0) {
-                is_toggle = true
-                blink_cnt = 1 - blink_cnt
-            }
-        }
-        if (is_toggle && blink_cnt==1) {
+        val count = _db.counts_for_notcompleted()
+        if (AppGlobal.instance.get_screen_blink()) blink_cnt = 1 - blink_cnt
+
+        if (count > 0 && blink_cnt==1) {
             ll_base_box.setBackgroundColor(Color.parseColor("#" + AppGlobal.instance.get_blink_color()))
         } else {
             ll_base_box.setBackgroundResource(R.color.colorWhite)

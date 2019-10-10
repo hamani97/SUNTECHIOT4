@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                 <LinearLayout
                         android:layout_width="520dp"
@@ -245,9 +245,201 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                 <TextView style="@style/table_title" android:text="@string/title_target_type" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                    <!--From Cycle Time-->
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginRight="8dp"
+                            android:orientation="vertical">
+                        <TextView
+                                android:id="@+id/tv_setting_target_type_cycle_time"
+                                android:layout_width="match_parent"
+                                android:layout_height="43dp"
+                                android:gravity="center"
+                                android:background="@color/colorBackgroundTop"
+                                android:text="@string/label_from_cycle_time"
+                                android:textSize="20sp"
+                                android:textColor="#d0efff"
+                                android:textStyle="bold" />
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="16dp"
+                                android:background="@color/colorButtonDefault"
+                                android:orientation="vertical">
+
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_accumulation_by_start"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_total_target_per_shift"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!--From Server-->
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="4dp"
+                            android:orientation="vertical">
+                        <TextView
+                                android:id="@+id/tv_setting_target_type_server"
+                                android:layout_width="match_parent"
+                                android:layout_height="43dp"
+                                android:gravity="center"
+                                android:background="@color/colorBackgroundTop"
+                                android:text="@string/label_from_server"
+                                android:textSize="20sp"
+                                android:textColor="#d0efff"
+                                android:textStyle="bold" />
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="16dp"
+                                android:background="@color/colorButtonDefault"
+                                android:orientation="vertical">
+
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_accumulation_by_start"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_total_target_per_shift"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!--From Device-->
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="8dp"
+                            android:orientation="vertical">
+                        <TextView
+                                android:id="@+id/tv_setting_target_type_manual"
+                                android:layout_width="match_parent"
+                                android:layout_height="43dp"
+                                android:gravity="center"
+                                android:background="@color/colorBackgroundTop"
+                                android:text="@string/label_from_device"
+                                android:textSize="20sp"
+                                android:textColor="#d0efff"
+                                android:textStyle="bold" />
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="16dp"
+                                android:background="@color/colorButtonDefault"
+                                android:orientation="vertical">
+
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_accumulation_by_start"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingVertical="10dp"
+                                    android:orientation="horizontal">
+                                <ImageView
+                                        android:layout_width="25dp"
+                                        android:layout_height="25dp"
+                                        android:layout_marginRight="20dp"
+                                        android:background="@drawable/btn_icon_select_box"/>
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/button_total_target_per_shift"
+                                        android:textSize="20sp"
+                                        android:textColor="@color/colorButtonGrayFocus"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
                 <LinearLayout
                         android:layout_width="match_parent"
@@ -257,7 +449,7 @@
 
                     <LinearLayout style="@style/table_row">
                         <TextView
-                                android:id="@+id/tv_setting_target_type_server"
+                                android:id="@+id/tv_setting_target_type_server2"
                                 style="@style/table_row_title"
                                 android:layout_width="250dp"
                                 android:background="@color/colorBackgroundTop"
@@ -275,13 +467,6 @@
                                 android:stateListAnimator="@null"
                                 android:text="@string/button_accumulation_by_start" />
                         <Button
-                                android:id="@+id/btn_server_hourly"
-                                style="@style/tab_btn_disable"
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:stateListAnimator="@null"
-                                android:text="@string/button_accumulation_by_hourly" />
-                        <Button
                                 android:id="@+id/btn_server_shifttotal"
                                 style="@style/tab_btn_off"
                                 android:layout_width="0dp"
@@ -292,7 +477,7 @@
 
                     <LinearLayout style="@style/table_row" android:layout_marginTop="20dp">
                         <TextView
-                                android:id="@+id/tv_setting_target_type_manual"
+                                android:id="@+id/tv_setting_target_type_manual2"
                                 style="@style/table_row_title"
                                 android:layout_width="200dp"
                                 android:background="@color/colorBackgroundTop"
@@ -308,13 +493,6 @@
                                 android:layout_weight="1"
                                 android:stateListAnimator="@null"
                                 android:text="@string/button_accumulation_by_start" />
-                        <Button
-                                android:id="@+id/btn_manual_hourly"
-                                style="@style/tab_btn_off"
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:stateListAnimator="@null"
-                                android:text="@string/button_accumulation_by_hourly" />
                         <Button
                                 android:id="@+id/btn_manual_shifttotal"
                                 style="@style/tab_btn_off"

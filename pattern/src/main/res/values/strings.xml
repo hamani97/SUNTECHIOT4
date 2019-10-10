@@ -19,6 +19,7 @@
     <string name="title_production_report">PRODUCTION REPORT</string>
     <string name="title_push_info">PUSH MESSAGE INFO</string>
     <string name="title_edit_pieces_pairs_count">EDIT PIECE(S) COUNT</string>
+    <string name="title_edit_defective_count" translatable="false">EDIT DEFECTIVE COUNT</string>
     <string name="title_design_info">DESIGN INFO</string>
     <string name="title_pieces_info">PIECES INFO</string>
     <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>
@@ -31,6 +32,7 @@
     <string name="title_down_time_list">Down Time Input</string>
     <string name="title_product_list">Product List</string>
     <string name="title_time">TIME</string>
+    <string name="title_setting_info" translatable="false">SETTING INFO.</string>
 
     <!-- 카운트화면 -->
     <string name="button_total_count_view">Total Count View</string>
@@ -121,6 +123,7 @@
     <string name="guide_pieces">= 1 Count</string>
 
     <!-- 액츄얼카운트화면 -->
+    <string name="label_actual_count" translatable="false">ACTUAL COUNT</string>
     <string name="label_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
 
     <!-- 디펙티브 화면-->
@@ -236,5 +239,7 @@
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
     <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
     <string name="msg_exit_automatically">Shift ends automatically</string>
+
+    <string name="msg_edit_current_design" translatable="false">Adjust the Defect value of the currently selected design.</string>
 
 </resources>

@@ -144,12 +144,14 @@ class WatchingActivity : BaseActivity() {
 
 
             // Performance Check
-            val performance = if (AppGlobal.instance.get_target_stop_when_downtime()) {
-                if (total_target > 0) total_actual.toFloat() / total_target else 0F
-            } else {
-                if (total_target - down_target > 0) total_actual.toFloat() / (total_target - down_target) else 0F
-            }
+//            val performance = if (AppGlobal.instance.get_target_stop_when_downtime()) {
+//                if (total_target > 0) total_actual.toFloat() / total_target else 0F
+//            } else {
+//                if (total_target - down_target > 0) total_actual.toFloat() / (total_target - down_target) else 0F
+//            }
 //            val performance_rate = floor(performance * 1000) / 10
+
+            val performance = if (total_target - down_target > 0) total_actual.toFloat() / (total_target - down_target) else 0F
 
             value += "Performance = $total_actual / ($total_target - $down_target) = $performance\n"
 

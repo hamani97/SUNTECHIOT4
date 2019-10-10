@@ -15,6 +15,7 @@ import com.suntech.iot.pattern.base.BaseFragment
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
 import com.suntech.iot.pattern.db.DBHelperForDownTime
+import com.suntech.iot.pattern.popup.DefectiveEditActivity
 import com.suntech.iot.pattern.popup.PiecePairCountEditActivity
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_main.*
@@ -105,6 +106,7 @@ class CountViewFragment : BaseFragment() {
         val verArr = version.split(".")
         tv_app_version2?.text = "Pv" + verArr[verArr.size-2] + "." + verArr[verArr.size-1]
 
+        // Piece Pair 수정으로 변경됨
         btn_init_actual.setOnClickListener {
             if (AppGlobal.instance.get_worker_no() == "" || AppGlobal.instance.get_worker_name() == "") {
                 (activity as MainActivity).ToastOut(activity, R.string.msg_no_operator, true)
@@ -143,33 +145,39 @@ class CountViewFragment : BaseFragment() {
                 if (work_idx == "") {
                     (activity as MainActivity).ToastOut(activity, R.string.msg_design_not_selected, true)
                 } else {
-                    val db = DBHelperForDesign(activity)
-                    val row = db.get(work_idx)
-                    var seq = row!!["seq"].toString().toInt()
-                    if (row == null || seq == null) seq = 1
-
-                    val uri = "/defectivedata.php"
-                    var params = listOf(
-                        "mac_addr" to AppGlobal.instance.getMACAddress(),
-                        "didx" to AppGlobal.instance.get_design_info_idx(),
-                        "defective_idx" to "99",
-                        "cnt" to "1",
-                        "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
-                        "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-                        "factory_idx" to AppGlobal.instance.get_room_idx(),
-                        "line_idx" to AppGlobal.instance.get_line_idx(),
-                        "seq" to seq
-                    )
-                    getBaseActivity().request(activity, uri, true, false, params, { result ->
-                        val code = result.getString("code")
-                        (activity as MainActivity).ToastOut(activity, result.getString("msg"), true)
-                        if (code == "00") {
-                            val item = db.get(work_idx)
-                            val defective = if (item != null) item["defective"].toString().toInt() else 0
-                            db.updateDefective(work_idx, defective + 1)
-                            resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
+                    val intent = Intent(activity, DefectiveEditActivity::class.java)
+                    (activity as MainActivity).startActivity(intent, { r, c, m, d ->
+                        if (r) {
+                            resetDefectiveCount()
                         }
                     })
+//                    val db = DBHelperForDesign(activity)
+//                    val row = db.get(work_idx)
+//                    var seq = row!!["seq"].toString().toInt()
+//                    if (row == null || seq == null) seq = 1
+//
+//                    val uri = "/defectivedata.php"
+//                    var params = listOf(
+//                        "mac_addr" to AppGlobal.instance.getMACAddress(),
+//                        "didx" to AppGlobal.instance.get_design_info_idx(),
+//                        "defective_idx" to "99",
+//                        "cnt" to "1",
+//                        "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+//                        "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+//                        "factory_idx" to AppGlobal.instance.get_room_idx(),
+//                        "line_idx" to AppGlobal.instance.get_line_idx(),
+//                        "seq" to seq
+//                    )
+//                    getBaseActivity().request(activity, uri, true, false, params, { result ->
+//                        val code = result.getString("code")
+//                        (activity as MainActivity).ToastOut(activity, result.getString("msg"), true)
+//                        if (code == "00") {
+//                            val item = db.get(work_idx)
+//                            val defective = if (item != null) item["defective"].toString().toInt() else 0
+//                            db.updateDefective(work_idx, defective + 1)
+//                            resetDefectiveCount()    // DB에서 기본값을 가져다 화면에 출력
+//                        }
+//                    })
                 }
             }
         }

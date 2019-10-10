@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,11 +24,8 @@ import java.util.*
 class DownTimeActivity : BaseActivity() {
 
     private var _db = DBHelperForDownTime(this)
-
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
-
-//    private val _timer_task1 = Timer()
 
     val _start_down_time_activity = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -40,34 +36,7 @@ class DownTimeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_down_time)
-        initView()
-        updateView()
 
-        is_loop = true
-        startHandler()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
-        is_loop = true
-//        startHandler()
-    }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-////        cancel_timer()
-//    }
-
-    public override fun onPause() {
-        super.onPause()
-        overridePendingTransition(0, 0)
-        unregisterReceiver(_start_down_time_activity)
-        is_loop = false
-        ll_downtime_window.setBackgroundResource(R.color.colorWhite)
-    }
-
-    private fun initView() {
         btn_confirm.setOnClickListener {
             val count = _db.counts_for_notcompleted()
             if (count>0) {
@@ -88,17 +57,31 @@ class DownTimeActivity : BaseActivity() {
             intent.putExtra("start_dt", start_dt)
             startActivity(intent, { r, c, m, d ->
                 if (r) {
-                    val count = _db.counts_for_notcompleted()
-                    if (count > 0) updateView()
+                    if (_db.counts_for_notcompleted() > 0) updateView()
                     else finish()
                 }
             })
         }
+
+        updateView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
+        start_timer()
+    }
+
+    public override fun onPause() {
+        super.onPause()
+        overridePendingTransition(0, 0)
+        unregisterReceiver(_start_down_time_activity)
+        ll_downtime_window.setBackgroundResource(R.color.colorWhite)
+        cancel_timer()
     }
 
     private fun updateView() {
         _list = _db.gets() ?: _list
-
         list_adapter = ListAdapter(this, _list)
         lv_downtimes.adapter = list_adapter
 
@@ -120,55 +103,45 @@ class DownTimeActivity : BaseActivity() {
         tv_item_downtime_total?.text = ""+total_downtime + " min"
     }
 
-    private var _count = 0
-    private var is_loop: Boolean = false
-
-    fun startHandler() {
-        val handler = Handler()
-        handler.postDelayed({
-            if (is_loop) checkBlink()
-            if (_list.size == 0 || _count++ >= 10) {
-                _count = 0
-                updateView()
-            }
-            startHandler()
-        }, 1000)
-    }
-
-//    private fun start_timer () {
-//        val task1 = object : TimerTask() {
-//            override fun run() {
-//                runOnUiThread {
-//                    checkBlink()
-//                    if (_list.size==0 || _count++ >= 5) {
-//                        _count = 0
-//                        updateView()
-//                    }
-//                }
-//            }
-//        }
-//        _timer_task1.schedule(task1, 500, 2000)
-//    }
-//    private fun cancel_timer () {
-//        _timer_task1.cancel()
-//    }
-
     var blink_cnt = 0
 
     private fun checkBlink() {
-        var is_toggle = false
-        if (AppGlobal.instance.get_screen_blink()) {
-            val count = _db.counts_for_notcompleted()
-            if (count > 0) {
-                is_toggle = true
-                blink_cnt = 1 - blink_cnt
-            }
-        }
-        if (is_toggle && blink_cnt==1) {
+        val count = _db.counts_for_notcompleted()
+        if (AppGlobal.instance.get_screen_blink()) blink_cnt = 1 - blink_cnt
+
+        if (count > 0 && blink_cnt==1) {
             ll_downtime_window.setBackgroundColor(Color.parseColor("#" + AppGlobal.instance.get_blink_color()))
         } else {
             ll_downtime_window.setBackgroundResource(R.color.colorWhite)
         }
+    }
+
+    private val _timer_task1 = Timer()
+    private val _timer_task2 = Timer()
+
+    private fun start_timer() {
+        val task1 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    checkBlink()
+                    if (_list.size == 0) updateView()
+                }
+            }
+        }
+        _timer_task1.schedule(task1, 500, 1000)
+
+        val task2 = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    updateView()
+                }
+            }
+        }
+        _timer_task2.schedule(task2, 1000, 10000)
+    }
+    private fun cancel_timer () {
+        _timer_task1.cancel()
+        _timer_task2.cancel()
     }
 
     private class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
