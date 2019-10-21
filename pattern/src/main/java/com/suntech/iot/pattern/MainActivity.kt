@@ -1688,6 +1688,7 @@ class MainActivity : BaseActivity() {
         // runtime : downtime 을 뺀 근무시간
         // actualO : 현 시프트의 총 Target
         // ct0 : 퍼포먼스 계산할 때 타겟 값 (현시점까지 작업시간 - 다운타임 시간)의 타겟
+        // "actualO" to count_target.toString(),
         val uri = "/Scount.php"
         var params = listOf(
             "mac_addr" to AppGlobal.instance.getMACAddress(),
@@ -1700,7 +1701,7 @@ class MainActivity : BaseActivity() {
             "shift_idx" to  shift_idx,
             "seq" to seq,
             "runtime" to (work_time-down_time).toString(),
-            "actualO" to count_target.toString(),
+            "actualO" to sum_count.toString(),
             "ctO" to (count_target-down_target).toString(),
             "defective" to count_defective.toString())
 
