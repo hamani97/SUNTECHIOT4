@@ -22,6 +22,7 @@
     <string name="title_edit_defective_count" translatable="false">EDIT DEFECTIVE COUNT</string>
     <string name="title_design_info">DESIGN INFO</string>
     <string name="title_pieces_info">PIECES INFO</string>
+    <string name="title_edit_count" translatable="false">EDIT COUNT Q\'ty</string>
     <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>
     <string name="title_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
     <string name="title_defective_input">Defective input</string>
@@ -66,6 +67,8 @@
     <string name="label_send_stitch_count" translatable="false">Send Stitch Q\'ty</string>
     <string name="label_planned_count_process" translatable="false">Planned Time Actual Count</string>
     <string name="label_target_stop_when_downtime" translatable="false">Target Q\'ty Stop When DownTime</string>
+    <string name="label_ask_when_clicking_defective" translatable="false">Open window when clicking Defective</string>
+    <string name="label_piece_pair_count_edit" translatable="false">Piece(s)/Pair(s) Count editing function</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
@@ -212,6 +215,7 @@
     <string name="delay_time">DELAY TIME</string>
     <string name="pieces_count">PIECE(S) COUNT</string>
     <string name="pairs_count">PAIR(S) COUNT</string>
+    <string name="defective_count" translatable="false">DEFECTIVE COUNT</string>
 
     <!-- Message -->
     <string name="msg_no_operator">Operator not found</string>
@@ -221,6 +225,7 @@
     <string name="msg_select_component">Please select a component</string>
     <string name="msg_select_design">Please select a Design</string>
     <string name="msg_require_target_quantity">Please enter a target quantity</string>
+    <string name="msg_no_target_value_from_server" translatable="false">No target value was sent from the server.</string>
     <string name="msg_enter_only_for_mc_no" translatable="false">Please enter only numbers for M/C No</string>
     <string name="msg_runtime_not_enterd" translatable="false">Runtime value not entered</string>
     <string name="msg_layer_not_selected">Work info not selected</string>

@@ -74,7 +74,7 @@ class WatchingActivity : BaseActivity() {
 
         val shift_time = AppGlobal.instance.get_current_shift_time()
 
-        if (shift_time != null && target_type.substring(0, 6) == "server") {
+        if (shift_time != null) {
 
 //            val work_idx = AppGlobal.instance.get_product_idx()
 

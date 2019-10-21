@@ -64,19 +64,25 @@ class DownTimeActivity : BaseActivity() {
         }
 
         updateView()
+        start_timer()
     }
 
     override fun onResume() {
         super.onResume()
         registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
-        start_timer()
+        is_loop = true
     }
 
     public override fun onPause() {
         super.onPause()
+        is_loop = false
         overridePendingTransition(0, 0)
         unregisterReceiver(_start_down_time_activity)
         ll_downtime_window.setBackgroundResource(R.color.colorWhite)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         cancel_timer()
     }
 
@@ -119,12 +125,16 @@ class DownTimeActivity : BaseActivity() {
     private val _timer_task1 = Timer()
     private val _timer_task2 = Timer()
 
+    private var is_loop = true
+
     private fun start_timer() {
         val task1 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    checkBlink()
-                    if (_list.size == 0) updateView()
+                    if (is_loop) {
+                        checkBlink()
+                        if (_list.size == 0) updateView()
+                    }
                 }
             }
         }
@@ -133,7 +143,9 @@ class DownTimeActivity : BaseActivity() {
         val task2 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    updateView()
+                    if (is_loop) {
+                        updateView()
+                    }
                 }
             }
         }

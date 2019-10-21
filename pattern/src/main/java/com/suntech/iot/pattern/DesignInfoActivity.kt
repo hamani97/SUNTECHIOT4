@@ -68,10 +68,12 @@ class DesignInfoActivity : BaseActivity() {
         super.onResume()
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
         updateView()
+        is_loop = true
     }
     public override fun onPause() {
         super.onPause()
         unregisterReceiver(_broadcastReceiver)
+        is_loop = false
     }
 
     override fun onDestroy() {
@@ -305,12 +307,13 @@ class DesignInfoActivity : BaseActivity() {
 
     /////// 쓰레드
     private val _timer_task2 = Timer()
+    private var is_loop = true
 
     private fun start_timer() {
         val task2 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    checkUSB()
+                    if (is_loop) checkUSB()
                 }
             }
         }

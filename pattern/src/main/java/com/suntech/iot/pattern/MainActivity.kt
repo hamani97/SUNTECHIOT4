@@ -109,6 +109,7 @@ class MainActivity : BaseActivity() {
 
         mHandler = MyHandler(this)
 
+        wv_view_main.setInitialScale(100)
 
         // button click event
         if (AppGlobal.instance.get_long_touch()) {
@@ -124,14 +125,19 @@ class MainActivity : BaseActivity() {
                     if (ext.toLowerCase()=="pdf") {
                         workSheetToggle = false
                         workSheetShow = false
-                        ll_worksheet_view.visibility = View.GONE
-                        wv_view_main.visibility = View.GONE
+                        ll_worksheet_view?.visibility = View.GONE
+                        wv_view_main?.visibility = View.GONE
                     } else {
                         workSheetToggle = true
                         workSheetShow = true
-                        wv_view_main.visibility = View.VISIBLE
-                        wv_view_main.loadUrl(file_url)
+                        ll_worksheet_view?.visibility = View.VISIBLE
+                        wv_view_main?.visibility = View.VISIBLE
+                        val data = "<html><head><title>Example</title></head><body style=\"margin:0; padding:0; text-align:center;\"><center><img width=\"100%\" src=\"${file_url}\" /></center></body></html>"
+                        wv_view_main?.loadData(data, "text/html", null)
+//                        wv_view_main.loadUrl(file_url)
                         changeFragment(2)
+                        val cview = vp_fragments?.getChildAt(1)
+                        cview?.btn_toggle_sop?.visibility = View.GONE
                     }
                 }
             }); true }
@@ -168,7 +174,9 @@ class MainActivity : BaseActivity() {
                         workSheetShow = true
                         ll_worksheet_view?.visibility = View.VISIBLE
                         wv_view_main?.visibility = View.VISIBLE
-                        wv_view_main?.loadUrl(file_url)
+                        val data = "<html><head><title>Example</title></head><body style=\"margin:0; padding:0; text-align:center;\"><center><img width=\"100%\" src=\"${file_url}\" /></center></body></html>"
+                        wv_view_main?.loadData(data, "text/html", null)
+//                        wv_view_main?.loadUrl(file_url)
                         changeFragment(2)
                         val cview = vp_fragments?.getChildAt(1)
                         cview?.btn_toggle_sop?.visibility = View.GONE
@@ -553,7 +561,7 @@ class MainActivity : BaseActivity() {
                 var target = "0"
                 var target_int = 0
 
-                if (target_type.substring(0, 6) == "server") {
+                if (target_type.substring(0, 6) == "cycle_") {
 
                     val shift_time = AppGlobal.instance.get_current_shift_time()    // 현 시프트
                     var current_cycle_time = AppGlobal.instance.get_cycle_time()    // 현재 선택된 디자인의 사이클 타임
@@ -898,6 +906,7 @@ class MainActivity : BaseActivity() {
 //    }
 
     // Parts cycle time 이라는 기능
+    // 남은 시간이 10시간 미만인 콤포넌트가 있으면 푸시 발송. 갯수만큼
     private fun fetchComponentData() {
 //        UtilLocalStorage.setStringSet(this, "notified_component_set", setOf())
         val uri = "/getlist1.php"
@@ -986,7 +995,7 @@ class MainActivity : BaseActivity() {
         if (item != null) {
             var _total_target = 0
             var target_type = AppGlobal.instance.get_target_type()
-            if (target_type=="server_per_accumulate" || target_type=="server_per_day_total") {
+            if (target_type.substring(0, 6) == "server") {
                 // 신서버용
                 val work_idx = AppGlobal.instance.get_product_idx()
 
@@ -997,7 +1006,8 @@ class MainActivity : BaseActivity() {
                     val item = db_list?.get(i)
                     val work_idx2 = item?.get("work_idx").toString()
                     val target2 = item?.get("target").toString().toInt()
-                    val start_dt2 = OEEUtil.parseDateTime(item?.get("start_dt").toString())    // 디자인의 시작시간
+                    val start_dt2 =
+                        OEEUtil.parseDateTime(item?.get("start_dt").toString())    // 디자인의 시작시간
 
                     if (work_idx == work_idx2) {    // 현재 진행중인 디자인
                         val current_cycle_time = AppGlobal.instance.get_cycle_time()
@@ -1008,18 +1018,33 @@ class MainActivity : BaseActivity() {
                             val shift_end_dt = OEEUtil.parseDateTime(work_etime)    // 시프트의 종료 시간
 
                             // 설정되어 있는 휴식 시간
-                            val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
-                            val _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
-                            val _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
-                            val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
+                            val _planned1_stime =
+                                OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
+                            val _planned1_etime =
+                                OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
+                            val _planned2_stime =
+                                OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
+                            val _planned2_etime =
+                                OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
 
-                            val d1 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned1_stime, _planned1_etime)
-                            val d2 = AppGlobal.instance.compute_time(start_dt2, shift_end_dt, _planned2_stime, _planned2_etime)
+                            val d1 = AppGlobal.instance.compute_time(
+                                start_dt2,
+                                shift_end_dt,
+                                _planned1_stime,
+                                _planned1_etime
+                            )
+                            val d2 = AppGlobal.instance.compute_time(
+                                start_dt2,
+                                shift_end_dt,
+                                _planned2_stime,
+                                _planned2_etime
+                            )
 
                             // 디자인의 시작부터 시프트 종료시간까지 (초)
                             val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                            val work_time = ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
+                            val work_time =
+                                ((shift_end_dt.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
                             _total_target += (work_time / current_cycle_time).toInt() + start_at_target // 현 시간에 만들어야 할 갯수
                         }
                     } else {        // 지난 디자인
@@ -1032,7 +1057,7 @@ class MainActivity : BaseActivity() {
 //                    "2" -> _total_target = AppGlobal.instance.get_target_server_shift("2").toInt()
 //                    "3" -> _total_target = AppGlobal.instance.get_target_server_shift("3").toInt()
 //                }
-            } else if (target_type=="device_per_accumulate" || target_type=="device_per_day_total") {
+            } else if (target_type.substring(0, 6) == "device") {
                 when (item["shift_idx"]) {
                     "1" -> _total_target = AppGlobal.instance.get_target_manual_shift("1").toInt()
                     "2" -> _total_target = AppGlobal.instance.get_target_manual_shift("2").toInt()
@@ -1563,6 +1588,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // 장치에서 들어온 값, 증분값, 총수량
     private fun sendCountData(count:String, inc_count:Int, sum_count:Int, runtime: String) {
         if (AppGlobal.instance.get_server_ip()=="") return
 
@@ -1574,8 +1600,69 @@ class MainActivity : BaseActivity() {
 //        val actual = row!!["actual"].toString().toInt()
         val seq = row!!["seq"].toString().toInt()
 
+
+        // 서버에서 새로운 데이터를 요청해서 생겨난 로직 (쓸데없이 시간 지연됨)
+        // 2019-10-11
+        var count_actual = 0                                // 총 Actual
+        var count_target = 0                                // 총 타겟
+
+        var db_list = db.gets()
+        for (i in 0..((db_list?.size ?: 1) - 1)) {
+            val item = db_list?.get(i)
+            val actual2 = item?.get("actual").toString().toInt()
+            val target2 = item?.get("target").toString().toInt()
+            count_actual += actual2
+            count_target += target2
+        }
+
+        val count_defective = db.sum_defective_count()      // 현재 디펙티브 값
+
+        // Downtime
+        var down_time = 0
+        var down_target = 0
+
+        var work_time = 0
+
         var shift_idx = AppGlobal.instance.get_current_shift_idx()
-        if (shift_idx == "") shift_idx = "0"
+
+        if (shift_idx == "") {
+            shift_idx = "0"
+        } else {
+            val shift_time = AppGlobal.instance.get_current_shift_time()
+
+            if (shift_time != null) {
+                val now = DateTime()
+                val now_millis = now.millis
+
+                // 시프트 시작/끝
+                val shift_stime_millis = OEEUtil.parseDateTime(shift_time["work_stime"].toString()).millis
+                val shift_etime_millis = OEEUtil.parseDateTime(shift_time["work_etime"].toString()).millis
+
+                // 휴식시간
+                val planned1_stime_millis = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString()).millis
+                val planned1_etime_millis = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString()).millis
+                val planned2_stime_millis = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString()).millis
+                val planned2_etime_millis = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString()).millis
+
+                val planned1_time = AppGlobal.instance.compute_time_millis(shift_stime_millis, now_millis, planned1_stime_millis, planned1_etime_millis)
+                val planned2_time = AppGlobal.instance.compute_time_millis(shift_stime_millis, now_millis, planned2_stime_millis, planned2_etime_millis)
+
+                // 현재까지의 작업시간
+                work_time = ((now_millis - shift_stime_millis) / 1000).toInt() - planned1_time - planned2_time
+
+                // Downtime
+                val down_db = DBHelperForDownTime(this)
+                val down_list = down_db.gets()
+                down_list?.forEach { item ->
+                    down_time += item["real_millis"].toString().toInt()
+                    down_target += item["target"].toString().toInt()
+                }
+
+                // ctO 구하기 (현시점까지 작업시간 - 다운타임 시간)의 타겟
+            }
+        }
+        // 서버에서 새로운 데이터를 요청해서 생겨난 로직 끝.
+        // 2019-10-11
 
 
         // Cutting 과는 다르게 콤포넌트가 필수 선택사항이 아니므로
@@ -1596,15 +1683,26 @@ class MainActivity : BaseActivity() {
 //            "max_rpm" to "",
 //            "avr_rpm" to "")
 
+
         // 신서버용
+        // runtime : downtime 을 뺀 근무시간
+        // actualO : 현 시프트의 총 Target
+        // ct0 : 퍼포먼스 계산할 때 타겟 값 (현시점까지 작업시간 - 다운타임 시간)의 타겟
         val uri = "/Scount.php"
         var params = listOf(
             "mac_addr" to AppGlobal.instance.getMACAddress(),
             "didx" to AppGlobal.instance.get_design_info_idx(),
             "count" to inc_count.toString(),
             "total_count" to sum_count,
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
             "shift_idx" to  shift_idx,
-            "seq" to seq)
+            "seq" to seq,
+            "runtime" to (work_time-down_time).toString(),
+            "actualO" to count_target.toString(),
+            "ctO" to (count_target-down_target).toString(),
+            "defective" to count_defective.toString())
 
 //Log.e("Scount params", params.toString())
 
@@ -1703,6 +1801,8 @@ class MainActivity : BaseActivity() {
         val prev_didx = AppGlobal.instance.get_design_info_idx()
         val prev_work_idx = "" + AppGlobal.instance.get_product_idx()
 
+        var start_dt = DateTime().toString("yyyy-MM-dd HH:mm:ss")       // 새 디자인 시작시간
+
         AppGlobal.instance.set_design_info_idx(didx)
         AppGlobal.instance.set_model(model)
         AppGlobal.instance.set_article(article)
@@ -1715,11 +1815,13 @@ class MainActivity : BaseActivity() {
         val pairs_info = AppGlobal.instance.get_pairs_info()
 
         // 서버에서 받은 다운타임 타입이 초단위가 아니고 "Cycle Time" 이면 선택된 디자인의 Cycle Time 으로 세팅된다.
-        if (AppGlobal.instance.get_downtime_type()=="Cycle Time") {
-            AppGlobal.instance.set_downtime_sec(cycle_time.toString())
-            OEEUtil.LogWrite(AppGlobal.instance.get_downtime_type() + " = " + cycle_time.toString(), "Reset Downtime Sec")
-        }
+        val target_type = AppGlobal.instance.get_target_type()
+        val downtime_type = AppGlobal.instance.get_downtime_type()
 
+        if (downtime_type=="Cycle Time") {
+            AppGlobal.instance.set_downtime_sec(cycle_time.toString())
+            OEEUtil.LogWrite(downtime_type + " = " + cycle_time.toString(), "Reset Downtime Sec")
+        }
 
         val db = DBHelperForDesign(this)
         val item = db.get(prev_work_idx)
@@ -1739,17 +1841,51 @@ class MainActivity : BaseActivity() {
             if (prev_work_idx != "") db.updateWorkEnd(prev_work_idx)    // 이전 작업 완료 처리
         }
 
-        var start_dt = DateTime().toString("yyyy-MM-dd HH:mm:ss")
-
         // 이전 디자인의 Actual이 0이면 (작업이 하나도 없는 경우, 실수로 선택한 경우 등)
         // 해당 디자인을 지우고 시작 시간을 새 디자인의 시작 시간으로 업데이트한다.
         if (item != null) {
-            var actual_cnt = item!!["actual"].toString().toInt()
+            val actual_cnt = item!!["actual"].toString().toInt()
             if (actual_cnt == 0) {
-                start_dt = item!!["start_dt"].toString()
-                db.deleteWorkIdx(prev_work_idx)
-                // Downtime 재계산
+                start_dt = item!!["start_dt"].toString()        // 시작 시간을 이전 디자인의 시작 시간으로 재설정
+                db.deleteWorkIdx(prev_work_idx)                 // 이전 디자인 삭제
 
+                // Downtime 재계산
+                val down_db = DBHelperForDownTime(this)
+                val down_list = down_db.gets()
+
+                // From Server / From Device 에서 활용
+                val one_item_sec = AppGlobal.instance.get_current_maketime_per_piece()
+
+                for (i in 0..((down_list?.size ?: 1) - 1)) {
+                    val item = down_list?.get(i)
+                    val item_real_millis = item?.get("real_millis").toString().toInt()
+
+                    val start_dt_millis = OEEUtil.parseDateTime(start_dt).millis
+                    val item_start_dt_millis = OEEUtil.parseDateTime(item?.get("start_dt").toString()).millis
+
+                    if (item_start_dt_millis >= start_dt_millis) {
+                        val item_idx = item?.get("idx").toString()
+                        if (item_real_millis > 0) {
+                            if (target_type.substring(0, 6) == "cycle_") {
+                                if (cycle_time != 0) {
+                                    val new_target = item_real_millis / cycle_time
+                                    down_db.updateDidxTarget(item_idx, didx, new_target)
+                                } else {
+                                    down_db.updateDidxTarget(item_idx, didx, 0)
+                                }
+                            } else {
+                                if (one_item_sec != 0F) {
+                                    val new_target = item_real_millis / one_item_sec
+                                    down_db.updateDidxTarget(item_idx, didx, new_target.toInt())
+                                } else {
+                                    down_db.updateDidxTarget(item_idx, didx, 0)
+                                }
+                            }
+                        } else {
+                            down_db.updateDidxTarget(item_idx, didx, 0)
+                        }
+                    }
+                }
             }
         }
 
@@ -1759,7 +1895,7 @@ class MainActivity : BaseActivity() {
         val seq = max_seq + 1
         Log.e("test", "seq = " + seq)
 
-        // 처음 시작이면 Start 시작 시간을 Shift 시작 시간으로 세팅
+        // 처음 시작이면 Start 시간을 Shift 시작 시간으로 세팅
         if (seq == 1) {
             val shift_time = AppGlobal.instance.get_current_shift_time()
             if (shift_time != null) {

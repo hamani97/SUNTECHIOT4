@@ -9,11 +9,13 @@ import com.suntech.iot.pattern.PopupSelectList
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.db.DBHelperForDesign
 import kotlinx.android.synthetic.main.activity_piece_pair_count_edit.*
 
 class PiecePairCountEditActivity : BaseActivity() {
     private var _pieces = 0
     private var _pairs = 0
+    private var _defective = 0
 
     private var _max_pieces = 10
     private var _max_pairs = 1
@@ -53,6 +55,31 @@ class PiecePairCountEditActivity : BaseActivity() {
         tv_design_pieces.setOnClickListener { fetchPiecesData() }
         tv_design_pairs.setOnClickListener { fetchPairsData() }
 
+        // defective
+        val work_idx = AppGlobal.instance.get_product_idx()
+        if (work_idx == "") {
+            ToastOut(this, R.string.msg_design_not_selected, true)
+            _defective = 0
+        } else {
+            val db = DBHelperForDesign(this)
+            val row = db.get(work_idx)
+            if (row != null) {
+                _defective = row!!["defective"].toString().toInt()
+            }
+        }
+        tv_defective_count?.setText(_defective.toString())
+        et_defective_count?.setText(_defective.toString())
+
+        if (AppGlobal.instance.get_piece_pair_count_edit()) {
+            ll_pieces_block.visibility = View.VISIBLE
+            ll_pairs_block.visibility = View.VISIBLE
+            ll_pieces_pairs_sep_block.visibility = View.VISIBLE
+        } else {
+            ll_pieces_block.visibility = View.GONE
+            ll_pairs_block.visibility = View.GONE
+            ll_pieces_pairs_sep_block.visibility = View.GONE
+        }
+
         btn_trim_count_plus.setOnClickListener {
             if (_pieces + 1 < _max_pieces) {
                 _pieces++
@@ -77,6 +104,17 @@ class PiecePairCountEditActivity : BaseActivity() {
                 et_pairs_count.setText(_pairs.toString())
             }
         }
+        btn_defective_plus.setOnClickListener {
+            _defective++
+            et_defective_count?.setText(_defective.toString())
+        }
+        btn_defective_minus.setOnClickListener {
+            if (_defective > 0) {
+                _defective--
+                et_defective_count?.setText(_defective.toString())
+            }
+        }
+
         btn_confirm.setOnClickListener {
             if (tv_design_pieces.text.toString() == "" || tv_design_pairs.text.toString() == "") {
                 ToastOut(this, R.string.msg_require_info, true)
@@ -84,6 +122,46 @@ class PiecePairCountEditActivity : BaseActivity() {
             }
             AppGlobal.instance.set_pieces_info(tv_design_pieces.text.toString())
             AppGlobal.instance.set_pairs_info(tv_design_pairs.text.toString())
+
+            // defective
+            val work_idx = AppGlobal.instance.get_product_idx()
+            if (work_idx == "") {
+                ToastOut(this, R.string.msg_design_not_selected, true)
+            } else {
+                val db = DBHelperForDesign(this)
+                val row = db.get(work_idx)
+                if (row != null) {
+                    val defective = row!!["defective"].toString().toInt()
+                    var seq = row!!["seq"].toString().toInt()
+                    if (seq == null) seq = 1
+
+                    val cnt = (_defective - defective)
+
+                    if (cnt != 0) {
+
+                        val uri = "/defectivedata.php"
+                        var params = listOf(
+                            "mac_addr" to AppGlobal.instance.getMACAddress(),
+                            "didx" to AppGlobal.instance.get_design_info_idx(),
+                            "defective_idx" to "99",
+                            "cnt" to cnt.toString(),
+                            "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
+                            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+                            "factory_idx" to AppGlobal.instance.get_room_idx(),
+                            "line_idx" to AppGlobal.instance.get_line_idx(),
+                            "seq" to seq
+                        )
+                        request(this, uri, true, false, params, { result ->
+                            val code = result.getString("code")
+                            if (code == "00") {
+                                db.updateDefective(work_idx, _defective)
+                            } else {
+                                ToastOut(this, result.getString("msg"), true)
+                            }
+                        })
+                    }
+                }
+            }
 
             finish(true, 0, "ok", hashMapOf("pieces" to ""+_pieces, "pairs" to ""+_pairs))
         }

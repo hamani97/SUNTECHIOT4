@@ -28,6 +28,7 @@
     <color name="colorSelector">#8d4dab</color>
     <color name="colorEditor1">#87c947</color>
     <color name="colorEditor2">#333E4D</color>
+    <color name="colorEditor1Readonly">#628B51</color>
 
     <color name="colorButtonDefault">#2f3f51</color>
     <color name="colorButtonDefaultFocus">#333E4D</color>

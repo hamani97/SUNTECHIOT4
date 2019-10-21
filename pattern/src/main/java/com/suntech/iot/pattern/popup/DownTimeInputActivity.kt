@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
@@ -17,7 +18,6 @@ import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_down_time_input.*
 import org.joda.time.DateTime
-import java.util.*
 
 
 class DownTimeInputActivity : BaseActivity() {
@@ -27,6 +27,8 @@ class DownTimeInputActivity : BaseActivity() {
     var _idx = ""
     var _start_dt = ""
     var _start_dt_millis = 0L
+
+    private var is_loop = true
 
     val _start_down_time_activity = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -116,7 +118,8 @@ class DownTimeInputActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         registerReceiver(_start_down_time_activity, IntentFilter("start.downtime"))
-        start_timer()
+        is_loop = true
+        startHandler()
     }
 
     public override fun onPause() {
@@ -124,24 +127,18 @@ class DownTimeInputActivity : BaseActivity() {
         overridePendingTransition(0, 0)
         unregisterReceiver(_start_down_time_activity)
         ll_base_box.setBackgroundResource(R.color.colorWhite)
-        cancel_timer()
+        is_loop = false
     }
 
-    private val _timer_task1 = Timer()
-
-    private fun start_timer() {
-        val task1 = object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    updateView()
-                    checkBlink()
-                }
+    fun startHandler() {
+        val handler = Handler()
+        handler.postDelayed({
+            if (is_loop) {
+                updateView()
+                checkBlink()
+                startHandler()
             }
-        }
-        _timer_task1.schedule(task1, 0, 1000)
-    }
-    private fun cancel_timer () {
-        _timer_task1.cancel()
+        }, 1000)
     }
 
     var blink_cnt = 0
@@ -191,6 +188,7 @@ class DownTimeInputActivity : BaseActivity() {
         }
         if (AppGlobal.instance.get_downtime_idx() == "") {
             ToastOut(this, com.suntech.iot.pattern.R.string.msg_data_not_found, true)
+            finish(true, 0, "ok", null)
             return
         }
 //        if (_selected_idx < 0) {
@@ -198,7 +196,9 @@ class DownTimeInputActivity : BaseActivity() {
             ToastOut(this, com.suntech.iot.pattern.R.string.msg_has_notselected, true)
             return
         }
+
         val idx = AppGlobal.instance.get_downtime_idx()
+        val target_type = AppGlobal.instance.get_target_type()          // setting menu 메뉴에서 선택한 타입
 
         val now = DateTime()
         var down_time = 0
@@ -227,7 +227,11 @@ class DownTimeInputActivity : BaseActivity() {
             down_time = ((now_millis - down_start_millis) / 1000).toInt()   // 다운시간
             real_down_time = down_time - planned1_time - planned2_time      // 휴식시간을 뺀 실제 다운타임
 
-            val ct = AppGlobal.instance.get_cycle_time()
+
+            val target_type = AppGlobal.instance.get_target_type()          // setting menu 메뉴에서 선택한 타입
+
+            var ct = if (target_type.substring(0, 6) == "cycle_") AppGlobal.instance.get_cycle_time() else AppGlobal.instance.get_current_shift_target()
+
             if (ct > 0) target = real_down_time / ct
         }
 

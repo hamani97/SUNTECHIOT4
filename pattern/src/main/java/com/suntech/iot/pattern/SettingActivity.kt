@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
@@ -23,7 +24,7 @@ class SettingActivity : BaseActivity() {
     private var usb_state = false
 
     private var tab_pos: Int = 1
-    private var _selected_target_type: String = "device"
+    private var _selected_target_type: String = "cycle_"
     private var _selected_blink_color: String = AppGlobal.instance.get_blink_color()
 
     private var _selected_trim_pair: String = ""
@@ -35,6 +36,8 @@ class SettingActivity : BaseActivity() {
     private var _selected_mc_model_idx: String = ""
 
     private var _server_time = -1000000L
+
+    private var is_loop = true
 
     val _broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -73,34 +76,29 @@ class SettingActivity : BaseActivity() {
 
     public override fun onResume() {
         super.onResume()
-
         val filter = IntentFilter()
         filter.addAction(Intent.ACTION_TIME_CHANGED)
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)
         registerReceiver(_broadcastReceiver, filter)
-        start_timer()
+        is_loop = true
+        startHandler()
     }
 
     public override fun onPause() {
         super.onPause()
         unregisterReceiver(_broadcastReceiver)
-        cancel_timer()
+        is_loop = false
     }
 
-    private val _timer_task1 = Timer()
-    private fun start_timer() {
-        val task1 = object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    checkUSB()
-                    if (tab_pos == 3) updateView()
-                }
+    fun startHandler() {
+        val handler = Handler()
+        handler.postDelayed({
+            if (is_loop) {
+                checkUSB()
+                if (tab_pos == 3) updateView()
+                startHandler()
             }
-        }
-        _timer_task1.schedule(task1, 200, 1000)
-    }
-    private fun cancel_timer () {
-        _timer_task1.cancel()
+        }, 1000)
     }
 
     private fun checkUSB() {
@@ -162,6 +160,8 @@ class SettingActivity : BaseActivity() {
         sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
         sw_planned_count_process.isChecked = AppGlobal.instance.get_planned_count_process()
         sw_target_stop_when_downtime.isChecked = AppGlobal.instance.get_target_stop_when_downtime()
+        sw_ask_when_clicking_defective.isChecked = AppGlobal.instance.get_ask_when_clicking_defective()
+        sw_piece_pair_count_edit.isChecked = AppGlobal.instance.get_piece_pair_count_edit()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -193,7 +193,7 @@ class SettingActivity : BaseActivity() {
 //        tv_trim_pairs.setOnClickListener { selectTrimPair() }
 
         // target setting
-        if (AppGlobal.instance.get_target_type() == "") targetTypeChange("device_per_accumulate")
+        if (AppGlobal.instance.get_target_type() == "") targetTypeChange("cycle_per_accumulate")
         else targetTypeChange(AppGlobal.instance.get_target_type())
 
         tv_shift_1.setText(AppGlobal.instance.get_target_manual_shift("1"))
@@ -214,10 +214,25 @@ class SettingActivity : BaseActivity() {
         tv_setting_mc_model.setOnClickListener { fetchDataForMCModel() }
 
         // Target setting button listener
-        btn_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
-        btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
-        btn_manual_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
-        btn_manual_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
+        img_cycle_time_accumulate.setOnClickListener { targetTypeChange("cycle_per_accumulate") }
+        tv_cycle_time_accumulate.setOnClickListener { targetTypeChange("cycle_per_accumulate") }
+        img_cycle_time_shifttotal.setOnClickListener { targetTypeChange("cycle_per_day_total") }
+        tv_cycle_time_shifttotal.setOnClickListener { targetTypeChange("cycle_per_day_total") }
+
+        img_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
+        tv_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
+        img_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
+        tv_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
+
+        img_device_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
+        tv_device_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
+        img_device_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
+        tv_device_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
+
+//        btn_server_accumulate.setOnClickListener { targetTypeChange("server_per_accumulate") }
+//        btn_server_shifttotal.setOnClickListener { targetTypeChange("server_per_day_total") }
+//        btn_manual_accumulate.setOnClickListener { targetTypeChange("device_per_accumulate") }
+//        btn_manual_shifttotal.setOnClickListener { targetTypeChange("device_per_day_total") }
 
         // check server button
         btn_setting_check_server.setOnClickListener {
@@ -369,6 +384,8 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
         AppGlobal.instance.set_planned_count_process(sw_planned_count_process.isChecked)
         AppGlobal.instance.set_target_stop_when_downtime(sw_target_stop_when_downtime.isChecked)
+        AppGlobal.instance.set_ask_when_clicking_defective(sw_ask_when_clicking_defective.isChecked)
+        AppGlobal.instance.set_piece_pair_count_edit(sw_piece_pair_count_edit.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())
@@ -634,23 +651,91 @@ class SettingActivity : BaseActivity() {
     private fun targetTypeChange(v : String) {
         if (_selected_target_type == v) return
         when (_selected_target_type) {
-            "server_per_accumulate" -> btn_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-            "server_per_day_total" -> btn_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-            "device_per_accumulate" -> btn_manual_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-            "device_per_day_total" -> btn_manual_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            "cycle_per_accumulate" -> {
+                img_cycle_time_accumulate.isSelected = false
+                tv_cycle_time_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
+            "cycle_per_day_total" -> {
+                img_cycle_time_shifttotal.isSelected = false
+                tv_cycle_time_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
+            "server_per_accumulate" -> {
+                img_server_accumulate.isSelected = false
+                tv_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
+            "server_per_day_total" -> {
+                img_server_shifttotal.isSelected = false
+                tv_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
+            "device_per_accumulate" -> {
+                img_device_accumulate.isSelected = false
+                tv_device_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
+            "device_per_day_total" -> {
+                img_device_shifttotal.isSelected = false
+                tv_device_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            }
         }
         when (_selected_target_type.substring(0, 6)) {
-            "server" -> tv_setting_target_type_server.setTextColor(ContextCompat.getColor(this, R.color.colorReadonly))
-            "device" -> tv_setting_target_type_manual.setTextColor(ContextCompat.getColor(this, R.color.colorReadonly))
+            "cycle_" -> tv_setting_target_type_cycle_time.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            "server" -> tv_setting_target_type_server.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            "device" -> tv_setting_target_type_manual.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
         }
+
+        // Device에 딸려있는 메뉴의 색상 변경
+        if (_selected_target_type.substring(0, 6) == "device") {
+            if (v.substring(0, 6) != "device") {
+                tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorDarkGray))
+                tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+                tv_shift_1.setBackgroundResource(R.color.colorEditor1Readonly)
+                tv_shift_2.setBackgroundResource(R.color.colorEditor1Readonly)
+                tv_shift_3.setBackgroundResource(R.color.colorEditor1Readonly)
+            }
+        } else {
+            if (v.substring(0, 6) == "device") {
+                tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+                tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+                tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+                tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+                tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+                tv_shift_1.setBackgroundResource(R.color.colorEditor1)
+                tv_shift_2.setBackgroundResource(R.color.colorEditor1)
+                tv_shift_3.setBackgroundResource(R.color.colorEditor1)
+            }
+        }
+
         _selected_target_type = v
         when (_selected_target_type) {
-            "server_per_accumulate" -> btn_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-            "server_per_day_total" -> btn_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-            "device_per_accumulate" -> btn_manual_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-            "device_per_day_total" -> btn_manual_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            "cycle_per_accumulate" -> {
+                img_cycle_time_accumulate.isSelected = true
+                tv_cycle_time_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
+            "cycle_per_day_total" -> {
+                img_cycle_time_shifttotal.isSelected = true
+                tv_cycle_time_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
+            "server_per_accumulate" -> {
+                img_server_accumulate.isSelected = true
+                tv_server_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
+            "server_per_day_total" -> {
+                img_server_shifttotal.isSelected = true
+                tv_server_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
+            "device_per_accumulate" -> {
+                img_device_accumulate.isSelected = true
+                tv_device_accumulate.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
+            "device_per_day_total" -> {
+                img_device_shifttotal.isSelected = true
+                tv_device_shifttotal.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            }
         }
         when (_selected_target_type.substring(0, 6)) {
+            "cycle_" -> tv_setting_target_type_cycle_time.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
             "server" -> tv_setting_target_type_server.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
             "device" -> tv_setting_target_type_manual.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
         }

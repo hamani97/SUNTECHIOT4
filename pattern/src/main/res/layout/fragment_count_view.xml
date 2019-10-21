@@ -136,18 +136,19 @@
                                 android:layout_width="190dp"
                                 android:layout_height="wrap_content"
                                 android:background="@color/transparent">
-                            <ImageButton
-                                    android:id="@+id/btn_defective_plus"
-                                    android:layout_width="190dp"
-                                    android:layout_height="190dp"
-                                    android:background="@drawable/ic_defective_orange_64dp"
-                                    android:stateListAnimator="@null"/>
                             <!--<ImageButton-->
                                     <!--android:id="@+id/btn_defective_plus"-->
                                     <!--android:layout_width="match_parent"-->
                                     <!--android:layout_height="match_parent"-->
                                     <!--android:background="@mipmap/btn_icon_defective"-->
                                     <!--android:stateListAnimator="@null"/>-->
+                            <ImageButton
+                                    android:id="@+id/btn_defective_plus"
+                                    android:layout_width="190dp"
+                                    android:layout_height="190dp"
+                                    android:background="@drawable/ic_defective_orange_64dp"
+                                    android:stateListAnimator="@null" />
+
                             <TextView
                                     android:layout_width="18dp"
                                     android:layout_height="100dp"
@@ -182,12 +183,14 @@
                                     android:textStyle="bold"
                                     android:textColor="@color/colorBlack2"/>
 
-                            <LinearLayout android:layout_width="wrap_content"
-                                          android:layout_height="wrap_content"
-                                          android:orientation="horizontal"
-                                          android:layout_marginTop="170dp"
-                                          android:visibility="visible"
-                                          android:layout_centerHorizontal="true">
+                            <LinearLayout
+                                    android:id="@+id/ll_current_piece_pair"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:layout_marginTop="170dp"
+                                    android:visibility="visible"
+                                    android:layout_centerHorizontal="true">
                                 <TextView
                                         android:id="@+id/tv_pieces_qty"
                                         android:layout_width="wrap_content"

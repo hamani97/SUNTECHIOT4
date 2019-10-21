@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import org.joda.time.DateTime
 import java.util.*
 
 /**
@@ -177,6 +176,15 @@ class DBHelperForDownTime
         row.put("end_dt", end_dt)
         row.put("millis", millis)
         row.put("real_millis", real_millis)
+        row.put("target", target)
+        db.update("downtime", row, "idx = ?", arrayOf(idx))
+        db.close()
+    }
+
+    fun updateDidxTarget(idx: String, design_idx:String, target:Int) {
+        val db = _openHelper.writableDatabase ?: return
+        val row = ContentValues()
+        row.put("design_idx", design_idx)
         row.put("target", target)
         db.update("downtime", row, "idx = ?", arrayOf(idx))
         db.close()

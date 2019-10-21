@@ -9,6 +9,7 @@ import com.suntech.iot.pattern.util.OEEUtil
 import com.suntech.iot.pattern.util.UtilLocalStorage
 import org.joda.time.DateTime
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.FileReader
@@ -106,6 +107,11 @@ class AppGlobal private constructor() {
     fun get_planned_count_process() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "planned_count") }
     fun set_target_stop_when_downtime(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_stop_downtime", state) }
     fun get_target_stop_when_downtime() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_stop_downtime") }
+
+    fun set_ask_when_clicking_defective(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "ask_click_defective", state) }
+    fun get_ask_when_clicking_defective() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "ask_click_defective") }
+    fun set_piece_pair_count_edit(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "piece_pair_edit", state) }
+    fun get_piece_pair_count_edit() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "piece_pair_edit") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
@@ -349,7 +355,7 @@ class AppGlobal private constructor() {
 //    fun get_trim_pairs() : String { return UtilLocalStorage.getString(instance._context!!, "current_trim_pair") }
 
 
-    // server, manual 방식
+    // cycle, server, manual 방식
     fun set_target_type(value: String) { UtilLocalStorage.setString(instance._context!!, "target_type", value) }
     fun get_target_type() : String { return UtilLocalStorage.getString(instance._context!!, "target_type") }
 
@@ -357,11 +363,79 @@ class AppGlobal private constructor() {
     fun get_last_shift_info() : String { return UtilLocalStorage.getString(instance._context!!, "last_shift_info") }
 
 
+    fun set_target_manual_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_target_shift_" + shift_no, value) }
+    fun get_target_manual_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_target_shift_" + shift_no) }
+
 //    fun set_target_server_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_server_target_shift_" + shift_no, value) }
 //    fun get_target_server_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_server_target_shift_" + shift_no) }
 
-    fun set_target_manual_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_target_shift_" + shift_no, value) }
-    fun get_target_manual_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_target_shift_" + shift_no) }
+    // 현 시프트의 토탈 타겟
+    // From Server 와 From Device 사용
+    fun get_current_shift_target() : Int {
+        val item = get_current_shift_time()
+        if (item != null) {
+            val shift_idx = item["shift_idx"].toString()
+            var target_type = get_target_type()
+            if (target_type.substring(0, 6) == "server") {
+                var target = "0"
+                try {
+                    target = item["target"].toString()
+                } catch (e: JSONException) {
+//                    e.printStackTrace()
+                }
+//                var target2 = item!!["target"]?.toString() ?: "0"      // From server
+//                var target = item?.getString("target") ?: "0"
+                if (target == "") target = "0"
+                return target.toInt()
+            } else if (target_type.substring(0, 6) == "device") {
+                return when (shift_idx) {
+                    "1" -> get_target_manual_shift("1").toInt()
+                    "2" -> get_target_manual_shift("2").toInt()
+                    "3" -> get_target_manual_shift("3").toInt()
+                    else -> 0
+                }
+            }
+        }
+        return 0
+    }
+
+    // 현 시프트에서 한개 만드는데 걸리는 시간
+    // From Server 와 From Device 사용
+    fun get_current_maketime_per_piece() : Float {
+
+        val item = get_current_shift_time()
+        if (item != null) {
+            val target = get_current_shift_target()
+            if (target == 0) return 0F
+
+//            var shift_total_target = target
+
+            if (target > 0) {
+                // 시프트 기본 정보
+                val work_stime = item["work_stime"].toString()
+                val work_etime = item["work_etime"].toString()
+                val shift_stime = OEEUtil.parseDateTime(work_stime)
+                val shift_etime = OEEUtil.parseDateTime(work_etime)
+
+                // 휴식타임
+                val _planned1_stime = OEEUtil.parseDateTime(item["planned1_stime_dt"].toString())
+                val _planned1_etime = OEEUtil.parseDateTime(item["planned1_etime_dt"].toString())
+                val _planned2_stime = OEEUtil.parseDateTime(item["planned2_stime_dt"].toString())
+                val _planned2_etime = OEEUtil.parseDateTime(item["planned2_etime_dt"].toString())
+
+                // 휴식시간 계산
+                val d1 = compute_time(shift_stime, shift_etime, _planned1_stime, _planned1_etime)
+                val d2 = compute_time(shift_stime, shift_etime, _planned2_stime, _planned2_etime)
+
+                // 시프트 시작부터 종료까지 시간(초)
+                val work_time = ((shift_etime.millis - shift_stime.millis) / 1000) - d1 - d2
+
+                return (work_time.toFloat() / target)
+//                return (work_time.toFloat() / shift_total_target)
+            }
+        }
+        return 0F
+    }
 
     fun get_current_shift_target_cnt() : String {
         var total_target = ""

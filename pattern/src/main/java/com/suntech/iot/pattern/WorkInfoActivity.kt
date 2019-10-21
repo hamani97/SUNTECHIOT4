@@ -80,11 +80,13 @@ class WorkInfoActivity : BaseActivity() {
         btn_usb_state2.isSelected = AppGlobal.instance._usb_state
 
         updateView()
+        is_loop = true
     }
 
     public override fun onPause() {
         super.onPause()
         unregisterReceiver(_broadcastReceiver)
+        is_loop = false
     }
 
     override fun onDestroy() {
@@ -439,12 +441,13 @@ class WorkInfoActivity : BaseActivity() {
     /////// 쓰레드
     private val _timer_task1 = Timer()          // 서버 접속 체크 ping test.
     private val _timer_task2 = Timer()
+    private var is_loop = true
 
     private fun start_timer() {
         val task1 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    sendPing()
+                    if (is_loop) sendPing()
                 }
             }
         }
@@ -453,7 +456,7 @@ class WorkInfoActivity : BaseActivity() {
         val task2 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    checkUSB()
+                    if (is_loop) checkUSB()
                 }
             }
         }
