@@ -32,10 +32,10 @@ class CountViewFragment : BaseFragment() {
     private var is_loop: Boolean = false
 
     private var _color_list: ArrayList<HashMap<String, String>> = arrayListOf()
-    private var _list_for_db: ArrayList<HashMap<String, String>> = arrayListOf()
+//    private var _list_for_db: ArrayList<HashMap<String, String>> = arrayListOf()
 
-    private var _total_target = 0
-    private var _total_actual = 0
+//    private var _total_target = 0
+//    private var _total_actual = 0
 
     private val _need_to_refresh = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -324,7 +324,7 @@ class CountViewFragment : BaseFragment() {
         }
 
         // 디자인 DB
-        var db = DBHelperForDesign(activity)
+        val db = DBHelperForDesign(activity)
         val db_item = db.get(work_idx)
         if (db_item == null || db_item.toString() == "") return
 

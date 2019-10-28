@@ -92,7 +92,7 @@ class HomeFragment : BaseFragment() {
                 val cycle_time = d["ct"]!!.toInt()
                 val model = d["model"]!!.toString()
                 val article = d["article"]!!.toString()
-                val stitch = d["stitch"]!!.toString()
+                val stitch = d["stitch"]!!.toString()           // 베트남 공장의 전산에 보내야 할 값(새로생김)
                 val material_way = d["material_way"]!!.toString()
                 val component = d["component"]!!.toString()
 

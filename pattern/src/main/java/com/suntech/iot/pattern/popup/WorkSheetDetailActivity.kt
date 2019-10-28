@@ -7,10 +7,6 @@ import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.util.UtilFile
 import kotlinx.android.synthetic.main.activity_work_sheet_detail.*
 
-
-
-
-
 class WorkSheetDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
