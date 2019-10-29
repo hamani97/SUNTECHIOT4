@@ -3,13 +3,14 @@ package com.suntech.iot.pattern.popup
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDesign
+import com.suntech.iot.pattern.db.DBHelperForDownTime
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_actual_count_edit.*
-import kotlinx.android.synthetic.main.list_item_product_title.*
 import kotlinx.android.synthetic.main.list_item_product_total.*
 import org.joda.time.DateTime
 
@@ -31,6 +32,7 @@ class ActualCountEditActivity : BaseActivity() {
     }
 
     private fun initView() {
+
         btn_confirm.setOnClickListener {
             finish(true, 1, "ok", null)
         }
@@ -109,11 +111,33 @@ class ActualCountEditActivity : BaseActivity() {
             item.put("work_time", "" +  work_time + " min")
         }
 
-        tv_item_row1.text = "" +  total_work_time + " min"
-        tv_item_row3.text = total_target.toString()
-        tv_item_row4.text = total_actual.toString()
-        tv_item_row5.text = "-"
-        tv_item_row6.text = total_defective.toString()
-        tv_item_row7.text = "-"
+        tv_item_row1?.text = "" +  total_work_time + " min"
+        tv_item_row3?.text = total_target.toString()
+        tv_item_row4?.text = total_actual.toString()
+        tv_item_row5?.text = "-"
+        tv_item_row6?.text = total_defective.toString()
+        tv_item_row7?.text = "-"
+
+        // 다운타임 값이 타겟에 영향을 미치는 경우 표시하기 위함
+        if (AppGlobal.instance.get_target_stop_when_downtime()) {
+            // Downtime
+            val down_db = DBHelperForDownTime(this)
+            val down_list = down_db.gets()
+            var down_target = 0
+            var real_millis = 0
+            down_list?.forEach { item ->
+                down_target += item["target"].toString().toInt()
+                real_millis += item["real_millis"].toString().toInt()
+            }
+            val final_target = total_target - down_target
+
+            ll_downtime_block?.visibility = View.VISIBLE
+            ll_downtime_block2?.visibility = View.VISIBLE
+            tv_item_row11?.text = "" + (real_millis / 60) + " min"
+            tv_item_row13?.text = down_target.toString()
+            tv_item_row23?.text = final_target.toString()
+            tv_item_row24?.text = total_actual.toString()
+            tv_item_row26?.text = total_defective.toString()
+        }
     }
 }

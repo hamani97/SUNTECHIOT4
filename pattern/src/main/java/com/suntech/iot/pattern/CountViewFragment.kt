@@ -428,17 +428,17 @@ class CountViewFragment : BaseFragment() {
 
             val one_item_sec = AppGlobal.instance.get_current_maketime_per_piece()
 
-            if (target_type.indexOf("total") >= 0 || one_item_sec == 0F) {
-//            if (target_type == "server_per_day_total" || target_type == "device_per_day_total" || one_item_sec == 0F) {
-                total_target = shift_total_target
-
-            } else if (target_type.indexOf("accumulate") >= 0) {
-//            } else if (target_type == "server_per_accumulate" || target_type == "device_per_accumulate") {
-                val n1 = AppGlobal.instance.compute_time(shift_stime, now, _planned1_stime, _planned1_etime)
-                val n2 = AppGlobal.instance.compute_time(shift_stime, now, _planned2_stime, _planned2_etime)
-                val now_time = ((now.millis - shift_stime.millis) / 1000) - n1 - n2 - start_at_target
-                total_target = (now_time.toFloat() / one_item_sec).toInt() + start_at_target    // 현시간까지 만들어야 할 갯수
-            }
+//            if (target_type.indexOf("total") >= 0 || one_item_sec == 0F) {
+////            if (target_type == "server_per_day_total" || target_type == "device_per_day_total" || one_item_sec == 0F) {
+//                total_target = shift_total_target
+//
+//            } else if (target_type.indexOf("accumulate") >= 0) {
+////            } else if (target_type == "server_per_accumulate" || target_type == "device_per_accumulate") {
+//                val n1 = AppGlobal.instance.compute_time(shift_stime, now, _planned1_stime, _planned1_etime)
+//                val n2 = AppGlobal.instance.compute_time(shift_stime, now, _planned2_stime, _planned2_etime)
+//                val now_time = ((now.millis - shift_stime.millis) / 1000) - n1 - n2 - start_at_target
+//                total_target = (now_time.toFloat() / one_item_sec).toInt() + start_at_target    // 현시간까지 만들어야 할 갯수
+//            }
 
             for (i in 0..((db_list?.size ?: 1) - 1)) {
                 val item = db_list?.get(i)
@@ -458,7 +458,8 @@ class CountViewFragment : BaseFragment() {
                             val d2 = AppGlobal.instance.compute_time(start_dt2, shift_etime, _planned2_stime, _planned2_etime)
                             // 디자인의 시작부터 시프트 종료시간까지 (초)
                             val work_time = ((shift_etime.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
-                            count = (work_time / one_item_sec).toInt() + start_at_target // 현 디자인의 시프트 종료까지 만들어야 할 갯수
+                            count = (work_time / one_item_sec).toInt() + 1 - start_at_target // 현 디자인의 시프트 종료까지 만들어야 할 갯수
+                            total_target += count
                         } else if (target_type.indexOf("accumulate") >= 0) {
 //                        } else if (target_type == "server_per_accumulate" || target_type == "device_per_accumulate") {
                             // 현 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
@@ -466,7 +467,8 @@ class CountViewFragment : BaseFragment() {
                             val d2 = AppGlobal.instance.compute_time(start_dt2, now, _planned2_stime, _planned2_etime)
                             // 디자인의 시작부터 현시간까지 (초)
                             val work_time = ((now.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
-                            count = (work_time / one_item_sec).toInt() + start_at_target
+                            count = (work_time / one_item_sec).toInt() + 1 - start_at_target
+                            total_target += count
                         }
                         if (work_idx != null && target2 != count) db.updateWorkTarget(work_idx, count, count)   // target값이 변형되었으면 업데이트
                     } else {
@@ -478,6 +480,7 @@ class CountViewFragment : BaseFragment() {
                             val d2 = AppGlobal.instance.compute_time(start_dt2, end_dt2, _planned2_stime, _planned2_etime)
                             val work_time2 = ((end_dt2.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
                             val count = (work_time2 / one_item_sec).toInt() + start_at_target // 시작할때 1부터 시작이므로 1을 더함
+                            total_target += count
                             if (work_idx2 != null && target2 != count) db.updateWorkTarget(work_idx2, count, count)     // target값이 변형되었으면 업데이트
                         }
                     }
