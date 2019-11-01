@@ -92,21 +92,31 @@ class DownTimeActivity : BaseActivity() {
         lv_downtimes.adapter = list_adapter
 
         var total_downtime = 0
+        var total_planned = 0
         Log.e("DownTime", "---------------------------------------")
         _list?.forEach { item ->
             item.put("downtime", "")
             val start_dt = OEEUtil.parseDateTime(item["start_dt"])
             if (item["end_dt"]!=null) {
                 val end_dt = OEEUtil.parseDateTime(item["end_dt"])
+                val realtime = item["real_millis"].toString().toInt()
 
                 var dif = end_dt.millis - start_dt.millis
                 val downtime = (dif / 1000 / 60 ).toInt()
                 total_downtime += downtime
+
+                val plannedtime = (dif / 1000).toInt() - realtime
+                total_planned += plannedtime
+
                 item.set("downtime", downtime.toString()+ " min")
             }
             Log.e("DownTime", "" + item.toString())
         }
-        tv_item_downtime_total?.text = ""+total_downtime + " min"
+        total_planned = total_planned / 60
+
+        tv_item_downtime_total?.text = "" + total_downtime + " min"
+        tv_item_downtime_total1?.text = "-" + total_planned + " min"
+        tv_item_downtime_total2?.text = "" + (total_downtime - total_planned) + " min"
     }
 
     var blink_cnt = 0
@@ -188,7 +198,8 @@ class DownTimeActivity : BaseActivity() {
 //            vh.tv_item_design_idx.text = _list[position]["design_idx"]
             vh.tv_item_start_time.text = _list[position]["start_dt"]
             vh.tv_item_end_time.text = _list[position]["end_dt"]
-            vh.tv_item_downtime.text = _list[position]["downtime"] + "\n(" + (_list[position]["real_millis"].toString().toInt() / 60) + " m)"
+            vh.tv_item_downtime.text = _list[position]["downtime"]
+//            vh.tv_item_downtime.text = _list[position]["downtime"] + "\n(" + (_list[position]["real_millis"].toString().toInt() / 60) + " m)"
                     //  + "\n" + _list[position]["real_millis"] + " sec\n" + _list[position]["target"] + " ea"
             vh.tv_item_completed.text = _list[position]["completed"]
             vh.tv_item_list.text = _list[position]["list"]

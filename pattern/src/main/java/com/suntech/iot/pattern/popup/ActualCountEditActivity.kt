@@ -134,7 +134,7 @@ class ActualCountEditActivity : BaseActivity() {
             ll_downtime_block?.visibility = View.VISIBLE
             ll_downtime_block2?.visibility = View.VISIBLE
             tv_item_row11?.text = "" + (real_millis / 60) + " min"
-            tv_item_row13?.text = down_target.toString()
+            tv_item_row13?.text = if (down_target != 0) "-" + down_target.toString() else down_target.toString()
             tv_item_row23?.text = final_target.toString()
             tv_item_row24?.text = total_actual.toString()
             tv_item_row26?.text = total_defective.toString()

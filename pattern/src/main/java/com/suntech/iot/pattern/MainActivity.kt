@@ -86,7 +86,7 @@ class MainActivity : BaseActivity() {
         AppGlobal.instance.setContext(this)
 
         // USB state
-        btn_usb_state.isSelected = false
+        btn_usb_state?.isSelected = false
 
         // 시작시 work_idx 값이 없으면 초기화 한다.
         val work_idx = AppGlobal.instance.get_product_idx()
