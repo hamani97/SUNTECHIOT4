@@ -2112,7 +2112,6 @@ class MainActivity : BaseActivity() {
         } else {
             val item = AppGlobal.instance.get_current_shift_time()
             if (item != null) {
-                val work_stime = item["work_stime"].toString()
                 db_design.deleteLastDate(item["work_stime"].toString())
             } else {
                 AppGlobal.instance.reset_product_idx()                  // work idx 초기화

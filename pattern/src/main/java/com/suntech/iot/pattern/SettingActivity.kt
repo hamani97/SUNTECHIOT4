@@ -682,32 +682,29 @@ class SettingActivity : BaseActivity() {
             "device" -> tv_setting_target_type_manual.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
         }
 
+        _selected_target_type = v
+
         // Device에 딸려있는 메뉴의 색상 변경
-        if (_selected_target_type.substring(0, 6) == "device") {
-            if (v.substring(0, 6) != "device") {
-                tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorDarkGray))
-                tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
-                tv_shift_1.setBackgroundResource(R.color.colorEditor1Readonly)
-                tv_shift_2.setBackgroundResource(R.color.colorEditor1Readonly)
-                tv_shift_3.setBackgroundResource(R.color.colorEditor1Readonly)
-            }
+        if (_selected_target_type.substring(0, 6) != "device") {
+            tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorDarkGray))
+            tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorGray))
+            tv_shift_1.setBackgroundResource(R.color.colorEditor1Readonly)
+            tv_shift_2.setBackgroundResource(R.color.colorEditor1Readonly)
+            tv_shift_3.setBackgroundResource(R.color.colorEditor1Readonly)
         } else {
-            if (v.substring(0, 6) == "device") {
-                tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
-                tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
-                tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
-                tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
-                tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
-                tv_shift_1.setBackgroundResource(R.color.colorEditor1)
-                tv_shift_2.setBackgroundResource(R.color.colorEditor1)
-                tv_shift_3.setBackgroundResource(R.color.colorEditor1)
-            }
+            tv_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
+            tv_msg_target_per_shift.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+            tv_label_shift1.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+            tv_label_shift2.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+            tv_label_shift3.setTextColor(ContextCompat.getColor(this, R.color.colorWhite2))
+            tv_shift_1.setBackgroundResource(R.color.colorEditor1)
+            tv_shift_2.setBackgroundResource(R.color.colorEditor1)
+            tv_shift_3.setBackgroundResource(R.color.colorEditor1)
         }
 
-        _selected_target_type = v
         when (_selected_target_type) {
             "cycle_per_accumulate" -> {
                 img_cycle_time_accumulate.isSelected = true

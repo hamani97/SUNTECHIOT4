@@ -221,6 +221,7 @@ class DBHelperForDesign
         fun deleteLastDate(date: String) {
             val db = _openHelper.writableDatabase ?: return
             db.delete("design", "end_dt != null and end_dt < ?", arrayOf(date))
+            db.delete("design", "start_dt < ?", arrayOf(date))
             db.close()
         }
 
