@@ -27,7 +27,7 @@ class IntroActivity : BaseActivity() {
             if (AppGlobal.instance.get_server_ip()=="") {
                 moveToNext()
             } else {
-                sendAppStartTime()
+                getDeviceInfo()
             }
         }, 600)
     }
@@ -36,6 +36,46 @@ class IntroActivity : BaseActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun getDeviceInfo() {
+        val uri = "/device.php"
+        var params = listOf(
+            "code" to "device_info",
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
+            "serial_no" to AppGlobal.instance.get_mc_serial(),
+            "machine_no" to AppGlobal.instance.get_mc_no1(),
+            "model_idx" to AppGlobal.instance.get_mc_model_idx())
+
+        request(this, uri, true, params, { result ->
+            var code = result.getString("code")
+            Log.e("Device Info", "" + result.getString("msg"))
+            if(code == "99") {
+                val item = result.getJSONObject("item")
+
+                val line_idx = item.getString("line_idx") ?: ""
+                val line_name = item.getString("line_name") ?: ""
+                val serial_no = item.getString("serial_no") ?: ""
+                val machine_no = item.getString("machine_no") ?: ""
+                val model_idx = item.getString("model_idx") ?: ""
+                val model_name = item.getString("model_name") ?: ""
+
+                if (line_idx != "" && line_name != "") {
+                    AppGlobal.instance.set_line_idx(line_idx)
+                    AppGlobal.instance.set_line(line_name)
+                }
+                if (serial_no != "") AppGlobal.instance.set_mc_serial(serial_no)
+                if (machine_no != "") AppGlobal.instance.set_mc_no1(machine_no)
+                if (model_idx != "" && model_name != "") {
+                    AppGlobal.instance.set_mc_model_idx(model_idx)
+                    AppGlobal.instance.set_mc_model(model_name)
+                }
+            }
+            sendAppStartTime()
+        }, {
+            sendAppStartTime()
+        })
     }
 
     private fun sendAppStartTime() {
@@ -48,9 +88,8 @@ class IntroActivity : BaseActivity() {
 
         request(this, uri, true, params, { result ->
             var code = result.getString("code")
-            var msg = result.getString("msg")
-            if(code != "00"){
-                ToastOut(this, msg)
+            if(code != "00") {
+                ToastOut(this, result.getString("msg"))
             }
             moveToNext()
         }, {
