@@ -381,17 +381,18 @@ class AppGlobal private constructor() {
                 try {
                     target = item["target"].toString()
                 } catch (e: JSONException) {
+                    target = "0"
 //                    e.printStackTrace()
                 }
 //                var target2 = item!!["target"]?.toString() ?: "0"      // From server
 //                var target = item?.getString("target") ?: "0"
                 if (target == "") target = "0"
-                return target.toInt()
+                return target.trim().toInt()
             } else if (target_type.substring(0, 6) == "device") {
                 return when (shift_idx) {
-                    "1" -> get_target_manual_shift("1").toInt()
-                    "2" -> get_target_manual_shift("2").toInt()
-                    "3" -> get_target_manual_shift("3").toInt()
+                    "1" -> get_target_manual_shift("1").trim().toInt()
+                    "2" -> get_target_manual_shift("2").trim().toInt()
+                    "3" -> get_target_manual_shift("3").trim().toInt()
                     else -> 0
                 }
             }

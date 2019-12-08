@@ -183,17 +183,17 @@ class DownTimeInputActivity : BaseActivity() {
 
     private fun sendEndDownTime(downtime: String = "", down_name: String = "") {
         if (AppGlobal.instance.get_server_ip() == "") {
-            ToastOut(this, com.suntech.iot.pattern.R.string.msg_has_not_server_info, true)
+            ToastOut(this, R.string.msg_has_not_server_info, true)
             return
         }
         if (AppGlobal.instance.get_downtime_idx() == "") {
-            ToastOut(this, com.suntech.iot.pattern.R.string.msg_data_not_found, true)
+            ToastOut(this, R.string.msg_data_not_found, true)
             finish(true, 0, "ok", null)
             return
         }
 //        if (_selected_idx < 0) {
         if (downtime == "") {
-            ToastOut(this, com.suntech.iot.pattern.R.string.msg_has_notselected, true)
+            ToastOut(this, R.string.msg_has_notselected, true)
             return
         }
 

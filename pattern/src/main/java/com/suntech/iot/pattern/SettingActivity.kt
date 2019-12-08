@@ -157,7 +157,7 @@ class SettingActivity : BaseActivity() {
         sw_sound_at_count.isChecked = AppGlobal.instance.get_sound_at_count()
 //        sw_without_component.isChecked = AppGlobal.instance.get_without_component()
         sw_screen_blink_effect.isChecked = AppGlobal.instance.get_screen_blink()
-        sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
+//        sw_send_stitch_count.isChecked = AppGlobal.instance.get_send_stitch_count()
         sw_planned_count_process.isChecked = AppGlobal.instance.get_planned_count_process()
         sw_target_stop_when_downtime.isChecked = AppGlobal.instance.get_target_stop_when_downtime()
         sw_ask_when_clicking_defective.isChecked = AppGlobal.instance.get_ask_when_clicking_defective()
@@ -329,13 +329,22 @@ class SettingActivity : BaseActivity() {
             ToastOut(this, R.string.msg_require_info, true)
             return
         }
-        if (_selected_target_type.substring(0, 6) == "device") {
-            if (tv_shift_1.text.toString().trim()=="" || tv_shift_2.text.toString().trim()=="" || tv_shift_3.text.toString().trim()=="") {
-                tabChange(2)
-                ToastOut(this, R.string.msg_require_target_quantity, true)
-                return
-            }
+        if (tv_shift_1.text.toString().trim()=="") {
+            tv_shift_1.setText("0")
         }
+        if (tv_shift_2.text.toString().trim()=="") {
+            tv_shift_2.setText("0")
+        }
+        if (tv_shift_3.text.toString().trim()=="") {
+            tv_shift_3.setText("0")
+        }
+//        if (_selected_target_type.substring(0, 6) == "device") {
+//            if (tv_shift_1.text.toString().trim()=="" || tv_shift_2.text.toString().trim()=="" || tv_shift_3.text.toString().trim()=="") {
+//                tabChange(2)
+//                ToastOut(this, R.string.msg_require_target_quantity, true)
+//                return
+//            }
+//        }
         // 이 옵션이 켜져있으면 mc no를 숫자만 입력해야 한다.
 //        if (sw_send_stitch_count.isChecked) {
 //            val mc_no1 = tv_setting_mc_no1.text.toString()
@@ -381,7 +390,7 @@ class SettingActivity : BaseActivity() {
 //        AppGlobal.instance.set_remain_number(remain_num)
         AppGlobal.instance.set_blink_color(_selected_blink_color)
 
-        AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
+//        AppGlobal.instance.set_send_stitch_count(sw_send_stitch_count.isChecked)
         AppGlobal.instance.set_planned_count_process(sw_planned_count_process.isChecked)
         AppGlobal.instance.set_target_stop_when_downtime(sw_target_stop_when_downtime.isChecked)
         AppGlobal.instance.set_ask_when_clicking_defective(sw_ask_when_clicking_defective.isChecked)

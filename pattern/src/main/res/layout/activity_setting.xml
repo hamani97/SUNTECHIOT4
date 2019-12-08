@@ -537,6 +537,7 @@
                                         android:textColor="@color/colorGray"/>
                                 <EditText android:id="@+id/tv_shift_1"
                                         style="@style/table_row_data_editor1"
+                                        android:text="0"
                                         android:singleLine="true"
                                         android:inputType="number"
                                         android:background="@color/colorEditor1Readonly"/>
@@ -832,23 +833,23 @@
 
                     <TextView style="@style/table_title" android:text="@string/title_special_options" android:layout_marginTop="20dp"/>
 
-                    <LinearLayout style="@style/table_row">
-                        <TextView style="@style/table_row_title" android:text="@string/label_send_stitch_count"
-                                  android:layout_width="370dp" />
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center_vertical"
-                                android:background="@color/colorDefault">
-                            <Switch
-                                    android:id="@+id/sw_send_stitch_count"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginRight="60dp"
-                                    android:layout_marginLeft="12dp"
-                                    android:checked="false"/>
-                        </LinearLayout>
-                    </LinearLayout>
+<!--                    <LinearLayout style="@style/table_row">-->
+<!--                        <TextView style="@style/table_row_title" android:text="@string/label_send_stitch_count"-->
+<!--                                  android:layout_width="370dp" />-->
+<!--                        <LinearLayout-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="match_parent"-->
+<!--                                android:gravity="center_vertical"-->
+<!--                                android:background="@color/colorDefault">-->
+<!--                            <Switch-->
+<!--                                    android:id="@+id/sw_send_stitch_count"-->
+<!--                                    android:layout_width="wrap_content"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_marginRight="60dp"-->
+<!--                                    android:layout_marginLeft="12dp"-->
+<!--                                    android:checked="false"/>-->
+<!--                        </LinearLayout>-->
+<!--                    </LinearLayout>-->
 
                     <LinearLayout style="@style/table_row">
                         <TextView style="@style/table_row_title" android:text="@string/label_start_at_target_1"

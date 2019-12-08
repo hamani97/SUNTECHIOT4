@@ -89,7 +89,7 @@ class HomeFragment : BaseFragment() {
 //            btn_component_info.isEnabled = true
             if (r && d!=null) {
                 val idx = d!!["idx"]!!
-                val cycle_time = d["ct"]!!.toInt()
+                val cycle_time = (d["ct"]!!.trim())?.toInt()
                 val model = d["model"]!!.toString()
                 val article = d["article"]!!.toString()
                 val stitch = d["stitch"]!!.toString()           // 베트남 공장의 전산에 보내야 할 값(새로생김)

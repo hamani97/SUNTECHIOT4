@@ -460,6 +460,15 @@ class CountViewFragment : BaseFragment() {
                             val work_time = ((shift_etime.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
                             count = (work_time / one_item_sec).toInt() + 1 - start_at_target // 현 디자인의 시프트 종료까지 만들어야 할 갯수
                             total_target += count
+//                            total_target = shift_total_target
+                            // 마지막에 총타겟 갯수를 맞추기 위한 작업
+                            if (i == (db_list?.size ?: 1) - 1) {
+                                if (total_target != shift_target) {
+                                    val value = total_target - shift_target
+                                    count -= value
+                                    total_target -= value
+                                }
+                            }
                         } else if (target_type.indexOf("accumulate") >= 0) {
 //                        } else if (target_type == "server_per_accumulate" || target_type == "device_per_accumulate") {
                             // 현 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
@@ -479,8 +488,17 @@ class CountViewFragment : BaseFragment() {
                             val d1 = AppGlobal.instance.compute_time(start_dt2, end_dt2, _planned1_stime, _planned1_etime)
                             val d2 = AppGlobal.instance.compute_time(start_dt2, end_dt2, _planned2_stime, _planned2_etime)
                             val work_time2 = ((end_dt2.millis - start_dt2.millis) / 1000) - d1 - d2 - start_at_target
-                            val count = (work_time2 / one_item_sec).toInt() + start_at_target // 시작할때 1부터 시작이므로 1을 더함
+                            var count = (work_time2 / one_item_sec).toInt() + start_at_target // 시작할때 1부터 시작이므로 1을 더함
                             total_target += count
+
+                            // 마지막에 총타겟 갯수를 맞추기 위한 작업
+                            if (target_type.indexOf("total") >= 0) {
+                                if (i == (db_list?.size ?: 1) - 1) {
+                                    val value = total_target - shift_target
+                                    count -= value
+                                    total_target -= value
+                                }
+                            }
                             if (work_idx2 != null && target2 != count) db.updateWorkTarget(work_idx2, count, count)     // target값이 변형되었으면 업데이트
                         }
                     }

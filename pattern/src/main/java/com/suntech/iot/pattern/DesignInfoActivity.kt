@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -218,7 +219,7 @@ class DesignInfoActivity : BaseActivity() {
     private fun fetchData() {
         var list = AppGlobal.instance.get_design_info()
         _list.removeAll(_list)
-
+Log.e("lit", list.toString())
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
             var map=hashMapOf(

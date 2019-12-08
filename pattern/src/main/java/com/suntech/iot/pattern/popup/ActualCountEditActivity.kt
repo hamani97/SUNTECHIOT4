@@ -65,6 +65,8 @@ class ActualCountEditActivity : BaseActivity() {
         list_adapter = ProductListActivity.ListActualAdapter(this, _list)
         lv_products.adapter = list_adapter
 
+//        val target_type = AppGlobal.instance.get_target_type()          // setting menu 메뉴에서 선택한 타입
+
         var total_target = 0
         var total_actual = 0
         var total_defective = 0
@@ -85,7 +87,7 @@ class ActualCountEditActivity : BaseActivity() {
 
             var dif = end_dt.millis - start_dt.millis
 
-            val target = item["target"]?.toInt() ?: 0
+            var target = item["target"]?.toInt() ?: 0
             val actual = item["actual"]?.toInt() ?: 0
             val defective = item["defective"]?.toInt() ?: 0
             var product_rate = ((actual.toFloat()/target.toFloat()) *100).toInt().toString()+ "%"
@@ -101,6 +103,19 @@ class ActualCountEditActivity : BaseActivity() {
             total_actual += actual
             total_defective += defective
             total_work_time += work_time
+
+//            if (target_type.indexOf("server") >= 0 || target_type.indexOf("device") >= 0) {
+//                if (target_type.indexOf("total") >= 0) {
+//                    if (i == _list.size - 1) {
+//                        val shift_target = AppGlobal.instance.get_current_shift_target()
+//                        if (total_target != shift_target) {
+//                            val value = total_target - shift_target
+//                            target -= value
+//                            total_target -= value
+//                        }
+//                    }
+//                }
+//            }
 
             item.put("shift_name", item["shift_name"].toString())
             item.put("target", target.toString())

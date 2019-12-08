@@ -53,6 +53,8 @@ class MainActivity : BaseActivity() {
     var _performance_rate = 0F
     var _oee_rate = 0F
 
+    var _prepare_time = 0L            // 직전의 카운트와 새로 들어온 카운트 사이의 시간 (밀리세컨, 처음엔 0)
+
     //    val _stitch_db = DBHelperForCount(this)     // Count 정보
     val _target_db = DBHelperForTarget(this)    // 날짜의 Shift별 정보, Target 수량 정보 저장
     val _report_db = DBHelperForReport(this)    // 날짜의 Shift별 한시간 간격의 Actual 수량 저장
@@ -1107,6 +1109,8 @@ class MainActivity : BaseActivity() {
         pieces_qty = 0
         pairs_qty = 0
 
+        _prepare_time = 0L
+
         AppGlobal.instance.set_last_received("")                // 다운타임 검사용 변수도 초기화
         AppGlobal.instance.set_downtime_idx("")
 
@@ -1683,6 +1687,10 @@ class MainActivity : BaseActivity() {
 //            "max_rpm" to "",
 //            "avr_rpm" to "")
 
+        val now_millis = DateTime().millis
+        val prepare_time = if (_prepare_time == 0L) 0L else (now_millis - _prepare_time)
+        _prepare_time = now_millis
+
 
         // 신서버용
         // runtime : downtime 을 뺀 근무시간
@@ -1701,6 +1709,9 @@ class MainActivity : BaseActivity() {
             "shift_idx" to  shift_idx,
             "seq" to seq,
             "runtime" to (work_time-down_time).toString(),
+            "stitching_count" to AppGlobal.instance.get_stitch(),
+            "curing_sec" to runtime,
+            "prepare_time" to prepare_time.toString(),
             "actualO" to sum_count.toString(),
             "ctO" to (count_target-down_target).toString(),
             "defective" to count_defective.toString())
@@ -1717,7 +1728,8 @@ class MainActivity : BaseActivity() {
         })
 
         // 베트남 특별한 경우
-        if (AppGlobal.instance.get_send_stitch_count()) {
+        // 무조건 보내는 걸로 변경
+//        if (AppGlobal.instance.get_send_stitch_count()) {
 
             if (runtime=="") {
                 ToastOut(this, R.string.msg_runtime_not_enterd, true)
@@ -1730,6 +1742,7 @@ class MainActivity : BaseActivity() {
                     "machine_no" to AppGlobal.instance.get_mc_no1(),
                     "stitching_count" to AppGlobal.instance.get_stitch(),
                     "curing_sec" to runtime,
+                    "prepare_time" to prepare_time.toString(),
                     "piece_yn" to "1",
                     "factory_cd" to AppGlobal.instance.get_factory_idx(),
                     "line_cd" to AppGlobal.instance.get_line_idx(),
@@ -1748,7 +1761,7 @@ class MainActivity : BaseActivity() {
                     }
                 })
             }
-        }
+//        }
     }
 
 //    fun startComponent(wosno:String, styleno:String, model:String, size:String, target:String, actual:String) {
