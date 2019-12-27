@@ -1714,7 +1714,8 @@ class MainActivity : BaseActivity() {
             "prepare_time" to prepare_time.toString(),
             "actualO" to sum_count.toString(),
             "ctO" to (count_target-down_target).toString(),
-            "defective" to count_defective.toString())
+            "defective" to count_defective.toString(),
+            "worker" to AppGlobal.instance.get_worker_no())
 
 //Log.e("Scount params", params.toString())
 
