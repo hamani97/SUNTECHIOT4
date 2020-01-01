@@ -162,6 +162,7 @@ class SettingActivity : BaseActivity() {
         sw_target_stop_when_downtime.isChecked = AppGlobal.instance.get_target_stop_when_downtime()
         sw_ask_when_clicking_defective.isChecked = AppGlobal.instance.get_ask_when_clicking_defective()
         sw_piece_pair_count_edit.isChecked = AppGlobal.instance.get_piece_pair_count_edit()
+        sw_target_by_group.isChecked = AppGlobal.instance.get_target_by_group()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -395,6 +396,7 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_target_stop_when_downtime(sw_target_stop_when_downtime.isChecked)
         AppGlobal.instance.set_ask_when_clicking_defective(sw_ask_when_clicking_defective.isChecked)
         AppGlobal.instance.set_piece_pair_count_edit(sw_piece_pair_count_edit.isChecked)
+        AppGlobal.instance.set_target_by_group(sw_target_by_group.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())

@@ -310,6 +310,7 @@ class MainActivity : BaseActivity() {
             fetchDesignData()
             fetchDownTimeType()
             fetchColorData()
+            fetchServerTargetData()
         }
     }
 
@@ -539,8 +540,8 @@ class MainActivity : BaseActivity() {
     var _next_shift_stime_millis = 0L           // 다음 Shift 의 시작 시간 저장 (위의 종료 시간이 0L 일때만 세팅된다.)
     var _last_working = false
 
-    // fetchWorkData() 에서 호출되므로 10분마다 실행되지만
-    // 예외적으로 시프트가 끝나거나 새로운 시프트 시작될때 호출된다.
+    // fetchWorkData() 에서 호출되므로 10분마다 실행되지만,
+    // 예외적으로 시프트가 끝나거나 새로운 시프트 시작될때도 호출된다.
     private fun compute_work_shift() {
         if (is_loop) return
         is_loop = true
@@ -614,7 +615,11 @@ class MainActivity : BaseActivity() {
 //                        target = AppGlobal.instance.get_target_server_shift(item["shift_idx"].toString())
                     }
                 } else {
-                    target = AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
+                    // AppGlobal.instance.get_target_by_group() 값이 참일 경우,
+                    // 몇몇 업체에서 이 옵션이 선택되었을 경우 getlist1.php -> 'target' 에서 'daytargetsum' 값을 참조함.
+                    //
+                    target = if (AppGlobal.instance.get_target_by_group()) AppGlobal.instance.get_target_server_shift(work_item["shift_idx"].toString())
+                        else AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
                 }
 
                 if (target == null || target == "") target = "0"
@@ -907,6 +912,28 @@ class MainActivity : BaseActivity() {
 //        })
 //    }
 
+    // 서버에서 설정한 현시프트의 타겟 가져오기
+    private fun fetchServerTargetData() {
+        val dt = DateTime()
+        val shift_idx = AppGlobal.instance.get_current_shift_idx()
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "target",
+            "mac_addr" to AppGlobal.instance.getMACAddress(),
+            "date" to dt.toString("yyyy-MM-dd"),
+            "line_idx" to AppGlobal.instance.get_line_idx(),
+            "shift_idx" to shift_idx)
+
+        request(this, uri, true, false, params, { result ->
+            val code = result.getString("code")
+            if (code == "00") {
+                val daytargetsum = result.getString("daytargetsum").toString()
+                AppGlobal.instance.set_target_server_shift(shift_idx, daytargetsum)
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
+    }
+
     // Parts cycle time 이라는 기능
     // 남은 시간이 10시간 미만인 콤포넌트가 있으면 푸시 발송. 갯수만큼
     private fun fetchComponentData() {
@@ -1184,6 +1211,7 @@ class MainActivity : BaseActivity() {
                 // shift만 바뀌어도 모두 삭제
                 endTodayWork()
                 compute_work_shift()
+                if (AppGlobal.instance.get_target_by_group()) fetchServerTargetData()     // 특정 업체를 위한 서버 타겟값 가져오기
             }
 
         } else {
@@ -1192,6 +1220,7 @@ class MainActivity : BaseActivity() {
                 if (_next_shift_stime_millis <= DateTime().millis) {
                     Log.e("checkCurrentShiftEnd", "start time . start shift work =============================> need reload")
                     compute_work_shift()
+                    if (AppGlobal.instance.get_target_by_group()) fetchServerTargetData()     // 특정 업체를 위한 서버 타겟값 가져오기
                 }
             }
         }

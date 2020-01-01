@@ -112,6 +112,8 @@ class AppGlobal private constructor() {
     fun get_ask_when_clicking_defective() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "ask_click_defective") }
     fun set_piece_pair_count_edit(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "piece_pair_edit", state) }
     fun get_piece_pair_count_edit() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "piece_pair_edit") }
+    fun set_target_by_group(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_by_group", state) }
+    fun get_target_by_group() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_by_group") }
 
     fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
     fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
@@ -366,8 +368,8 @@ class AppGlobal private constructor() {
     fun set_target_manual_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_target_shift_" + shift_no, value) }
     fun get_target_manual_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_target_shift_" + shift_no) }
 
-//    fun set_target_server_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_server_target_shift_" + shift_no, value) }
-//    fun get_target_server_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_server_target_shift_" + shift_no) }
+    fun set_target_server_shift(shift_no: String, value: String) { UtilLocalStorage.setString(instance._context!!, "current_server_target_shift_" + shift_no, value) }
+    fun get_target_server_shift(shift_no: String) : String { return UtilLocalStorage.getString(instance._context!!, "current_server_target_shift_" + shift_no) }
 
     // 현 시프트의 토탈 타겟
     // From Server 와 From Device 사용

@@ -69,6 +69,7 @@
     <string name="label_target_stop_when_downtime" translatable="false">Target Q\'ty Stop When DownTime</string>
     <string name="label_ask_when_clicking_defective" translatable="false">Open window when clicking Defective</string>
     <string name="label_piece_pair_count_edit" translatable="false">Piece(s)/Pair(s) Count editing function</string>
+    <string name="label_target_by_group" translatable="false">Target by Group</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
