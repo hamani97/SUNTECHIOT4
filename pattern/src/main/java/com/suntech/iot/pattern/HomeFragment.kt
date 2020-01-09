@@ -70,7 +70,11 @@ class HomeFragment : BaseFragment() {
                 startActivity(Intent(activity, WorkInfoActivity::class.java))
             }
         }
-        btn_setting_view.setOnClickListener { startActivity(Intent(activity, SettingActivity::class.java)) }
+        btn_setting_view.setOnClickListener {
+            getBaseActivity().startActivity(Intent(activity, SettingActivity::class.java), { r, c, m, d ->
+                if (AppGlobal.instance.get_target_by_group()) (activity as MainActivity).fetchServerTargetData()     // 특정 업체를 위한 서버 타겟값 가져오기
+            })
+        }
 
         updateView()
     }

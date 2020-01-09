@@ -567,7 +567,8 @@ class MainActivity : BaseActivity() {
                 if (target_type.substring(0, 6) == "cycle_") {
 
                     val shift_time = AppGlobal.instance.get_current_shift_time()    // 현 시프트
-                    var current_cycle_time = AppGlobal.instance.get_cycle_time()    // 현재 선택된 디자인의 사이클 타임
+                    var current_cycle_time =
+                        AppGlobal.instance.get_cycle_time()    // 현재 선택된 디자인의 사이클 타임
 
                     if (shift_time != null && current_cycle_time > 0) {
                         val shift_stime = OEEUtil.parseDateTime(shift_time["work_stime"].toString())
@@ -586,25 +587,42 @@ class MainActivity : BaseActivity() {
 
                             if (work_idx == work_idx2) {        // 현재 진행중인 디자인
 
-                                var start_dt = OEEUtil.parseDateTime(design_item?.get("start_dt").toString())      // 디자인의 시작시간
-                                val shift_end_dt = OEEUtil.parseDateTime(work_etime)                        // 시프트의 종료 시간
+                                var start_dt =
+                                    OEEUtil.parseDateTime(design_item?.get("start_dt").toString())      // 디자인의 시작시간
+                                val shift_end_dt =
+                                    OEEUtil.parseDateTime(work_etime)                        // 시프트의 종료 시간
 
                                 if (start_dt < shift_stime) start_dt = shift_stime
 
                                 // 설정되어 있는 휴식 시간 정보
-                                val _planned1_stime = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
-                                val _planned1_etime = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
-                                val _planned2_stime = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
-                                val _planned2_etime = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
+                                val _planned1_stime =
+                                    OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString())
+                                val _planned1_etime =
+                                    OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString())
+                                val _planned2_stime =
+                                    OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString())
+                                val _planned2_etime =
+                                    OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString())
 
                                 // 휴식시간 초. 끝나는 시간까지 계산 (시프트의 총 타겟수를 구하기 위해 무조건 계산함)
-                                val d1 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned1_stime, _planned1_etime)
-                                val d2 = AppGlobal.instance.compute_time(start_dt, shift_end_dt, _planned2_stime, _planned2_etime)
+                                val d1 = AppGlobal.instance.compute_time(
+                                    start_dt,
+                                    shift_end_dt,
+                                    _planned1_stime,
+                                    _planned1_etime
+                                )
+                                val d2 = AppGlobal.instance.compute_time(
+                                    start_dt,
+                                    shift_end_dt,
+                                    _planned2_stime,
+                                    _planned2_etime
+                                )
 
                                 // 디자인의 시작부터 시프트 종료시간까지 (초)
                                 val start_at_target = AppGlobal.instance.get_start_at_target()
 
-                                val work_time = ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 - start_at_target
+                                val work_time =
+                                    ((shift_end_dt.millis - start_dt.millis) / 1000) - d1 - d2 - start_at_target
                                 target_int += ((work_time / current_cycle_time).toInt() + start_at_target) // 현 시간에 만들어야 할 갯수
 
                             } else {        // 지난 디자인
@@ -614,12 +632,14 @@ class MainActivity : BaseActivity() {
                         target = target_int.toString()
 //                        target = AppGlobal.instance.get_target_server_shift(item["shift_idx"].toString())
                     }
-                } else {
+                } else if (target_type.substring(0, 6) == "server") {
                     // AppGlobal.instance.get_target_by_group() 값이 참일 경우,
                     // 몇몇 업체에서 이 옵션이 선택되었을 경우 getlist1.php -> 'target' 에서 'daytargetsum' 값을 참조함.
                     //
                     target = if (AppGlobal.instance.get_target_by_group()) AppGlobal.instance.get_target_server_shift(work_item["shift_idx"].toString())
-                        else AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
+                    else AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
+                } else {
+                    target = AppGlobal.instance.get_target_manual_shift(work_item["shift_idx"].toString())
                 }
 
                 if (target == null || target == "") target = "0"
@@ -913,7 +933,7 @@ class MainActivity : BaseActivity() {
 //    }
 
     // 서버에서 설정한 현시프트의 타겟 가져오기
-    private fun fetchServerTargetData() {
+    fun fetchServerTargetData() {
         val dt = DateTime()
         val shift_idx = AppGlobal.instance.get_current_shift_idx()
         val uri = "/getlist1.php"
@@ -923,11 +943,13 @@ class MainActivity : BaseActivity() {
             "line_idx" to AppGlobal.instance.get_line_idx(),
             "shift_idx" to shift_idx)
 
-        request(this, uri, true, false, params, { result ->
+        request(this, uri, false, params, { result ->
             val code = result.getString("code")
             if (code == "00") {
                 val daytargetsum = result.getString("daytargetsum").toString()
                 AppGlobal.instance.set_target_server_shift(shift_idx, daytargetsum)
+//                Log.e("HomeFrag", "tarbygr 2=" + AppGlobal.instance.get_target_by_group())
+//                Log.e("HomeFrag", "tarbygr 2=" + daytargetsum)
             } else {
                 ToastOut(this, result.getString("msg"), true)
             }

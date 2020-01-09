@@ -380,15 +380,19 @@ class AppGlobal private constructor() {
             var target_type = get_target_type()
             if (target_type.substring(0, 6) == "server") {
                 var target = "0"
-                try {
-                    target = item["target"].toString()
-                } catch (e: JSONException) {
-                    target = "0"
+                if (get_target_by_group()) {
+                    target = get_target_server_shift(shift_idx)
+                } else {
+                    try {
+                        target = item["target"].toString()
+                    } catch (e: JSONException) {
+                        target = "0"
 //                    e.printStackTrace()
-                }
+                    }
 //                var target2 = item!!["target"]?.toString() ?: "0"      // From server
 //                var target = item?.getString("target") ?: "0"
-                if (target == "") target = "0"
+                    if (target == "") target = "0"
+                }
                 return target.trim().toInt()
             } else if (target_type.substring(0, 6) == "device") {
                 return when (shift_idx) {
