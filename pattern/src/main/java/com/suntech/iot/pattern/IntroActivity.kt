@@ -39,6 +39,10 @@ class IntroActivity : BaseActivity() {
     }
 
     private fun getDeviceInfo() {
+        val version = packageManager.getPackageInfo(packageName, 0).versionName
+        val verArr = version.split(".")
+        val app_version = if (verArr.count() == 3) verArr[verArr.size-3] + "." + verArr[verArr.size-2] + "." + verArr[verArr.size-1] else ""
+
         val uri = "/device.php"
         var params = listOf(
             "code" to "device_info",
@@ -46,7 +50,9 @@ class IntroActivity : BaseActivity() {
             "line_idx" to AppGlobal.instance.get_line_idx(),
             "serial_no" to AppGlobal.instance.get_mc_serial(),
             "machine_no" to AppGlobal.instance.get_mc_no1(),
-            "model_idx" to AppGlobal.instance.get_mc_model_idx())
+            "model_idx" to AppGlobal.instance.get_mc_model_idx(),
+            "app_type" to "Pattern",
+            "app_version" to app_version)
 
         request(this, uri, true, params, { result ->
             var code = result.getString("code")
