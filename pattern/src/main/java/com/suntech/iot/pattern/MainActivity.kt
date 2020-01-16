@@ -1500,6 +1500,13 @@ class MainActivity : BaseActivity() {
             }
             Toast.makeText(this, getString(R.string.msg_no_design), Toast.LENGTH_SHORT).show()
 
+        } else if (cmd == "stitch") {
+
+            // 이제 count 에서 downtime 처리 안하고 여기서만 함. 2020-01-16
+            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
+            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
+            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
+
         } else if (cmd == "T" || cmd == "count") {
 
             var current_actual_cnt = AppGlobal.instance.get_current_shift_actual_cnt()
@@ -1605,11 +1612,10 @@ class MainActivity : BaseActivity() {
 
             tv_report_count.text = "" + cnt
 
-            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
-
-            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
-
-            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
+            // cmd = "stitch" 코맨드에서 처리하는걸로 바뀜. 2020-01-16
+//            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
+//            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
+//            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
             sendCountData(value.toString(), inc_count, cnt, runtime_total.toString())  // 서버에 카운트 정보 전송
