@@ -44,7 +44,7 @@ import java.util.*
 
 class MainActivity : BaseActivity() {
 
-//    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
+    //    var countViewType = 1       // Count view 화면값 1=Total count, 2=Component count
     var workSheetToggle = false     // 워크시트를 토글할 것인지. 토글 시간(초)는 세팅 메뉴에서 설정
     var workSheetShow = false
 
@@ -70,7 +70,7 @@ class MainActivity : BaseActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (action.equals(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)) {
-                if (intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)){
+                if (intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false)) {
                     btn_wifi_state.isSelected = true
                 } else {
                     btn_wifi_state.isSelected = false
@@ -116,35 +116,84 @@ class MainActivity : BaseActivity() {
         // button click event
         if (AppGlobal.instance.get_long_touch()) {
             btn_home.setOnLongClickListener { changeFragment(0); true }
-            btn_push_to_app.setOnLongClickListener { startActivity(Intent(this, PushActivity::class.java)); true }
-            btn_actual_count_edit.setOnLongClickListener { startActivity(Intent(this, ActualCountEditActivity::class.java)); true }
+            img_btn_home.setOnLongClickListener { changeFragment(0); true }
+
+            btn_push_to_app.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        PushActivity::class.java
+                    )
+                ); true
+            }
+            img_btn_push_to_app.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        PushActivity::class.java
+                    )
+                ); true
+            }
+
+            btn_actual_count_edit.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ActualCountEditActivity::class.java
+                    )
+                ); true
+            }
+            img_btn_actual_count_edit.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ActualCountEditActivity::class.java
+                    )
+                ); true
+            }
+
             btn_downtime.setOnLongClickListener { startDowntimeActivity(); true }
-            btn_defective_info.setOnLongClickListener { startActivity(Intent(this, DefectiveActivity::class.java)); true }
-            btn_worksheet.setOnLongClickListener { startActivity(Intent(this, WorkSheetActivity::class.java), { r, c, m, d ->
-                if (r && d!=null) {
-                    val file_url = d["file_url"]!!.toString()
-                    val ext = UtilFile.getFileExt(file_url)
-                    if (ext.toLowerCase()=="pdf") {
-                        workSheetToggle = false
-                        workSheetShow = false
-                        ll_worksheet_view?.visibility = View.GONE
-                        wv_view_main?.visibility = View.GONE
-                    } else {
-                        workSheetToggle = true
-                        workSheetShow = true
-                        ll_worksheet_view?.visibility = View.VISIBLE
-                        wv_view_main?.visibility = View.VISIBLE
-                        val data = "<html><head><title>Example</title></head><body style=\"margin:0; padding:0; text-align:center;\"><center><img width=\"100%\" src=\"${file_url}\" /></center></body></html>"
-                        wv_view_main?.loadData(data, "text/html", null)
-//                        wv_view_main.loadUrl(file_url)
-                        changeFragment(2)
-                        val cview = vp_fragments?.getChildAt(1)
-                        cview?.btn_toggle_sop?.visibility = View.GONE
-                    }
-                }
-            }); true }
-            btn_production_report.setOnLongClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)); true }
+            img_btn_downtime.setOnLongClickListener { startDowntimeActivity(); true }
+
+            btn_defective_info.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        DefectiveActivity::class.java
+                    )
+                ); true
+            }
+            img_btn_defective_info.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        DefectiveActivity::class.java
+                    )
+                ); true
+            }
+
+            btn_worksheet.setOnLongClickListener { startWorkSheetActivity(); true }
+            img_btn_worksheet.setOnLongClickListener { startWorkSheetActivity(); true }
+
+            btn_production_report.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ProductionReportActivity::class.java
+                    )
+                ); true
+            }
+            img_btn_production_report.setOnLongClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ProductionReportActivity::class.java
+                    )
+                ); true
+            }
+
             btn_component.setOnLongClickListener { startComponentActivity(); true }
+            img_btn_component.setOnLongClickListener { startComponentActivity(); true }
 
             btn_worksheet_stop.setOnLongClickListener {
                 workSheetToggle = false
@@ -158,35 +207,84 @@ class MainActivity : BaseActivity() {
 
         } else {
             btn_home.setOnClickListener { changeFragment(0) }
-            btn_push_to_app.setOnClickListener { startActivity(Intent(this, PushActivity::class.java)) }
-            btn_actual_count_edit.setOnClickListener { startActivity(Intent(this, ActualCountEditActivity::class.java)) }
+            img_btn_home.setOnClickListener { changeFragment(0) }
+
+            btn_push_to_app.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        PushActivity::class.java
+                    )
+                )
+            }
+            img_btn_push_to_app.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        PushActivity::class.java
+                    )
+                )
+            }
+
+            btn_actual_count_edit.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ActualCountEditActivity::class.java
+                    )
+                )
+            }
+            img_btn_actual_count_edit.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ActualCountEditActivity::class.java
+                    )
+                )
+            }
+
             btn_downtime.setOnClickListener { startDowntimeActivity() }
-            btn_defective_info.setOnClickListener { startActivity(Intent(this, DefectiveActivity::class.java)) }
-            btn_worksheet.setOnClickListener { startActivity(Intent(this, WorkSheetActivity::class.java), { r, c, m, d ->
-                if (r && d!=null) {
-                    val file_url = d["file_url"]!!.toString()
-                    val ext = UtilFile.getFileExt(file_url)
-                    if (ext.toLowerCase()=="pdf") {
-                        workSheetToggle = false
-                        workSheetShow = false
-                        ll_worksheet_view?.visibility = View.GONE
-                        wv_view_main?.visibility = View.GONE
-                    } else {
-                        workSheetToggle = true
-                        workSheetShow = true
-                        ll_worksheet_view?.visibility = View.VISIBLE
-                        wv_view_main?.visibility = View.VISIBLE
-                        val data = "<html><head><title>Example</title></head><body style=\"margin:0; padding:0; text-align:center;\"><center><img width=\"100%\" src=\"${file_url}\" /></center></body></html>"
-                        wv_view_main?.loadData(data, "text/html", null)
-//                        wv_view_main?.loadUrl(file_url)
-                        changeFragment(2)
-                        val cview = vp_fragments?.getChildAt(1)
-                        cview?.btn_toggle_sop?.visibility = View.GONE
-                    }
-                }
-            }) }
-            btn_production_report.setOnClickListener { startActivity(Intent(this, ProductionReportActivity::class.java)) }
+            img_btn_downtime.setOnClickListener { startDowntimeActivity() }
+
+            btn_defective_info.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        DefectiveActivity::class.java
+                    )
+                )
+            }
+            img_btn_defective_info.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        DefectiveActivity::class.java
+                    )
+                )
+            }
+
+            btn_worksheet.setOnClickListener { startWorkSheetActivity() }
+            img_btn_worksheet.setOnClickListener { startWorkSheetActivity() }
+
+            btn_production_report.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ProductionReportActivity::class.java
+                    )
+                )
+            }
+            img_btn_production_report.setOnClickListener {
+                startActivity(
+                    Intent(
+                        this,
+                        ProductionReportActivity::class.java
+                    )
+                )
+            }
+
             btn_component.setOnClickListener { startComponentActivity() }
+            img_btn_component.setOnClickListener { startComponentActivity() }
 
             btn_worksheet_stop.setOnClickListener {
                 workSheetToggle = false
@@ -221,13 +319,21 @@ class MainActivity : BaseActivity() {
             override fun onPageSelected(state: Int) {
                 (adapter.getItem(state) as BaseFragment).onSelected()
             }
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
             override fun onPageScrollStateChanged(position: Int) {}
         })
 
         // 지난 DownTime과 Design이 있으면 삭제한다.
         RemoveDownTimeData()
         checkDesignData()
+        fetchPushData()
 
         start_timer()
 
@@ -238,6 +344,33 @@ class MainActivity : BaseActivity() {
         filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED)
         filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED)
         registerReceiver(mUsbReceiver, filter)
+    }
+
+    fun startWorkSheetActivity() {
+        startActivity(Intent(this, WorkSheetActivity::class.java), { r, c, m, d ->
+            if (r && d != null) {
+                val file_url = d["file_url"]!!.toString()
+                val ext = UtilFile.getFileExt(file_url)
+                if (ext.toLowerCase() == "pdf") {
+                    workSheetToggle = false
+                    workSheetShow = false
+                    ll_worksheet_view?.visibility = View.GONE
+                    wv_view_main?.visibility = View.GONE
+                } else {
+                    workSheetToggle = true
+                    workSheetShow = true
+                    ll_worksheet_view?.visibility = View.VISIBLE
+                    wv_view_main?.visibility = View.VISIBLE
+                    val data =
+                        "<html><head><title>Example</title></head><body style=\"margin:0; padding:0; text-align:center;\"><center><img width=\"100%\" src=\"${file_url}\" /></center></body></html>"
+                    wv_view_main?.loadData(data, "text/html", null)
+//                        wv_view_main.loadUrl(file_url)
+                    changeFragment(2)
+                    val cview = vp_fragments?.getChildAt(1)
+                    cview?.btn_toggle_sop?.visibility = View.GONE
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -932,6 +1065,21 @@ class MainActivity : BaseActivity() {
 //        })
 //    }
 
+    fun fetchPushData() {
+        val uri = "/getlist1.php"
+        var params = listOf("code" to "text")
+
+        request(this, uri, false, params, { result ->
+            val code = result.getString("code")
+            if(code == "00"){
+                val list = result.getJSONArray("item")
+                AppGlobal.instance.set_push_data(list)
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
+    }
+
     // 서버에서 설정한 현시프트의 타겟 가져오기
     fun fetchServerTargetData() {
         val dt = DateTime()
@@ -1329,6 +1477,7 @@ class MainActivity : BaseActivity() {
                 runOnUiThread {
                     fetchComponentData()    // Parts Cycle Time
                     sendOeeGraphData()
+                    fetchPushData()
 //                    updateCurrentWorkTarget()
                 }
             }
@@ -1613,8 +1762,8 @@ class MainActivity : BaseActivity() {
             tv_report_count.text = "" + cnt
 
             // cmd = "stitch" 코맨드에서 처리하는걸로 바뀜. 2020-01-16
-//            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
-//            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
+            _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
+            AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
 //            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)

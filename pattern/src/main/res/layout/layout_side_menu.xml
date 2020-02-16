@@ -10,58 +10,87 @@
             android:orientation="vertical"
             android:background="@color/colorBackgroundSide">
 
-        <ImageButton
+        <LinearLayout
                 android:id="@+id/btn_home"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/btn_side_icon_home_on" />
-
-        <ImageButton
-                android:id="@+id/btn_push_to_app"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/btn_side_icon_push" />
-
-        <ImageButton
-                android:id="@+id/btn_actual_count_edit"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/btn_side_icon_actual_count_edit" />
-
-        <ImageButton
-                android:id="@+id/btn_downtime"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/btn_side_icon_downtime" />
-
-        <ImageButton
-                android:id="@+id/btn_defective_info"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="40dp"
-                android:background="@drawable/btn_side_icon_defective_info" />
-
-        <ImageButton
-                android:id="@+id/btn_worksheet"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/btn_side_icon_worksheet" />
-
-        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_marginBottom="70dp"
-                android:background="@color/transparent">
+                android:gravity="center"
+                android:orientation="horizontal">
             <ImageButton
-                    android:id="@+id/btn_component"
+                    android:id="@+id/img_btn_home"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/btn_side_icon_home_on" />
+        </LinearLayout>
+        <LinearLayout
+                android:id="@+id/btn_push_to_app"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageButton
+                    android:id="@+id/img_btn_push_to_app"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:background="@drawable/btn_side_icon_push" />
+        </LinearLayout>
+        <LinearLayout
+                android:id="@+id/btn_actual_count_edit"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageButton
+                    android:id="@+id/img_btn_actual_count_edit"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_side_icon_actual_count_edit" />
+        </LinearLayout>
+        <LinearLayout
+                android:id="@+id/btn_downtime"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageButton
+                    android:id="@+id/img_btn_downtime"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_side_icon_downtime" />
+        </LinearLayout>
+        <LinearLayout
+                android:id="@+id/btn_defective_info"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageButton
+                    android:id="@+id/img_btn_defective_info"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_side_icon_defective_info" />
+        </LinearLayout>
+        <LinearLayout
+                android:id="@+id/btn_worksheet"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <ImageButton
+                    android:id="@+id/img_btn_worksheet"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_side_icon_worksheet" />
+        </LinearLayout>
+        <RelativeLayout
+                android:id="@+id/btn_component"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/transparent">
+            <ImageButton
+                    android:id="@+id/img_btn_component"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/btn_side_icon_component" />
             <TextView
@@ -84,14 +113,13 @@
         </RelativeLayout>
 
         <RelativeLayout
+                android:id="@+id/btn_production_report"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_marginBottom="70dp"
                 android:background="@color/transparent"
                 android:visibility="gone">
-
             <ImageButton
-                    android:id="@+id/btn_production_report"
+                    android:id="@+id/img_btn_production_report"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_centerInParent="true"

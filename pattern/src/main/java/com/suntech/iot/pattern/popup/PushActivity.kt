@@ -92,14 +92,34 @@ Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACA
     }
 
     private fun fetchData() {
+        _list.removeAll(_list)
+
+        val list = AppGlobal.instance.get_push_data()
+        if (list.length() > 0) {
+            for (i in 0..(list.length() - 1)) {
+                val item = list.getJSONObject(i)
+                var map=hashMapOf(
+                    "idx" to item.getString("idx"),
+                    "text" to item.getString("text")
+                )
+                _list.add(map)
+            }
+            list_adapter?.notifyDataSetChanged()
+        } else {
+            fetchServerData()
+        }
+    }
+
+    private fun fetchServerData() {
         val uri = "/getlist1.php"
         var params = listOf("code" to "text")
 
         request(this, uri, false, params, { result ->
-            var code = result.getString("code")
+            val code = result.getString("code")
             if(code == "00"){
 
-                var list = result.getJSONArray("item")
+                val list = result.getJSONArray("item")
+                AppGlobal.instance.set_push_data(list)
 
                 for (i in 0..(list.length() - 1)) {
 

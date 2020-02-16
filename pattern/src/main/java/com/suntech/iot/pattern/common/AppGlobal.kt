@@ -340,6 +340,8 @@ class AppGlobal private constructor() {
     fun set_comopnent_data(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "comopnent_data", data) }
     fun get_comopnent_data() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "comopnent_data") }
 
+    fun set_push_data(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "push_data", data) }
+    fun get_push_data() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "push_data") }
 //    fun set_availability(value: String) { UtilLocalStorage.setString(instance._context!!, "current_availability", value) }
 //    fun get_availability() : String { return UtilLocalStorage.getString(instance._context!!, "current_availability") }
 //    fun set_performance(value: String) { UtilLocalStorage.setString(instance._context!!, "current_performance", value) }
