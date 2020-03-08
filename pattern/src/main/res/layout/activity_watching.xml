@@ -59,6 +59,12 @@
                 android:gravity="end"
                 android:orientation="horizontal">
             <Button
+                    android:id="@+id/btn_delete_downtime"
+                    style="@style/btn_default"
+                    android:layout_width="330dp"
+                    android:stateListAnimator="@null"
+                    android:text="Delete All Downtime" />
+            <Button
                     android:id="@+id/btn_confirm"
                     style="@style/btn_orange"
                     android:stateListAnimator="@null"

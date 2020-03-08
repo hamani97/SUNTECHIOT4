@@ -32,6 +32,14 @@ class WatchingActivity : BaseActivity() {
     private fun initView() {
         tv_watching.movementMethod = ScrollingMovementMethod()
 
+        // Downtime DB Clear
+        btn_delete_downtime.setOnClickListener {
+            var down_db = DBHelperForDownTime(this)
+            down_db.delete()
+            AppGlobal.instance.set_last_received("")
+            ToastOut(this, "All downtime data has been deleted.", true)
+        }
+
         btn_confirm.setOnClickListener {
             finish(true, 1, "ok", null)
         }

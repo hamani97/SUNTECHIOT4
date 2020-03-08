@@ -1764,7 +1764,7 @@ class MainActivity : BaseActivity() {
             // cmd = "stitch" 코맨드에서 처리하는걸로 바뀜. 2020-01-16
             _last_count_received_time = DateTime()      // downtime 시간 초기화 (구)
             AppGlobal.instance.set_last_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) // Downtime 초기화 (신)
-//            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
+            sendEndDownTimeForce()      // 처리안된 Downtime 강제 완료
 
             // 서버 호출 (장치에서 들어온 값, 증분값, 총수량)
             sendCountData(value.toString(), inc_count, cnt, runtime_total.toString())  // 서버에 카운트 정보 전송
@@ -2224,12 +2224,18 @@ class MainActivity : BaseActivity() {
                 val shift_name = work_info?.getString("shift_name") ?: ""
 
                 val start_dt = dt.toString("yyyy-MM-dd HH:mm:ss")
-                down_db.add(idx, work_idx, didx, shift_idx, shift_name, start_dt)
+
+                // 같은 시간대가 저장되어 있는지 검사
+                val cnt = down_db.count_start_dt(start_dt)
+
+                if (cnt <= 0) {
+                    down_db.add(idx, work_idx, didx, shift_idx, shift_name, start_dt)
 
 //                startDowntimeActivity()
-                startDowntimeInputActivity(idx, start_dt)
+                    startDowntimeInputActivity(idx, start_dt)
 
-                sendPush("SYS: DOWNTIME")
+                    sendPush("SYS: DOWNTIME")
+                }
 
             } else {
                 ToastOut(this, result.getString("msg"), true)

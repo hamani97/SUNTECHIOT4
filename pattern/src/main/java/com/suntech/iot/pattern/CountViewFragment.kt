@@ -542,7 +542,7 @@ class CountViewFragment : BaseFragment() {
                 ratio_txt = "" + ratio + "%"
             }
 
-            tv_count_view_target.text = "" + total_target
+            tv_count_view_target.text = "" + if (total_target < 0) 0 else total_target
             tv_count_view_actual.text = "" + total_actual
             tv_count_view_ratio.text = ratio_txt
 

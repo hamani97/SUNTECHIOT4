@@ -119,6 +119,19 @@ class DBHelperForDownTime
         return arr
     }
 
+    fun count_start_dt(start_dt: String): Int {
+        val db = _openHelper.readableDatabase ?: return -1
+        val sql = "select count(*) from downtime where start_dt = ?"
+        val cur = db.rawQuery(sql, arrayOf(start_dt))
+        var cnt = -1
+        if (cur.moveToNext()) {
+            cnt = cur.getInt(0)
+        }
+        cur.close()
+        db.close()
+        return cnt
+    }
+
     fun counts_for_notcompleted():  Int {
         var arr = ArrayList<HashMap<String, String>>()
         val db = _openHelper.readableDatabase ?: return -1
