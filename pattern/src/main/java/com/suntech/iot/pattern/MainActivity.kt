@@ -307,6 +307,22 @@ class MainActivity : BaseActivity() {
             Handler().postDelayed({ watching_count = 0 }, 2000)
         }
 
+/*
+        {"cmd":"barcode", "value":"1003"}
+        {"cmd":"stitch", "value":"start"}
+        {"cmd":"count", "value":"1", "runtime":""}
+        {"cmd":"T", "value":"2", "runtime":""}
+*/
+        // Stitch 발생
+//        start_stitch.setOnClickListener {
+//            val buffer = "{\"cmd\":\"stitch\", \"value\":\"start\"}"
+//            handleData(buffer)
+//        }
+//        start_count.setOnClickListener {
+//            val buffer = "{\"cmd\":\"count\", \"value\":\"1\", \"runtime\":\"\"}"
+//            handleData(buffer)
+//        }
+
         // fragment & swipe
         val adapter = TabAdapter(supportFragmentManager)
         adapter.addFragment(HomeFragment(), "")
@@ -1568,8 +1584,14 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    /*
+        {"cmd":"barcode", "value":"1003"}
+        {"cmd":"stitch", "value":"start"}
+        {"cmd":"count", "value":"", "runtime":""}
+        {"cmd":"T", "value":"", "runtime":""}
+    */
     private var recvBuffer = ""
-    fun handleData (data:String) {
+    fun handleData(data:String) {
         if (data.indexOf("{") >= 0)  recvBuffer = ""
 
         recvBuffer += data
@@ -1589,6 +1611,7 @@ class MainActivity : BaseActivity() {
                 Log.e("USB handel", "usb = " + recvBuffer)
 
                 saveRowData(cmd, value, runtime)
+
             } catch(e: JsonSyntaxException) {
                 OEEUtil.LogWrite(e.toString(), "USB Input Error")
             }
@@ -2253,8 +2276,9 @@ class MainActivity : BaseActivity() {
         var db = DBHelperForDownTime(this)
 
         val idx = AppGlobal.instance.get_downtime_idx()
+        if (idx == "") return
         val item = db.get(idx)
-        if (item == null) return
+        if (item == null || item.size() == 0) return
 
         val now = DateTime()
         val now_millis = now.millis

@@ -21,6 +21,19 @@
                 android:src="@mipmap/brand_logo"
                 android:background="@color/transparent" />
 
+<!--        <ImageButton-->
+<!--                android:id="@+id/start_stitch"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_marginRight="30dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:background="@drawable/btn_icon_server_state"/>-->
+<!--        <ImageButton-->
+<!--                android:id="@+id/start_count"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:background="@drawable/btn_icon_wifi_state"/>-->
+
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
