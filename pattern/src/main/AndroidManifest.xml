@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.suntech.iot.pattern">
 
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -62,7 +64,9 @@
         <activity android:name=".popup.ComponentActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.WorkSheetActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.WorkSheetDetailActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.McStopActivity" android:theme="@style/AppTheme.PopupOverlay" />
         <activity android:name=".popup.WatchingActivity" android:theme="@style/AppTheme.PopupOverlay" />
+        <activity android:name=".popup.DownloadApkFile" android:theme="@style/AppTheme.PopupOverlay" />
     </application>
 
 </manifest>

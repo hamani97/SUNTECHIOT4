@@ -18,7 +18,7 @@ object UtilLocalStorage {
 //        val prefs = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE)
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putBoolean(key, data)
-        editor.commit()
+        editor.apply()
     }
     fun getBoolean(ctx: Context, key: String): Boolean {
         return ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getBoolean(key, false)
@@ -27,7 +27,7 @@ object UtilLocalStorage {
     fun setInt(ctx: Context, key: String, data: Int) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putInt(key, data)
-        editor.commit()
+        editor.apply()
     }
     fun getInt(ctx: Context, key: String): Int {
         return ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getInt(key, 0)
@@ -36,7 +36,7 @@ object UtilLocalStorage {
     fun setFloat(ctx: Context, key: String, data: Float) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putFloat(key, data)
-        editor.commit()
+        editor.apply()
     }
     fun getFloat(ctx: Context, key: String): Float {
         return ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getFloat(key, 0f)
@@ -45,18 +45,17 @@ object UtilLocalStorage {
     fun setString(ctx: Context, key: String, data: String) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putString(key, data)
-        editor.commit()
+        editor.apply()
     }
     fun getString(ctx: Context, key: String): String {
-        var data = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getString(key, "")
-        if (data == null) data = ""
-        return data
+        val data = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getString(key, "")
+        return data ?: ""
     }
 
     fun setStringSet(ctx: Context, key: String, data: Set<String>) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putStringSet(key, data)
-        editor.commit()
+        editor.apply()
     }
     fun getStringSet(ctx: Context, key: String): Set<String> {
         return ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getStringSet(key, setOf())
@@ -65,13 +64,12 @@ object UtilLocalStorage {
     fun setJSONArray(ctx: Context, key: String, data: JSONArray) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putString(key, data.toString())
-        editor.commit()
+        editor.apply()
     }
     fun getJSONArray(ctx: Context, key: String): JSONArray {
         val data = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getString(key, "[]")
         try {
-            val jsons = JSONArray(data)
-            return jsons
+            return JSONArray(data)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -81,13 +79,12 @@ object UtilLocalStorage {
     fun setJSONObject(ctx: Context, key: String, data: JSONObject) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.putString(key, data.toString())
-        editor.commit()
+        editor.apply()
     }
     fun getJSONObject(ctx: Context, key: String): JSONObject? {
         val data = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).getString(key, "{}")
         try {
-            val json = JSONObject(data)
-            return json
+            return JSONObject(data)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -97,16 +94,7 @@ object UtilLocalStorage {
     fun remove(ctx: Context, key: String) {
         val editor = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE).edit()
         editor.remove(key)
-        editor.commit()
-    }
-
-    // 설정된 모든 내용을 출력해봄
-    fun printPreferences(ctx: Context) {
-        val prefs = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE)
-        val keys = prefs.all
-        for ((key, value) in keys) {
-            Log.d("LocalStorage", key + ": " + value.toString())
-        }
+        editor.apply()
     }
 
     private fun deleteDir(dir: File?): Boolean {
@@ -120,5 +108,14 @@ object UtilLocalStorage {
             }
         }
         return dir!!.delete()
+    }
+
+    // 모든 설정 내용 출력
+    fun printPreferences(ctx: Context) {
+        val prefs = ctx.getSharedPreferences(APP_KEY, Context.MODE_PRIVATE)
+        val keys = prefs.all
+        for ((key, value) in keys) {
+            Log.d("LocalStorage", key + ": " + value.toString())
+        }
     }
 }

@@ -8,14 +8,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="10dp"
+            android:paddingVertical="10dp"
             android:orientation="horizontal">
 
         <TextView
                 android:id="@+id/tv_item_idx"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -78,6 +78,29 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="-"
+                android:textSize="20sp"
+                android:textColor="#333"/>
+
+        <TextView
+                android:id="@+id/tv_item_pallet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="-"
+                android:textSize="20sp"
+                android:textColor="#333"/>
+        <TextView
+                android:id="@+id/tv_item_pairs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:maxLines="1"
                 android:ellipsize="end"

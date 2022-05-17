@@ -62,7 +62,7 @@ class HomeFragment : BaseFragment() {
         }
 
         btn_work_info.setOnClickListener {
-            if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_room() == "" || AppGlobal.instance.get_line() == "") {
+            if (AppGlobal.instance.get_factory() == "" || AppGlobal.instance.get_zone() == "" || AppGlobal.instance.get_line() == "") {
                 (activity as MainActivity).ToastOut(activity, R.string.msg_no_setting, true)
             } else if (AppGlobal.instance.get_current_work_time() == null) {
                 (activity as MainActivity).ToastOut(activity, R.string.msg_please_wait_for_loading, true)
@@ -107,9 +107,9 @@ class HomeFragment : BaseFragment() {
 
     private fun updateView() {
         tv_factory?.text = AppGlobal.instance.get_factory()
-        tv_room?.text = AppGlobal.instance.get_room()
+        tv_room?.text = AppGlobal.instance.get_zone()
         tv_line?.text = AppGlobal.instance.get_line()
-        tv_mc_no?.text = AppGlobal.instance.get_mc_no1() //+ "-" + AppGlobal.instance.get_mc_no2()
+        tv_mc_no?.text = AppGlobal.instance.get_mc_no() //+ "-" + AppGlobal.instance.get_mc_no2()
 //        tv_mc_model?.text = AppGlobal.instance.get_mc_model()
         tv_employee_no?.text = AppGlobal.instance.get_worker_no()
         tv_employee_name?.text = AppGlobal.instance.get_worker_name()

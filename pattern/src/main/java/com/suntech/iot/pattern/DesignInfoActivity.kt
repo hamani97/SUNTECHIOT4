@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,22 +17,24 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.common.Constants
 import com.suntech.iot.pattern.popup.DesignInfoInputActivity
 import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_design_info.*
-import kotlinx.android.synthetic.main.layout_top_menu_component.*
+import kotlinx.android.synthetic.main.layout_top_menu_2.*
 import org.joda.time.DateTime
 import java.util.*
 
 class DesignInfoActivity : BaseActivity() {
 
-    private var usb_state = false
-
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
+    private var _filtered_list: ArrayList<HashMap<String, String>> = arrayListOf()
+
     var _selected_index = -1
 
-    private var _filtered_list: ArrayList<HashMap<String, String>> = arrayListOf()
+    private var design_pieces_value: Int = 0
+    private var design_pairs_value: Float = 0f
 
     private val _broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -52,23 +53,24 @@ class DesignInfoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_design_info)
         initView()
-//        updateView()
+        initDesign()
         start_timer()
-        fetchData()
     }
 
     fun parentSpaceClick(view: View) {
         val view = this.currentFocus
         if (view != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(et_setting_server_ip.windowToken, 0)
+            imm.hideSoftInputFromWindow(et_search_design_text.windowToken, 0)
         }
     }
 
     public override fun onResume() {
         super.onResume()
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
-        updateView()
+
+        btn_wifi_state.isSelected = AppGlobal.instance.isOnline(this)
+        btn_server_state.isSelected = AppGlobal.instance.get_server_connect()
         is_loop = true
     }
     public override fun onPause() {
@@ -82,18 +84,9 @@ class DesignInfoActivity : BaseActivity() {
         cancel_timer()
     }
 
-    private fun updateView() {
-//        val pieces_info = AppGlobal.instance.get_pieces_info()
-//        et_design_pieces.setText(""+pieces_info)
-
-        if (AppGlobal.instance._server_state) btn_server_state.isSelected = true
-        else btn_server_state.isSelected = false
-
-        if (AppGlobal.instance.isOnline(this)) btn_wifi_state.isSelected = true
-        else btn_wifi_state.isSelected = false
-    }
-
     private fun initView() {
+
+        tv_title?.setTextColor(ContextCompat.getColor(this, R.color.colorOrange))
 
         val list = AppGlobal.instance.get_current_work_time()
         var find_title = false
@@ -105,7 +98,7 @@ class DesignInfoActivity : BaseActivity() {
                 val shift_etime = OEEUtil.parseDateTime(item["work_etime"].toString()).millis
                 if (shift_stime <= now_millis && now_millis < shift_etime) {
                     // 타이틀 변경
-                    tv_title.setText(item["shift_name"].toString() + "   " +
+                    tv_title?.setText(item["shift_name"].toString() + "   " +
                             OEEUtil.parseDateTime(item["work_stime"].toString()).toString("HH:mm") + " - " +
                             OEEUtil.parseDateTime(item["work_etime"].toString()).toString("HH:mm"))
                     find_title = true
@@ -114,21 +107,23 @@ class DesignInfoActivity : BaseActivity() {
             }
         }
         if (find_title == false) {
-            tv_title.setText("No shift")
+            tv_title?.setText("No shift")
         }
 
         list_adapter = ListAdapter(this, _filtered_list)
         lv_design_info.adapter = list_adapter
 
-        tv_design_pieces?.text = AppGlobal.instance.get_pieces_info()
-        tv_design_pairs?.text = AppGlobal.instance.get_pairs_info()
+        tv_design_pieces?.text = AppGlobal.instance.get_pieces_text()
+        tv_design_pairs?.text = AppGlobal.instance.get_pairs_text()
+        design_pieces_value = AppGlobal.instance.get_pieces_value()
+        design_pairs_value = AppGlobal.instance.get_pairs_value()
 
         lv_design_info.setOnItemClickListener { adapterView, view, i, l ->
             _selected_index = i
             list_adapter?.notifyDataSetChanged()
         }
 
-        et_setting_server_ip.addTextChangedListener(object : TextWatcher {
+        et_search_design_text.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s != "") {
                     filterData()
@@ -138,8 +133,8 @@ class DesignInfoActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable) {}
         })
         btn_reload.setOnClickListener {
-            et_setting_server_ip.setText("")
-            fetchData()
+            et_search_design_text.setText("")
+            fetchDesignData()
         }
         img_last_design.setOnClickListener {
             lastDesign()
@@ -153,8 +148,14 @@ class DesignInfoActivity : BaseActivity() {
                 ToastOut(this, R.string.msg_require_info, true)
                 return@setOnClickListener
             }
-            AppGlobal.instance.set_pieces_info(tv_design_pieces.text.toString())
-            AppGlobal.instance.set_pairs_info(tv_design_pairs.text.toString())
+
+            design_pieces_value = tv_design_pieces.text.toString().toInt()
+            design_pairs_value = tv_design_pairs.text.toString().toFloat()
+
+            AppGlobal.instance.set_pieces_text(tv_design_pieces.text.toString())
+            AppGlobal.instance.set_pieces_value(design_pieces_value)
+            AppGlobal.instance.set_pairs_text(tv_design_pairs.text.toString())
+            AppGlobal.instance.set_pairs_value(design_pairs_value)
 
             if (_selected_index < 0) {
                 finish(false, 0, "ok", null)
@@ -170,17 +171,13 @@ class DesignInfoActivity : BaseActivity() {
 
                 finish(true, 1, "ok", _filtered_list[_selected_index])
             }
-
-//            val pieces_info = et_design_pieces.text.toString().toInt()
-//            AppGlobal.instance.set_pieces_info(pieces_info)
-//            Log.e("data", ""+_filtered_list[_selected_index].toString())
         }
         btn_setting_cancel.setOnClickListener {
             finish(false, 0, "ok", null)
         }
 
-        tv_design_pieces.setOnClickListener { fetchPiecesData() }
-        tv_design_pairs.setOnClickListener { fetchPairsData() }
+        //tv_design_pieces.setOnClickListener { fetchPiecesData() }
+        //tv_design_pairs.setOnClickListener { fetchPairsData() }
     }
 
     fun lastDesign() {
@@ -204,7 +201,7 @@ class DesignInfoActivity : BaseActivity() {
                     val item_ct = item["ct"] ?: ""
                     if (idx == item_idx && model == item_model && article == item_article &&
                         material_way == item_material_way && component == item_component && ct == item_ct) {
-                        et_setting_server_ip.setText("")
+                        et_search_design_text.setText("")
                         _selected_index = j
                         list_adapter?.notifyDataSetChanged()
                         lv_design_info.smoothScrollToPosition(j)
@@ -216,10 +213,9 @@ class DesignInfoActivity : BaseActivity() {
         })
     }
 
-    private fun fetchData() {
+    private fun initDesign() {
         var list = AppGlobal.instance.get_design_info()
         _list.removeAll(_list)
-Log.e("lit", list.toString())
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
             var map=hashMapOf(
@@ -230,59 +226,65 @@ Log.e("lit", list.toString())
                 "material_way" to item.getString("material_way"),
                 "component" to item.getString("component"),
                 "remark" to item.getString("remark"),
-                "ct" to item.getString("ct")
+                "ct" to item.getString("ct"),
+                "pallet" to item.getString("pallet"),
+                "pairs" to item.getString("pairs")
             )
             _list.add(map)
         }
         filterData()
     }
 
+    // getlist1.php 에서 hwi/query.php 바뀜 요청에 의해
+    // 2021-08-16
+    private fun fetchDesignData() {
+        //val uri = "/getlist1.php"
+        val uri = "/hwi/query.php"
+        val params = listOf(
+            "code" to "get_designP",
+            //"code" to "design",
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_zone_idx())
+
+        request(this, uri, false, params, { result ->
+            val code = result.getString("code")
+            if (code == "00"){
+                val list = result.getJSONArray("item")
+                AppGlobal.instance.set_design_info(list)
+                initDesign()
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
+    }
+
     private fun fetchPiecesData() {
-        var arr: java.util.ArrayList<String> = arrayListOf<String>()
-
-        for (i in 1..10) {
-            arr.add(i.toString())
-        }
-
         val intent = Intent(this, PopupSelectList::class.java)
-        intent.putStringArrayListExtra("list", arr)
+        intent.putStringArrayListExtra("list", Constants.arr_pieces)
         startActivity(intent, { r, c, m, d ->
             if (r) {
-                tv_design_pieces.text = arr[c]
+                tv_design_pieces.text = Constants.arr_pieces[c]
+                design_pieces_value = Constants.arr_pieces[c].toInt()
             }
         })
     }
     private fun fetchPairsData() {
-        var arr: java.util.ArrayList<String> = arrayListOf<String>()
-
-        arr.add("1/8")
-        arr.add("1/7")
-        arr.add("1/6")
-        arr.add("1/5")
-        arr.add("1/4")
-        arr.add("1/3")
-        arr.add("1/2")
-
-        for (i in 1..10) {
-            arr.add(i.toString())
-        }
-
         val intent = Intent(this, PopupSelectList::class.java)
-        intent.putStringArrayListExtra("list", arr)
+        intent.putStringArrayListExtra("list", Constants.arr_pairs)
         startActivity(intent, { r, c, m, d ->
             if (r) {
-                tv_design_pairs.text = arr[c]
+                tv_design_pairs.text = Constants.arr_pairs[c]
+                design_pairs_value = Constants.arr_pairs_value[c]
             }
         })
     }
 
     private fun filterData() {
         _filtered_list.removeAll(_filtered_list)
+        _selected_index = -1
 
         val cur_design_idx = AppGlobal.instance.get_design_info_idx()
-
-        _selected_index = -1
-        val filter_text = et_setting_server_ip.text.toString()
+        val filter_text = et_search_design_text.text.toString()
 
         for (i in 0..(_list.size-1)) {
 
@@ -314,7 +316,7 @@ Log.e("lit", list.toString())
         val task2 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    if (is_loop) checkUSB()
+                    if (is_loop) btn_usb_state2.isSelected = AppGlobal.instance.get_usb_connect()
                 }
             }
         }
@@ -322,13 +324,6 @@ Log.e("lit", list.toString())
     }
     private fun cancel_timer () {
         _timer_task2.cancel()
-    }
-
-    private fun checkUSB() {
-        if (usb_state != AppGlobal.instance._usb_state) {
-            usb_state = AppGlobal.instance._usb_state
-            btn_usb_state2.isSelected = usb_state
-        }
     }
 
     private class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
@@ -365,6 +360,8 @@ Log.e("lit", list.toString())
             vh.tv_item_material.text = _list[position]["material_way"]
             vh.tv_item_component.text = _list[position]["component"]
             vh.tv_item_cycle.text = _list[position]["ct"]
+            vh.tv_item_pallet.text = _list[position]["pallet"]
+            vh.tv_item_pairs.text = _list[position]["pairs"]
 
             if ((_context as DesignInfoActivity)._selected_index==position) {
                 vh.tv_item_idx.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
@@ -373,6 +370,10 @@ Log.e("lit", list.toString())
                 vh.tv_item_material.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
                 vh.tv_item_component.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
                 vh.tv_item_cycle.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                vh.tv_item_pallet.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                vh.tv_item_pairs.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                (_context as DesignInfoActivity).tv_design_pieces?.text = _list[position]["pallet"]
+                (_context as DesignInfoActivity).tv_design_pairs?.text = _list[position]["pairs"]
             } else {
                 vh.tv_item_idx.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
                 vh.tv_item_model.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
@@ -380,6 +381,8 @@ Log.e("lit", list.toString())
                 vh.tv_item_material.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
                 vh.tv_item_component.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
                 vh.tv_item_cycle.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
+                vh.tv_item_pallet.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
+                vh.tv_item_pairs.setTextColor(ContextCompat.getColor(_context, R.color.list_item_text_color))
             }
 
             return view
@@ -392,6 +395,8 @@ Log.e("lit", list.toString())
             val tv_item_material: TextView
             val tv_item_component: TextView
             val tv_item_cycle: TextView
+            val tv_item_pallet: TextView
+            val tv_item_pairs: TextView
 
             init {
                 this.tv_item_idx = row?.findViewById<TextView>(R.id.tv_item_idx) as TextView
@@ -400,6 +405,8 @@ Log.e("lit", list.toString())
                 this.tv_item_material = row?.findViewById<TextView>(R.id.tv_item_material) as TextView
                 this.tv_item_component = row?.findViewById<TextView>(R.id.tv_item_component) as TextView
                 this.tv_item_cycle = row?.findViewById<TextView>(R.id.tv_item_cycle) as TextView
+                this.tv_item_pallet = row?.findViewById(R.id.tv_item_pallet) as TextView
+                this.tv_item_pairs = row?.findViewById(R.id.tv_item_pairs) as TextView
             }
         }
     }

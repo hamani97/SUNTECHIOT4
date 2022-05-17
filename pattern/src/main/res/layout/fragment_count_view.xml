@@ -47,13 +47,14 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:layout_marginTop="20dp"
-                        android:layout_marginLeft="90dp"
-                        android:layout_marginRight="70dp"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginRight="50dp"
                         android:orientation="vertical">
 
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal">
 
                         <TextView
@@ -62,7 +63,7 @@
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="@string/label_target"
-                                android:textSize="110sp"
+                                android:textSize="88sp"
                                 android:textColor="#fff"
                                 android:textStyle="bold"/>
 
@@ -72,7 +73,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="end"
                                 android:text="0"
-                                android:textSize="110sp"
+                                android:textSize="88sp"
                                 android:textColor="#fff"
                                 android:textStyle="bold"/>
 
@@ -81,6 +82,7 @@
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
                             android:orientation="horizontal">
 
                         <TextView
@@ -89,7 +91,7 @@
                                 android:layout_weight="1"
                                 android:gravity="start"
                                 android:text="@string/label_actual"
-                                android:textSize="110sp"
+                                android:textSize="88sp"
                                 android:textColor="#fff"
                                 android:textStyle="bold"/>
 
@@ -99,7 +101,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="end"
                                 android:text="0"
-                                android:textSize="110sp"
+                                android:textSize="88sp"
                                 android:textColor="#fff"
                                 android:textStyle="bold"/>
 
@@ -108,6 +110,7 @@
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
                             android:orientation="horizontal">
 
                         <LinearLayout
@@ -120,7 +123,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/label_rate"
-                                    android:textSize="110sp"
+                                    android:textSize="88sp"
                                     android:textColor="#fff"
                                     android:textStyle="bold"/>
                             <TextView
@@ -131,6 +134,7 @@
                                     android:text="2000-01-01"
                                     android:textSize="26sp"
                                     android:textColor="#fff" />
+
                         </LinearLayout>
                         <RelativeLayout
                                 android:layout_width="190dp"
@@ -183,41 +187,6 @@
                                     android:textStyle="bold"
                                     android:textColor="@color/colorBlack2"/>
 
-                            <LinearLayout
-                                    android:id="@+id/ll_current_piece_pair"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:layout_marginTop="170dp"
-                                    android:visibility="visible"
-                                    android:layout_centerHorizontal="true">
-                                <TextView
-                                        android:id="@+id/tv_pieces_qty"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:text="0"
-                                        android:textSize="26sp"
-                                        android:textColor="@color/colorWhite" />
-                                <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:text="  /  "
-                                        android:textSize="26sp"
-                                        android:textColor="@color/colorWhite" />
-                                <TextView
-                                        android:id="@+id/tv_pairs_qty"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:layout_gravity="center"
-                                        android:text="0"
-                                        android:textSize="26sp"
-                                        android:textColor="@color/colorWhite" />
-                            </LinearLayout>
                         </RelativeLayout>
                         <LinearLayout
                                 android:layout_width="0dp"
@@ -231,7 +200,7 @@
                                     android:layout_height="wrap_content"
                                     android:gravity="end"
                                     android:text="0%"
-                                    android:textSize="110sp"
+                                    android:textSize="88sp"
                                     android:textColor="#fff"
                                     android:textStyle="bold"/>
                             <Button
@@ -239,7 +208,45 @@
                                     style="@style/btn_default"
                                     android:stateListAnimator="@null"
                                     android:text="@string/edit" />
+<!--                            <Button-->
+<!--                                    android:id="@+id/btn_stitch"-->
+<!--                                    style="@style/btn_default"-->
+<!--                                    android:stateListAnimator="@null"-->
+<!--                                    android:text="S" />-->
+
                         </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.3"
+                                android:orientation="vertical"/>
+                        <LinearLayout
+                                android:layout_width="190dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+                            <Button
+                                    android:id="@+id/btn_mc_stop"
+                                    android:layout_width="170dp"
+                                    android:layout_height="50dp"
+                                    android:background="@drawable/shape_red_round_button"
+                                    android:stateListAnimator="@null"
+                                    android:text="@string/mc_stop"
+                                    android:textSize="24sp"
+                                    android:textColor="@color/colorWhite"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+                        </LinearLayout>
+                        <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -247,7 +254,7 @@
                 <!-- 서버차트 -->
                 <LinearLayout
                         android:id="@+id/ll_server_charts"
-                        android:layout_width="200dp"
+                        android:layout_width="190dp"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:background="#222222"

@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             tools:context=".SettingActivity">
-
-    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/colorBackground"
-        android:onClick="parentSpaceClick">
+        tools:context=".WorkInfoActivity">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorBackground"
+            android:onClick="parentSpaceClick">
 
         <include layout="@layout/layout_top_menu_2"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         <LinearLayout style="@style/tab_block">
             <Button
-                    android:id="@+id/btn_setting_system"
+                    android:id="@+id/btn_work_info_server"
                     style="@style/tab_btn_on"
                     android:stateListAnimator="@null"
-                    android:text="@string/button_tab_system_setting" />
+                    android:text="@string/server" />
             <Button
-                    android:id="@+id/btn_setting_target"
+                    android:id="@+id/btn_work_info_manual"
                     style="@style/tab_btn_off"
                     android:stateListAnimator="@null"
-                    android:text="@string/button_tab_target_setting" />
-            <Button
-                    android:id="@+id/btn_setting_etc"
-                    style="@style/tab_btn_off"
-                    android:stateListAnimator="@null"
-                    android:text="@string/button_tab_etc_setting"/>
+                    android:text="@string/manual" />
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""/>
+            <ImageButton
+                    android:id="@+id/btn_reload"
+                    android:layout_width="90dp"
+                    android:layout_height="54dp"
+                    android:src="@drawable/ic_refresh_white_32dp"
+                    android:background="@drawable/shape_default_rectangle_button"/>
         </LinearLayout>
 
         <FrameLayout
@@ -43,41 +49,29 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
-
-            <!--System setting-->
+            <!--Manual-->
             <include
-                    android:id="@+id/layout_setting_system"
-                    layout="@layout/layout_setting_system"
+                    android:id="@+id/layout_work_info_manual"
+                    layout="@layout/layout_workinfo_manual"
+                    android:layout_width="1120dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone"/>
+
+            <!--Server-->
+            <include
+                    android:id="@+id/layout_work_info_server"
+                    layout="@layout/layout_workinfo_server"
                     android:layout_width="1120dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:visibility="visible"/>
-
-            <!--Target setting-->
-            <include
-                    android:id="@+id/layout_setting_target"
-                    layout="@layout/layout_setting_target"
-                    android:layout_width="1120dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:visibility="gone"/>
-
-            <!--Etc setting-->
-            <include
-                    android:id="@+id/layout_setting_etc"
-                    layout="@layout/layout_setting_etc"
-                    android:layout_width="1120dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
-                    android:visibility="gone"/>
-
         </FrameLayout>
 
         <LinearLayout
-                android:layout_width="1080dp"
+                android:layout_width="1120dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="4dp"
-                android:paddingBottom="11dp"
+                android:paddingVertical="12dp"
                 android:layout_gravity="center_horizontal"
                 android:gravity="end"
                 android:orientation="horizontal">
@@ -86,11 +80,14 @@
                     style="@style/btn_cancel"
                     android:stateListAnimator="@null"
                     android:text="@string/cancel" />
+
             <Button
                     android:id="@+id/btn_setting_confirm"
                     style="@style/btn_orange"
                     android:stateListAnimator="@null"
                     android:text="@string/save" />
+
         </LinearLayout>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

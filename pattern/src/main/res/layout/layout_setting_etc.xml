@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorBackground">
+
+    <LinearLayout
+            android:layout_width="540dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+        <TextView style="@style/table_title" android:text="@string/title_time" />
+
+        <!-- Device time -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:layout_width="250dp" android:text="@string/label_device_time" />
+            <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_time" />
+        </LinearLayout>
+
+        <!-- Server time -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:layout_width="250dp" android:text="@string/label_server_time" />
+
+            <TextView
+                    android:id="@+id/tv_setting_server_time"
+                    style="@style/table_row_data_readonly" />
+        </LinearLayout>
+
+        <TextView style="@style/table_title" android:text="@string/title_downtime" android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+                android:layout_width="540dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <LinearLayout style="@style/table_row">
+                <TextView style="@style/table_row_title" android:text="@string/label_downtime_blink_effect"
+                        android:layout_width="250dp" />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:background="@color/colorDefault">
+                    <Switch
+                            android:id="@+id/sw_screen_blink_effect"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="60dp"
+                            android:layout_marginLeft="12dp"
+                            android:checked="false"/>
+                </LinearLayout>
+            </LinearLayout>
+            <!--<LinearLayout style="@style/table_row">-->
+            <!--<TextView style="@style/table_row_title" android:text="@string/label_remaining_number"-->
+            <!--android:layout_width="240dp" />-->
+            <!--<EditText-->
+            <!--style="@style/table_row_data_editor1"-->
+            <!--android:layout_width="120dp"-->
+            <!--android:inputType="number"-->
+            <!--android:id="@+id/et_remain_number" />-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:text="( 5 ~ 30 )"-->
+            <!--android:textColor="@color/colorGray"-->
+            <!--android:textSize="21sp" />-->
+            <!--</LinearLayout>-->
+
+            <LinearLayout style="@style/table_row" android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
+                <TextView style="@style/table_row_title" android:text="Blink color"
+                        android:layout_width="0dp" android:layout_weight="1"
+                        android:layout_marginRight="0dp" />
+                <TextView
+                        android:id="@+id/blink_color_f8ad13"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="14dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="24sp"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:background="@color/colorOrange"/>
+                <TextView
+                        android:id="@+id/blink_color_ff0000"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="24sp"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:background="@color/colorRed"/>
+                <TextView
+                        android:id="@+id/blink_color_0079BA"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="24sp"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:background="@color/colorReadonly2"/>
+                <TextView
+                        android:id="@+id/blink_color_888888"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="16dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="24sp"
+                        android:textColor="@color/colorWhite"
+                        android:textStyle="bold"
+                        android:background="@color/colorGray"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- OEE SERVER INFO -->
+    <LinearLayout
+            android:layout_width="540dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+<!--        <TextView style="@style/table_title" android:text="@string/title_work_sheet" />-->
+
+<!--        &lt;!&ndash; WorkSheet Name &ndash;&gt;-->
+<!--        <LinearLayout style="@style/table_row">-->
+<!--            <TextView style="@style/table_row_title" android:layout_width="210dp" android:text="@string/label_sop_name" />-->
+<!--            <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_sop_name" />-->
+<!--        </LinearLayout>-->
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                <TextView style="@style/table_title" android:text="@string/title_latest_version" />
+
+                <!-- Device Version -->
+                <LinearLayout style="@style/table_row">
+                    <TextView style="@style/table_row_title" android:layout_width="250dp" android:text="@string/label_device_version" />
+                    <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_device_version" />
+                </LinearLayout>
+                <!-- Latest Version -->
+                <LinearLayout style="@style/table_row">
+                    <TextView style="@style/table_row_title" android:layout_width="250dp" android:text="@string/label_server_version" />
+                    <TextView
+                            style="@style/table_row_data_readonly"
+                            android:id="@+id/tv_server_version"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"/>
+                    <Button
+                            android:id="@+id/btn_version_update"
+                            android:layout_width="140dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="3dp"
+                            android:gravity="center"
+                            android:background="@drawable/shape_blue_rectangle_button"
+                            android:stateListAnimator="@null"
+                            android:text="@string/start_update"
+                            android:textSize="22sp"
+                            android:textColor="#fff"
+                            android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+        <TextView style="@style/table_title" android:text="@string/title_special_options"/>
+
+        <!--                    <LinearLayout style="@style/table_row">-->
+        <!--                        <TextView style="@style/table_row_title" android:text="@string/label_send_stitch_count"-->
+        <!--                                  android:layout_width="370dp" />-->
+        <!--                        <LinearLayout-->
+        <!--                                android:layout_width="match_parent"-->
+        <!--                                android:layout_height="match_parent"-->
+        <!--                                android:gravity="center_vertical"-->
+        <!--                                android:background="@color/colorDefault">-->
+        <!--                            <Switch-->
+        <!--                                    android:id="@+id/sw_send_stitch_count"-->
+        <!--                                    android:layout_width="wrap_content"-->
+        <!--                                    android:layout_height="wrap_content"-->
+        <!--                                    android:layout_marginRight="60dp"-->
+        <!--                                    android:layout_marginLeft="12dp"-->
+        <!--                                    android:checked="false"/>-->
+        <!--                        </LinearLayout>-->
+        <!--                    </LinearLayout>-->
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_start_at_target_1"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_start_at_target_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_planned_count_process"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_planned_count_process"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_target_stop_when_downtime"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_target_stop_when_downtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_ask_when_clicking_defective"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_ask_when_clicking_defective"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_target_by_group"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_target_by_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_reverse_downtime_check"
+                    android:layout_width="400dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_reverse_downtime_check"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

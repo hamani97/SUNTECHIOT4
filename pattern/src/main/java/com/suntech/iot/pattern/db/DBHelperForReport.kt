@@ -37,20 +37,23 @@ class DBHelperForReport
     /**
      * This is an internal class that handles the creation of all database tables
      */
-    internal inner class DBHelperForReport(context: Context) : SQLiteOpenHelper(context, "report8.db", null, 1) {
+    internal inner class DBHelperForReport(context: Context) : SQLiteOpenHelper(context, "report.db", null, 1) {
 
         override fun onCreate(db: SQLiteDatabase) {
-            val sql = "create table report (" +
+            val sql="create table report (" +
                     "_id integer primary key autoincrement, " +
                     "date text, " +
                     "houly text, " +
                     "shift_idx text, " +
-                    "actual int default 0, " +
+                    "actual Float default 0, " +
                     "dt DATE default CURRENT_TIMESTAMP)"
 
             db.execSQL(sql)
         }
-        override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+        override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+            db.execSQL("drop table if exists report")
+            onCreate(db)
+        }
     }
 
     /**
@@ -68,7 +71,7 @@ class DBHelperForReport
             row.put("date", cur.getString(0))
             row.put("houly", cur.getString(1))
             row.put("shift_idx", cur.getString(2))
-            row.put("actual", cur.getInt(3))
+            row.put("actual", cur.getFloat(3))
             row.put("dt", cur.getString(4))
         }
         cur.close()
@@ -84,7 +87,7 @@ class DBHelperForReport
         val cur = db.rawQuery(sql, arrayOf(date, houly, shift_idx))
         if (cur.moveToNext()) {
             row.put("idx", cur.getString(0))
-            row.put("actual", cur.getInt(2))
+            row.put("actual", cur.getFloat(2))
             cur.close()
             db.close()
             return row
@@ -107,7 +110,7 @@ class DBHelperForReport
             row.put("date", cur.getString(1))
             row.put("houly", cur.getString(2))
             row.put("shift_idx", cur.getString(3))
-            row.put("actual", "" + cur.getInt(4))
+            row.put("actual", "" + cur.getFloat(4))
             row.put("dt", cur.getString(5))
             arr.add(row)
         }
@@ -126,7 +129,7 @@ class DBHelperForReport
             val row = HashMap<String, String>()
             row.put("idx", cur.getString(0))
             row.put("houly", cur.getString(1))
-            row.put("actual", "" + cur.getInt(2))
+            row.put("actual", "" + cur.getFloat(2))
             row.put("dt", cur.getString(3))
             arr.add(row)
         }
@@ -140,7 +143,7 @@ class DBHelperForReport
      * @param priority The priority value for the new row
      * @return The unique id of the newly added row
      */
-    fun add(date:String, houly:String, shift_idx:String, actual:Int): Long {
+    fun add(date:String, houly:String, shift_idx:String, actual:Float): Long {
         val db = _openHelper.writableDatabase ?: return 0
         val row = ContentValues()
         row.put("date", date)
@@ -153,7 +156,7 @@ class DBHelperForReport
         return id
     }
 
-    fun updateActual(_idx: String, actual:Int) {
+    fun updateActual(_idx: String, actual:Float) {
         val db = _openHelper.writableDatabase ?: return
         val row = ContentValues()
         row.put("actual", actual)

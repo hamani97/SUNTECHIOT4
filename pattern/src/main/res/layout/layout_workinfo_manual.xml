@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorBackground">
+
+    <TextView style="@style/table_title2" android:text="@string/title_available_info" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+        <TextView
+                style="@style/tab_btn_orange"
+                android:layout_width="430dp"
+                android:layout_marginLeft="180dp"
+                android:text="@string/list_item_work_time" />
+        <TextView
+                style="@style/tab_btn_on"
+                android:layout_width="430dp"
+                android:layout_marginLeft="50dp"
+                android:text="@string/list_item_planned_time" />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+        <LinearLayout
+                android:layout_width="430dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="180dp"
+                android:paddingVertical="8dp"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="64dp"
+                    android:text="@string/start"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="190dp"
+                    android:text="@string/end"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="21sp" />
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="430dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:paddingVertical="8dp"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="64dp"
+                    android:text="@string/start"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="190dp"
+                    android:text="@string/end"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="21sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 1 Shift -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:text="@string/list_item_shift1"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/et_setting_s_1_s_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_s_1_s_m" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <TextView android:id="@+id/et_setting_s_1_e_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_s_1_e_m" style="@style/work_info_manual_text" />
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="40dp"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/et_setting_p_1_s_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_p_1_s_m" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <TextView android:id="@+id/et_setting_p_1_e_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_p_1_e_m" style="@style/work_info_manual_text" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 2 Shift -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:text="@string/list_item_shift2"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/et_setting_s_2_s_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_s_2_s_m" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <TextView android:id="@+id/et_setting_s_2_e_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_s_2_e_m" style="@style/work_info_manual_text" />
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="40dp"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/et_setting_p_2_s_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_p_2_s_m" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <TextView android:id="@+id/et_setting_p_2_e_h" style="@style/work_info_manual_text" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <TextView android:id="@+id/et_setting_p_2_e_m" style="@style/work_info_manual_text" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 3 Shift -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:text="@string/list_item_shift3"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+            <EditText android:id="@+id/et_setting_s_3_s_h" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <EditText android:id="@+id/et_setting_s_3_s_m" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <EditText android:id="@+id/et_setting_s_3_e_h" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <EditText android:id="@+id/et_setting_s_3_e_m" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="450dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="40dp"
+                android:orientation="horizontal">
+            <EditText android:id="@+id/et_setting_p_3_s_h" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <EditText android:id="@+id/et_setting_p_3_s_m" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text="~" />
+            <EditText android:id="@+id/et_setting_p_3_e_h" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+            <TextView style="@style/work_info_manual_symbol" android:text=":" />
+            <EditText android:id="@+id/et_setting_p_3_e_m" style="@style/work_info_manual_edit" android:inputType="number" android:maxLength="2" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

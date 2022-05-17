@@ -5,7 +5,7 @@
               android:orientation="vertical" >
 
     <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingTop="10dp"
@@ -55,19 +55,11 @@
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text=""
-                android:textSize="20sp"
-                android:textColor="#333"/>
     </LinearLayout>
 
     <LinearLayout
             android:id="@+id/ll_downtime_block"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingBottom="4dp"
@@ -108,20 +100,11 @@
                 android:textSize="20sp"
                 android:textColor="#333"/>
 
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text=""
-                android:textSize="20sp"
-                android:textColor="#333"/>
-
     </LinearLayout>
 
     <LinearLayout
             android:id="@+id/ll_downtime_block2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
@@ -165,15 +148,6 @@
         <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text=""
-                android:textSize="20sp"
-                android:textColor="#333"/>
-
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
                 android:textSize="20sp"

@@ -13,9 +13,14 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_setting.*
+import kotlinx.android.synthetic.main.layout_setting_etc.*
+import kotlinx.android.synthetic.main.layout_setting_system.*
+import kotlinx.android.synthetic.main.layout_setting_target.*
 import kotlinx.android.synthetic.main.layout_top_menu_2.*
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 import java.util.*
 
 
@@ -35,9 +40,16 @@ class SettingActivity : BaseActivity() {
     private var _selected_mc_no_idx: String = ""
     private var _selected_mc_model_idx: String = ""
 
-    private var _server_time = -1000000L
+    private var _server_time = -99999999L
 
     private var is_loop = true
+
+    // Update 정보
+//    private var device_version = ""
+//    private var latest_version = ""
+//    private var latest_url = ""
+//    private var latest_path = ""
+//    private var latest_file = ""
 
     val _broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -102,8 +114,8 @@ class SettingActivity : BaseActivity() {
     }
 
     private fun checkUSB() {
-        if (usb_state != AppGlobal.instance._usb_state) {
-            usb_state = AppGlobal.instance._usb_state
+        if (usb_state != AppGlobal.instance.get_usb_connect()) {
+            usb_state = AppGlobal.instance.get_usb_connect()
             btn_usb_state2.isSelected = usb_state
         }
     }
@@ -111,12 +123,13 @@ class SettingActivity : BaseActivity() {
     private fun updateView() {
         val now = DateTime.now()
         tv_setting_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
-        if (_server_time == -1000000L) {
+        if (_server_time == -99999999L) {
             tv_setting_server_time?.text = "Failed to get server time"
         } else if (_server_time == 0L) {
-            tv_setting_server_time?.text = now.toString("yyyy-MM-dd HH:mm:ss")
+            tv_setting_server_time?.text = tv_setting_time?.text
         } else {
-            tv_setting_server_time?.text = (now + _server_time).toString("yyyy-MM-dd HH:mm:ss")
+            val dt = now.millis + _server_time
+            tv_setting_server_time?.text = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(dt)
         }
     }
 
@@ -127,7 +140,7 @@ class SettingActivity : BaseActivity() {
         // system setting
         // set hidden value
         _selected_factory_idx = AppGlobal.instance.get_factory_idx()
-        _selected_room_idx = AppGlobal.instance.get_room_idx()
+        _selected_room_idx = AppGlobal.instance.get_zone_idx()
         _selected_line_idx = AppGlobal.instance.get_line_idx()
         _selected_mc_no_idx = AppGlobal.instance.get_mc_no_idx()
         _selected_mc_model_idx = AppGlobal.instance.get_mc_model_idx()
@@ -137,10 +150,10 @@ class SettingActivity : BaseActivity() {
         tv_setting_ip.text = AppGlobal.instance.get_local_ip()
         tv_setting_mac.text = AppGlobal.instance.getMACAddress()
         tv_setting_factory.text = AppGlobal.instance.get_factory()
-        tv_setting_room.text = AppGlobal.instance.get_room()
+        tv_setting_room.text = AppGlobal.instance.get_zone()
         tv_setting_line.text = AppGlobal.instance.get_line()
         tv_setting_mc_model.text = AppGlobal.instance.get_mc_model()
-        tv_setting_mc_no1.setText(AppGlobal.instance.get_mc_no1())
+        tv_setting_mc_no1.setText(AppGlobal.instance.get_mc_no())
         et_setting_mc_serial.setText(AppGlobal.instance.get_mc_serial())
 
         et_setting_server_ip?.setText(AppGlobal.instance.get_server_ip())
@@ -161,8 +174,8 @@ class SettingActivity : BaseActivity() {
         sw_planned_count_process.isChecked = AppGlobal.instance.get_planned_count_process()
         sw_target_stop_when_downtime.isChecked = AppGlobal.instance.get_target_stop_when_downtime()
         sw_ask_when_clicking_defective.isChecked = AppGlobal.instance.get_ask_when_clicking_defective()
-        sw_piece_pair_count_edit.isChecked = AppGlobal.instance.get_piece_pair_count_edit()
         sw_target_by_group.isChecked = AppGlobal.instance.get_target_by_group()
+        sw_reverse_downtime_check.isChecked = AppGlobal.instance.get_reverse_downtime_check()
 
         val start_target = AppGlobal.instance.get_start_at_target()
         if (start_target==0) sw_start_at_target_1.isChecked = false
@@ -248,6 +261,12 @@ class SettingActivity : BaseActivity() {
             }
         }
 
+        // Update button click
+        btn_version_update.setOnClickListener {
+            ToastOut(this, "준비중인 서비스 입니다.", true)
+//            startActivity(Intent(this, DownloadApkFile::class.java))
+        }
+
         // Save button click
         btn_setting_confirm.setOnClickListener {
             saveSettingData()
@@ -259,11 +278,8 @@ class SettingActivity : BaseActivity() {
             finish()
         }
 
-        if (AppGlobal.instance.isOnline(this)) btn_wifi_state.isSelected = true
-        else btn_wifi_state.isSelected = false
-
-        if (AppGlobal.instance._server_state) btn_server_state.isSelected = true
-        else btn_server_state.isSelected = false
+        btn_wifi_state.isSelected = AppGlobal.instance.isOnline(this)
+        btn_server_state.isSelected = AppGlobal.instance.get_server_connect()
 
         // TODO: TEST
         // 10.10.10.90
@@ -271,19 +287,22 @@ class SettingActivity : BaseActivity() {
         // 115.68.227.31
         // 183.81.156.206 : inni
         // 36.66.169.221 (8124)
-        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("115.68.227.31")
+        if (et_setting_server_ip.text.toString() == "") et_setting_server_ip.setText("10.10.10.90")
         if (et_setting_port.text.toString() == "") et_setting_port.setText("80")
 
+//        device_version = packageManager.getPackageInfo(packageName, 0).versionName
+//
+//        tv_device_version?.text = device_version
+
         fetchServerTime()
+//        fetchLatestVersion()
     }
 
     private fun checkServer() {
         val url = "http://"+ et_setting_server_ip.text.toString()
         val port = et_setting_port.text.toString()
         val uri = "/ping.php"
-        var params = listOf("" to "")
-
-        request(this, url, port, uri, false, false,false, params, { result ->
+        request(this, url, port, uri, false, false,false, null, { result ->
             var code = result.getString("code")
             ToastOut(this, result.getString("msg"), true)
             if (code == "00") {
@@ -299,29 +318,54 @@ class SettingActivity : BaseActivity() {
 
     private fun fetchServerTime() {
 
-        val currentTimeMillisStart = System.currentTimeMillis()
-
         val url = "http://"+ et_setting_server_ip.text.toString()
         val port = et_setting_port.text.toString()
         val uri = "/getlist1.php"
-        var params = listOf("code" to "current_time")
-
+        val params = listOf("code" to "current_time")
         request(this, url, port, uri, false, false,false, params, { result ->
-            var code = result.getString("code")
+            val code = result.getString("code")
             if (code == "00") {
-//                val curdatetime = result.getString("curdatetime")
-                val curtimestamp = result.getString("curtimestamp").toLong()
-                if (curtimestamp != null) {
-                    val now = System.currentTimeMillis()
-                    val millis = now - currentTimeMillisStart
-                    _server_time = curtimestamp - now + millis
-                    Log.e("time","time ================> " + _server_time)
+                val curdatetime = result.getString("curdatetime")?: ""
+                if (curdatetime != "") {
+                    val server_dt = OEEUtil.parseDateTime(curdatetime).millis
+                    val device_dt = DateTime.now().millis
+                    _server_time = server_dt - device_dt
+
+                    Log.e("Time","Distance Time ================> " + _server_time)
                 }
             }
         }, {
             ToastOut(this, R.string.msg_connection_fail, true)
         })
     }
+
+//    private fun fetchLatestVersion() {
+//
+//        val url = "http://"+ et_setting_server_ip.text.toString()
+//        val port = et_setting_port.text.toString()
+//        val uri = "/version.php"
+//        val params = listOf("code" to "pattern_hwaseung")
+//        request(this, url, port, uri, false, false,false, params, { result ->
+//            val code = result.getString("code")
+//            if (code == "00") {
+//                latest_version = result.getString("version")?: ""
+//                latest_url = result.getString("url")?: ""
+//                latest_path = result.getString("path")?: ""
+//                latest_file = result.getString("file")?: ""
+//
+//                tv_server_version?.text = latest_version
+//
+//                val device_code = device_version.replace(".", "").toInt()
+//                val server_code = latest_version.replace(".", "").toInt()
+//
+//                btn_version_update?.visibility =
+//                    if (device_code < server_code) View.VISIBLE else View.GONE
+//
+//            }
+//        }, {
+//            ToastOut(this, R.string.msg_connection_fail)
+//        })
+//    }
 
     private fun saveSettingData() {
         // check value
@@ -361,16 +405,16 @@ class SettingActivity : BaseActivity() {
 
         // setting value
         AppGlobal.instance.set_factory_idx(_selected_factory_idx)
-        AppGlobal.instance.set_room_idx(_selected_room_idx)
+        AppGlobal.instance.set_zone_idx(_selected_room_idx)
         AppGlobal.instance.set_line_idx(_selected_line_idx)
         AppGlobal.instance.set_mc_no_idx(_selected_mc_no_idx)
         AppGlobal.instance.set_mc_model_idx(_selected_mc_model_idx)
 
         AppGlobal.instance.set_factory(tv_setting_factory.text.toString())
-        AppGlobal.instance.set_room(tv_setting_room.text.toString())
+        AppGlobal.instance.set_zone(tv_setting_room.text.toString())
         AppGlobal.instance.set_line(tv_setting_line.text.toString())
         AppGlobal.instance.set_mc_model(tv_setting_mc_model.text.toString())
-        AppGlobal.instance.set_mc_no1(tv_setting_mc_no1.text.toString())
+        AppGlobal.instance.set_mc_no(tv_setting_mc_no1.text.toString())
         AppGlobal.instance.set_mc_serial(et_setting_mc_serial.text.toString())
 
         AppGlobal.instance.set_server_ip(et_setting_server_ip.text.toString())
@@ -395,8 +439,8 @@ class SettingActivity : BaseActivity() {
         AppGlobal.instance.set_planned_count_process(sw_planned_count_process.isChecked)
         AppGlobal.instance.set_target_stop_when_downtime(sw_target_stop_when_downtime.isChecked)
         AppGlobal.instance.set_ask_when_clicking_defective(sw_ask_when_clicking_defective.isChecked)
-        AppGlobal.instance.set_piece_pair_count_edit(sw_piece_pair_count_edit.isChecked)
         AppGlobal.instance.set_target_by_group(sw_target_by_group.isChecked)
+        AppGlobal.instance.set_reverse_downtime_check(sw_reverse_downtime_check.isChecked)
 
         // count setting
 //        AppGlobal.instance.set_trim_qty(tv_trim_qty.text.toString())

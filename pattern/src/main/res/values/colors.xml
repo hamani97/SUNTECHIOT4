@@ -21,12 +21,12 @@
     <color name="colorBackground">#1c2c39</color>
     <color name="colorBackground2">#16222a</color>
     <color name="colorBackgroundTop">#192533</color>
-    <color name="colorBackgroundSide">#192533</color>
+    <color name="colorBackgroundSide">#15202e</color>
 
     <color name="colorReadonly">#4d4d4d</color>
     <color name="colorReadonly2">#0079BA</color>
     <color name="colorSelector">#8d4dab</color>
-    <color name="colorEditor1">#87c947</color>
+    <color name="colorEditor1">#70b330</color>
     <color name="colorEditor2">#333E4D</color>
     <color name="colorEditor1Readonly">#628B51</color>
 

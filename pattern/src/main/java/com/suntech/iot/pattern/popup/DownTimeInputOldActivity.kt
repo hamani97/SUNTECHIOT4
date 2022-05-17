@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.db.DBHelperForDownTime
@@ -97,7 +99,7 @@ class DownTimeInputOldActivity : BaseActivity() {
         val now = DateTime()
         var down_time = 0
         var real_down_time = 0
-        var target = 0
+        var target = 0f
 
         val item = _db.get(idx)
         if (item != null) {
@@ -122,7 +124,7 @@ class DownTimeInputOldActivity : BaseActivity() {
             real_down_time = down_time - planned1_time - planned2_time      // 휴식시간을 뺀 실제 다운타임
 
             val ct = AppGlobal.instance.get_cycle_time()
-            if (ct > 0) target = real_down_time / ct
+            if (ct > 0) target = real_down_time.toFloat() / ct
         }
 
         val downtime = _list[_selected_idx]["idx"]
@@ -132,6 +134,7 @@ class DownTimeInputOldActivity : BaseActivity() {
             "code" to "end",
             "idx" to AppGlobal.instance.get_downtime_idx(),
             "downtime" to downtime,
+            "worker" to AppGlobal.instance.get_worker_no(),
             "edate" to now.toString("yyyy-MM-dd"),
             "etime" to now.toString("HH:mm:ss"))
 
@@ -191,7 +194,7 @@ class DownTimeInputOldActivity : BaseActivity() {
                 "sdate" to dt.toString("yyyy-MM-dd"),
                 "stime" to dt.toString("HH:mm:ss"),
                 "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-                "factory_idx" to AppGlobal.instance.get_room_idx(),
+                "factory_idx" to AppGlobal.instance.get_zone_idx(),
                 "line_idx" to AppGlobal.instance.get_line_idx(),
                 "shift_idx" to shift_idx,
                 "seq" to seq)

@@ -34,9 +34,10 @@ class WatchingActivity : BaseActivity() {
 
         // Downtime DB Clear
         btn_delete_downtime.setOnClickListener {
-            var down_db = DBHelperForDownTime(this)
+            val down_db = DBHelperForDownTime(this)
             down_db.delete()
-            AppGlobal.instance.set_last_received("")
+            AppGlobal.instance.set_last_count_received("")
+            AppGlobal.instance.set_first_count(false)
             ToastOut(this, "All downtime data has been deleted.", true)
         }
 
@@ -46,10 +47,26 @@ class WatchingActivity : BaseActivity() {
     }
 
     private fun updateView() {
-        var value = "Design Data : \n\n"
+        val version = packageManager.getPackageInfo(packageName, 0).versionName
+        var value = "Server = " + AppGlobal.instance.get_server_ip() + ":" + AppGlobal.instance.get_server_port() + "  (v${version})\n"
 
-        var db = DBHelperForDesign(this)
-        _list_design = db.gets() ?: _list_design
+        value += "DownTime Type : " + AppGlobal.instance.get_downtime_type() + "\n"
+        value += "DownTime Second : "
+
+        if (AppGlobal.instance.get_downtime_type() == "Cycle Time") {
+            val pieces_cnt = AppGlobal.instance.get_pieces_value()
+            val downtime_time = AppGlobal.instance.get_downtime_sec().toInt()
+            val total_downtime = downtime_time * pieces_cnt
+            value += "${total_downtime} ( = ${downtime_time} * ${pieces_cnt} )"
+        } else {
+            value += AppGlobal.instance.get_downtime_sec()
+        }
+        value += "\n\n"
+
+        value += "Design Data : \n\n"
+
+        val design_db = DBHelperForDesign(this)
+        _list_design = design_db.gets() ?: _list_design
 
         for (i in 0..(_list_design.size - 1)) {
             val item = _list_design[i]
@@ -59,18 +76,18 @@ class WatchingActivity : BaseActivity() {
         value += "\n"
         value += "Downtime Data : \n\n"
 
-        var _db = DBHelperForDownTime(this)
-        _list_down = _db.gets() ?: _list_down
+        var down_db = DBHelperForDownTime(this)
+        _list_down = down_db.gets() ?: _list_down
 
         // Downtime
         var down_time = 0
-        var down_target = 0
+        var down_target = 0f
 
         _list_down?.forEach { item ->
             value = value + item?.toString() + "\n"
 
             down_time += item["real_millis"].toString().toInt()
-            down_target += item["target"].toString().toInt()
+            down_target += item["target"].toString().toFloat()
         }
 
 //        for (i in 0..(_list.size - 1)) {
@@ -86,15 +103,15 @@ class WatchingActivity : BaseActivity() {
 
 //            val work_idx = AppGlobal.instance.get_product_idx()
 
-            var total_target = 0            // 현시점까지 타겟
-            var total_actual = 0            // 현시점까지 액추얼
+            var total_target = 0f            // 현시점까지 타겟
+            var total_actual = 0f            // 현시점까지 액추얼
 
-            for (i in 0..((_list_design?.size ?: 1) - 1)) {
+            for (i in 0..((_list_design.size ?: 1) - 1)) {
 
-                val item = _list_design?.get(i)
+                val item = _list_design.get(i)
 //                val work_idx2 = item?.get("work_idx").toString()
 //                val actual2 = item?.get("actual").toString().toInt()
-                val target2 = item?.get("target").toString().toInt()
+                val target2 = item.get("target").toString().toFloat()
 
 //                total_actual += actual2
 
@@ -159,16 +176,16 @@ class WatchingActivity : BaseActivity() {
 //            }
 //            val performance_rate = floor(performance * 1000) / 10
 
-            val performance = if (total_target - down_target > 0) total_actual.toFloat() / (total_target - down_target) else 0F
+            val performance = if (total_target - down_target > 0f) total_actual / (total_target - down_target) else 0F
 
             value += "Performance = $total_actual / ($total_target - $down_target) = $performance\n"
 
 
             // Quality Check
-            var defective_count = db.sum_defective_count()
+            var defective_count = design_db.sum_defective_count()
             if (defective_count==null || defective_count<0) defective_count = 0
 
-            val quality = if (total_actual != 0) (total_actual - defective_count).toFloat() / total_actual else 0F
+            val quality = if (total_actual != 0f) (total_actual - defective_count) / total_actual else 0F
 //            val quality_rate = floor(quality * 1000) / 10
 
             value += "Quality = ($total_actual - $defective_count) / $total_actual = $quality\n"

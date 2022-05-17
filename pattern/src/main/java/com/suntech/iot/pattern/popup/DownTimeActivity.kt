@@ -38,8 +38,7 @@ class DownTimeActivity : BaseActivity() {
         setContentView(R.layout.activity_down_time)
 
         btn_confirm.setOnClickListener {
-            val count = _db.counts_for_notcompleted()
-            if (count>0) {
+            if (_db.count_for_notcompleted() > 0) {
                 ToastOut(this, R.string.msg_has_notcompleted, true)
                 return@setOnClickListener
             }
@@ -47,17 +46,18 @@ class DownTimeActivity : BaseActivity() {
         }
 
         lv_downtimes.setOnItemClickListener { adapterView, view, i, l ->
+            val local_id = _list[i]["_id"].toString()
             val idx = _list[i]["idx"].toString()
             val start_dt = _list[i]["start_dt"].toString()
             val completed = _list[i]["completed"]
             if (completed=="Y") return@setOnItemClickListener
 
             val intent = Intent(this, DownTimeInputActivity::class.java)
-            intent.putExtra("idx", idx)
+            intent.putExtra("idx", local_id)
             intent.putExtra("start_dt", start_dt)
             startActivity(intent, { r, c, m, d ->
                 if (r) {
-                    if (_db.counts_for_notcompleted() > 0) updateView()
+                    if (_db.count_for_notcompleted() > 0) updateView()
                     else finish()
                 }
             })
@@ -86,43 +86,66 @@ class DownTimeActivity : BaseActivity() {
         cancel_timer()
     }
 
+    override fun onBackPressed() {
+        if (_db.count_for_notcompleted() > 0) {
+            ToastOut(this, R.string.msg_has_notcompleted, true)
+            return
+        }
+        super.onBackPressed()
+    }
+
     private fun updateView() {
         _list = _db.gets() ?: _list
         list_adapter = ListAdapter(this, _list)
         lv_downtimes.adapter = list_adapter
 
-        var total_downtime = 0
-        var total_planned = 0
+        // 통계 (하단3줄)
+//        var total_downtime = 0
+        var total_downtime_sec = 0
+        var total_planned_sec = 0
+
         Log.e("DownTime", "---------------------------------------")
+
         _list?.forEach { item ->
             item.put("downtime", "")
-            val start_dt = OEEUtil.parseDateTime(item["start_dt"])
-            if (item["end_dt"]!=null) {
+            if (item["end_dt"] != null) {
+                val start_dt = OEEUtil.parseDateTime(item["start_dt"])
                 val end_dt = OEEUtil.parseDateTime(item["end_dt"])
                 val realtime = item["real_millis"].toString().toInt()
 
-                var dif = end_dt.millis - start_dt.millis
-                val downtime = (dif / 1000 / 60 ).toInt()
-                total_downtime += downtime
+                val dif = end_dt.millis - start_dt.millis   // 총시간(밀리초)
+                val total_sec = (dif / 1000).toInt()
+                val min = total_sec / 60
+                val sec = total_sec % 60
 
-                val plannedtime = (dif / 1000).toInt() - realtime
-                total_planned += plannedtime
+                item.set("downtime", "${min}m ${sec}s")
 
-                item.set("downtime", downtime.toString()+ " min")
+                total_downtime_sec += total_sec
+                total_planned_sec += (total_sec - realtime) // 총 휴식시간(초)
             }
             Log.e("DownTime", "" + item.toString())
         }
-        total_planned = total_planned / 60
+        val min2 = total_downtime_sec / 60
+        val sec2 = total_downtime_sec % 60
 
-        tv_item_downtime_total?.text = "" + total_downtime + " min"
-        tv_item_downtime_total1?.text = "-" + total_planned + " min"
-        tv_item_downtime_total2?.text = "" + (total_downtime - total_planned) + " min"
+        tv_item_downtime_total?.text = "${min2}m ${sec2}s"
+
+        val p_min = total_planned_sec / 60
+        val p_sec = total_planned_sec % 60
+
+        tv_item_downtime_total1?.text = "-${p_min}m ${p_sec}s"
+
+        val final = total_downtime_sec - total_planned_sec
+        val f_min = final / 60
+        val f_sec = final % 60
+
+        tv_item_downtime_total2?.text = "${f_min}m ${f_sec}s"
     }
 
     var blink_cnt = 0
 
     private fun checkBlink() {
-        val count = _db.counts_for_notcompleted()
+        val count = _db.count_for_notcompleted()
         if (AppGlobal.instance.get_screen_blink()) blink_cnt = 1 - blink_cnt
 
         if (count > 0 && blink_cnt==1) {

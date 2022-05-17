@@ -15,7 +15,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:background="@color/colorBackground">
 
             <LinearLayout
@@ -44,7 +44,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="16dp"
-                            android:text="for Pattern"
+                            android:text="Pattern for Hwaseung"
                             android:textSize="26sp"
                             android:textColor="@color/colorWhite"/>
 
@@ -52,7 +52,7 @@
                             android:id="@+id/tv_app_version"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="30dp"
+                            android:layout_marginLeft="20dp"
                             android:text="."
                             android:textSize="26sp"
                             android:textColor="@color/colorWhite"/>

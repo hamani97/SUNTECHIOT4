@@ -59,7 +59,7 @@ class ActualCountEditActivity : BaseActivity() {
         tv_item_row1?.text = ""
         tv_item_row2?.text = ""
 
-        var db = DBHelperForDesign(this)
+        val db = DBHelperForDesign(this)
         _list = db.gets() ?: _list
 
         list_adapter = ProductListActivity.ListActualAdapter(this, _list)
@@ -67,8 +67,8 @@ class ActualCountEditActivity : BaseActivity() {
 
 //        val target_type = AppGlobal.instance.get_target_type()          // setting menu 메뉴에서 선택한 타입
 
-        var total_target = 0
-        var total_actual = 0
+        var total_target = 0f
+        var total_actual = 0f
         var total_defective = 0
 //        var total_product_rate = 0
 //        var total_quality_rate = 0
@@ -80,24 +80,24 @@ class ActualCountEditActivity : BaseActivity() {
             val item = _list[i]
             val start_dt_txt = item["start_dt"]
             val end_dt_txt = item["end_dt"]
-            var start_dt = OEEUtil.parseDateTime(start_dt_txt)
-            var end_dt = if (end_dt_txt==null) DateTime() else OEEUtil.parseDateTime(end_dt_txt)
+            val start_dt = OEEUtil.parseDateTime(start_dt_txt)
+            val end_dt = if (end_dt_txt==null) DateTime() else OEEUtil.parseDateTime(end_dt_txt)
 
             Log.e("Actual Qty Edit", item.toString())
 
-            var dif = end_dt.millis - start_dt.millis
-
-            var target = item["target"]?.toInt() ?: 0
-            val actual = item["actual"]?.toInt() ?: 0
-            val defective = item["defective"]?.toInt() ?: 0
-            var product_rate = ((actual.toFloat()/target.toFloat()) *100).toInt().toString()+ "%"
-//            var quality_rate = (((actual.toFloat()-defective)/actual.toFloat()) *100).toInt().toString()+ "%"
-            val tmp_rate = if (actual > 0) ((actual-defective).toFloat() / actual.toFloat()) * 100 else 0.0f
-            var quality_rate = String.format("%.1f", tmp_rate)
-            quality_rate = quality_rate.replace(",", ".") + "%"//??
+            val dif = end_dt.millis - start_dt.millis
             val work_time = (dif / 1000 / 60 ).toInt()
-            if (target==0) product_rate = "N/A"
-            if (target==0) quality_rate = "N/A"
+
+            val target = item["target"]?.toFloat() ?: 0f
+            val actual = item["actual"]?.toFloat() ?: 0f
+            val defective = item["defective"]?.toInt() ?: 0
+            val tmp_rate = if (actual > 0) ((actual-defective) / actual) * 100 else 0.0f
+            val product_rate = if (target==0f) "N/A" else ((actual/target) *100).toInt().toString()+ "%"
+            val quality_rate = if (target==0f) "N/A" else String.format("%.1f", tmp_rate).replace(",", ".") + "%"
+//            var quality_rate = String.format("%.1f", tmp_rate)
+//            quality_rate = quality_rate.replace(",", ".") + "%"
+//            if (target==0f) product_rate = "N/A"
+//            if (target==0f) quality_rate = "N/A"
 
             total_target += target
             total_actual += actual
@@ -126,7 +126,7 @@ class ActualCountEditActivity : BaseActivity() {
             item.put("work_time", "" +  work_time + " min")
         }
 
-        tv_item_row1?.text = "" +  total_work_time + " min"
+        tv_item_row1?.text = "" + total_work_time + " min"
         tv_item_row3?.text = total_target.toString()
         tv_item_row4?.text = total_actual.toString()
         tv_item_row5?.text = "-"
@@ -137,19 +137,14 @@ class ActualCountEditActivity : BaseActivity() {
         if (AppGlobal.instance.get_target_stop_when_downtime()) {
             // Downtime
             val down_db = DBHelperForDownTime(this)
-            val down_list = down_db.gets()
-            var down_target = 0
-            var real_millis = 0
-            down_list?.forEach { item ->
-                down_target += item["target"].toString().toInt()
-                real_millis += item["real_millis"].toString().toInt()
-            }
+            val down_target = down_db.sum_target_count()
+            val real_millis = down_db.sum_real_millis_count()
             val final_target = total_target - down_target
 
             ll_downtime_block?.visibility = View.VISIBLE
             ll_downtime_block2?.visibility = View.VISIBLE
             tv_item_row11?.text = "" + (real_millis / 60) + " min"
-            tv_item_row13?.text = if (down_target != 0) "-" + down_target.toString() else down_target.toString()
+            tv_item_row13?.text = if (down_target > 0f) "-" + down_target.toString() else down_target.toString()
             tv_item_row23?.text = final_target.toString()
             tv_item_row24?.text = total_actual.toString()
             tv_item_row26?.text = total_defective.toString()

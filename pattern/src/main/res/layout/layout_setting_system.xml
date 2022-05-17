@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorBackground">
+
+    <LinearLayout
+            android:layout_width="540dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+        <TextView style="@style/table_title" android:text="@string/title_counter_device_info" />
+
+        <!-- WiFi -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_wifi" />
+            <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_wifi" />
+        </LinearLayout>
+
+        <!-- IP -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_ip" />
+            <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_ip" />
+        </LinearLayout>
+
+        <!-- MAC -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_mac" />
+            <TextView style="@style/table_row_data_readonly" android:id="@+id/tv_setting_mac" />
+        </LinearLayout>
+
+        <!-- Factory -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_factory" />
+            <TextView style="@style/table_row_data_selector" android:id="@+id/tv_setting_factory" />
+        </LinearLayout>
+
+        <!-- Room -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_room" />
+            <TextView style="@style/table_row_data_selector" android:id="@+id/tv_setting_room" />
+        </LinearLayout>
+
+        <!-- Line -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_line" />
+            <TextView style="@style/table_row_data_selector" android:id="@+id/tv_setting_line" />
+        </LinearLayout>
+
+        <!-- MC Model -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_mc_model" />
+            <TextView style="@style/table_row_data_selector" android:id="@+id/tv_setting_mc_model" />
+        </LinearLayout>
+
+        <!-- MC No -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_mc_no" />
+            <EditText style="@style/table_row_data_editor1" android:id="@+id/tv_setting_mc_no1" />
+        </LinearLayout>
+
+        <!-- MC Serial -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_mc_serial" />
+            <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_mc_serial" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- OEE SERVER INFO -->
+    <LinearLayout
+            android:layout_width="540dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView style="@style/table_title" android:text="@string/title_server_info" />
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_server_ip" />
+            <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_server_ip" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_server_port" />
+            <EditText style="@style/table_row_data_editor1"
+                    android:id="@+id/et_setting_port"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:inputType="number" />
+            <Button
+                    android:id="@+id/btn_setting_check_server"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center"
+                    android:background="@drawable/shape_orange_rectangle_button"
+                    android:stateListAnimator="@null"
+                    android:text="@string/check"
+                    android:textSize="22sp"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView style="@style/table_title" android:text="@string/title_etc"
+                android:layout_height="43dp" android:layout_marginTop="30dp" />
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_long_touch_enable"
+                    android:layout_width="300dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_long_touch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_message_enable"
+                    android:layout_width="300dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_message_enable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_sound_at_count"
+                    android:layout_width="300dp" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorDefault">
+                <Switch
+                        android:id="@+id/sw_sound_at_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:checked="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--<LinearLayout style="@style/table_row">-->
+        <!--<TextView style="@style/table_row_title" android:text="Works without Component"-->
+        <!--android:layout_width="300dp" />-->
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/colorDefault">-->
+        <!--<Switch-->
+        <!--android:id="@+id/sw_without_component"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="12dp"-->
+        <!--android:checked="false"/>-->
+        <!--</LinearLayout>-->
+        <!--</LinearLayout>-->
+
+        <!-- Worksheet display time -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title" android:text="@string/label_worksheet_display_time"
+                    android:layout_width="300dp"/>
+            <EditText style="@style/table_row_data_editor1"
+                    android:id="@+id/et_setting_worksheet_display_time"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="5" android:inputType="number" />
+            <TextView style="@style/table_row_title"
+                    android:text="@string/label_seconds"
+                    android:layout_width="0dp" android:layout_weight="1"/>
+        </LinearLayout>
+
+        <!-- Worksheet Name -->
+        <LinearLayout style="@style/table_row">
+            <TextView style="@style/table_row_title"
+                    android:layout_width="300dp" android:text="@string/label_sop_name" />
+            <EditText style="@style/table_row_data_editor1" android:id="@+id/et_setting_sop_name" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

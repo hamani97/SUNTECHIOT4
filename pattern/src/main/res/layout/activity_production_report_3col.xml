@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -13,8 +13,8 @@
             android:background="@color/colorBackground">
 
         <include layout="@layout/layout_top_menu_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content" />
 
         <LinearLayout
                 android:layout_width="wrap_content"
@@ -57,40 +57,65 @@
                 android:layout_width="1080dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
-            <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginRight="10dp"
-                    android:orientation="vertical">
-                <ListView
-                        android:id="@+id/lv_reports"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:divider="@color/colorWhite"
-                        android:dividerHeight="0dp" />
-            </LinearLayout>
+        <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="10dp"
-                    android:orientation="vertical">
-                <ListView
-                        android:id="@+id/lv_reports2"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:divider="@color/colorWhite"
-                        android:dividerHeight="0dp" />
+                    android:gravity="left"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                <LinearLayout
+                        android:layout_width="525dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="15dp"
+                        android:orientation="vertical">
+                    <ListView
+                            android:id="@+id/lv_reports"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:divider="@color/colorWhite"
+                            android:dividerHeight="0dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="525dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:orientation="vertical">
+                    <ListView
+                            android:id="@+id/lv_reports2"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:divider="@color/colorWhite"
+                            android:dividerHeight="0dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="525dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="15dp"
+                        android:orientation="vertical">
+                    <ListView
+                            android:id="@+id/lv_reports3"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:divider="@color/colorWhite"
+                            android:dividerHeight="0dp" />
+                </LinearLayout>
+
             </LinearLayout>
+
+        </HorizontalScrollView>
 
         </LinearLayout>
 

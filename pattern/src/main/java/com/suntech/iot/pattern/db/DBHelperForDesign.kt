@@ -39,7 +39,7 @@ class DBHelperForDesign
         internal inner class SimpleSQLiteOpenHelper(context: Context) : SQLiteOpenHelper(context, "design.db", null, 1) {
 
             override fun onCreate(db: SQLiteDatabase) {
-                val sql = "create table design (_id integer primary key autoincrement, " +
+                val sql="create table design (_id integer primary key autoincrement, " +
                         "work_idx text, " +
                         "design_idx text, " +
                         "shift_id text, " +
@@ -47,9 +47,9 @@ class DBHelperForDesign
                         "cycle_time int, " +
                         "pieces_info text, " +
                         "pairs_info text, " +
-                        "target int, " +
-                        "target_no_contraint int, " +
-                        "actual int, " +
+                        "target float, " +
+                        "actual float, " +
+                        "actual_no int default 0, " +        // Actual 이 몇번 발생했는지. 재계산할때 필요.
                         "defective int, " +
                         "seq int," +
                         "start_dt DATE default CURRENT_TIMESTAMP, " +
@@ -58,7 +58,10 @@ class DBHelperForDesign
                 db.execSQL(sql)
             }
 
-            override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+            override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+                db.execSQL("drop table if exists design")
+                onCreate(db)
+            }
         }
 
         /**
@@ -69,7 +72,7 @@ class DBHelperForDesign
         operator fun get(id: String): ContentValues? {
             val db = _openHelper.readableDatabase ?: return null
             val row = ContentValues()
-            val sql = "select work_idx, design_idx, shift_id, shift_name, cycle_time, pieces_info, pairs_info, target, target_no_contraint, actual, defective, seq, start_dt, end_dt " +
+            val sql = "select work_idx, design_idx, shift_id, shift_name, cycle_time, pieces_info, pairs_info, target, actual, actual_no, defective, seq, start_dt, end_dt " +
                     "from design where work_idx = ?"
             val cur = db.rawQuery(sql, arrayOf(id.toString()))
             if (cur.moveToNext()) {
@@ -80,9 +83,9 @@ class DBHelperForDesign
                 row.put("cycle_time", cur.getString(4))
                 row.put("pieces_info", cur.getString(5))
                 row.put("pairs_info", cur.getString(6))
-                row.put("target", cur.getInt(7))
-                row.put("target_no_contraint", cur.getInt(8))
-                row.put("actual", cur.getInt(9))
+                row.put("target", cur.getFloat(7))
+                row.put("actual", cur.getFloat(8))
+                row.put("actual_no", cur.getInt(9))
                 row.put("defective", cur.getInt(10))
                 row.put("seq", cur.getInt(11))
                 row.put("start_dt", cur.getString(12))
@@ -100,8 +103,7 @@ class DBHelperForDesign
         fun gets():  ArrayList<HashMap<String, String>>? {
             var arr = ArrayList<HashMap<String, String>>()
             val db = _openHelper.readableDatabase ?: return null
-
-            val sql = "select work_idx, design_idx, shift_id, shift_name, cycle_time, pieces_info, pairs_info, target, target_no_contraint, actual, defective, seq, start_dt, end_dt " +
+            val sql = "select work_idx, design_idx, shift_id, shift_name, cycle_time, pieces_info, pairs_info, target, actual, actual_no, defective, seq, start_dt, end_dt " +
                     "from design "
             val cur = db.rawQuery(sql, arrayOf())
             while (cur.moveToNext()) {
@@ -113,9 +115,9 @@ class DBHelperForDesign
                 row.put("cycle_time", cur.getString(4))
                 row.put("pieces_info", cur.getString(5))
                 row.put("pairs_info", cur.getString(6))
-                row.put("target", cur.getString(7))
-                row.put("target_no_contraint", cur.getString(8))
-                row.put("actual", cur.getString(9))
+                row.put("target", ""+cur.getFloat(7))
+                row.put("actual", ""+cur.getFloat(8))
+                row.put("actual_no", ""+cur.getInt(9))
                 row.put("defective", cur.getString(10))
                 row.put("seq", cur.getString(11))
                 row.put("start_dt", cur.getString(12))
@@ -160,13 +162,24 @@ class DBHelperForDesign
         }
 
         fun sum_defective_count(): Int {
-            val db = _openHelper.readableDatabase ?: return -1
+            val db = _openHelper.readableDatabase ?: return 0
             val sql = "select sum(defective) as cnt from design "
             val cur = db.rawQuery(sql, arrayOf())
-            var cnt = 0
-            if (cur.moveToNext()) {
-                cnt = cur.getInt(0)
-            }
+            val cnt =
+                if (cur.moveToNext()) cur.getInt(0)
+                else 0
+            cur.close()
+            db.close()
+            return cnt
+        }
+
+        fun sum_target_count(): Float {
+            val db = _openHelper.readableDatabase ?: return 0f
+            val sql = "select sum(target) as cnt from design "
+            val cur = db.rawQuery(sql, arrayOf())
+            val cnt =
+                if (cur.moveToNext()) cur.getFloat(0)
+                else 0f
             cur.close()
             db.close()
             return cnt
@@ -185,7 +198,7 @@ class DBHelperForDesign
             return cnt
         }
 
-        fun add(work_idx: String, start_dt: String, design_idx: String, shift_id:String, shift_name:String, cycle_time: Int, pieces_info: String, pairs_info: String, target:Int, actual:Int, defective:Int, seq:Int): Long {
+        fun add(work_idx: String, start_dt: String, design_idx: String, shift_id:String, shift_name:String, cycle_time: Int, pieces_info: String, pairs_info: String, target:Float, actual:Float, defective:Int, seq:Int): Long {
             val db = _openHelper.writableDatabase ?: return 0
             val row = ContentValues()
             row.put("work_idx", work_idx)
@@ -196,7 +209,6 @@ class DBHelperForDesign
             row.put("shift_id", shift_id)
             row.put("shift_name", shift_name)
             row.put("target", target)
-            row.put("target_no_contraint", target)
             row.put("actual", actual)
             row.put("defective", defective)
             row.put("seq", seq)
@@ -238,7 +250,7 @@ class DBHelperForDesign
          * @param title The new title value
          * @param priority The new priority value
          */
-        fun update(work_idx: String, pieces_info: String, pairs_info: String, actual: Int, defective: Int) {
+        fun update(work_idx: String, pieces_info: String, pairs_info: String, actual: Float, defective: Int) {
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("pieces_info", pieces_info)
@@ -248,11 +260,12 @@ class DBHelperForDesign
             db.close()
         }
 
-        fun updateDesignInfo(work_idx: String, shift_id: String, shift_name: String, cycle_time: Int, pieces_info: String, pairs_info: String) {
+        fun updateDesignInfo(work_idx: String, shift_id: String, shift_name: String, design_idx: String, cycle_time: Int, pieces_info: String, pairs_info: String) {
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("shift_id", shift_id)
             row.put("shift_name", shift_name)
+            row.put("design_idx", design_idx)
             row.put("cycle_time", cycle_time)
             row.put("pieces_info", pieces_info)
             row.put("pairs_info", pairs_info)
@@ -260,27 +273,24 @@ class DBHelperForDesign
             db.close()
         }
 
-        fun updateWorkTarget(work_idx: String, target: Int, target_no_contraint: Int) {
-
+        fun updateWorkTarget(work_idx: String, target: Float) {
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("target", target)
-            row.put("target_no_contraint", target_no_contraint)
             db.update("design", row, "work_idx = ?", arrayOf(work_idx.toString()))
             db.close()
         }
 
-        fun updateWorkActual(work_idx: String, actual: Int) {
-
+        fun updateWorkActual(work_idx: String, actual: Float, actual_no: Int = -1) {
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("actual", actual)
+            if (actual_no > -1) row.put("actual_no", actual_no)
             db.update("design", row, "work_idx = ?", arrayOf(work_idx.toString()))
             db.close()
         }
 
         fun updateDefective(work_idx: String, defective: Int) {
-
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("defective", defective)
@@ -289,7 +299,6 @@ class DBHelperForDesign
         }
 
         fun updateWorkEnd(work_idx: String) {
-
             val db = _openHelper.writableDatabase ?: return
             val row = ContentValues()
             row.put("end_dt", DateTime().toString("yyyy-MM-dd HH:mm:ss"))

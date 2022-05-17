@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">SUNTECH IoT-Pattern</string>
+    <string name="app_name">Pattern Hwaseung</string>
 
     <!-- 타이틀 -->
-    <string name="title_select_component">SELECT COMPONENT</string>
+    <string name="title_select_component">SELECT PROCESS</string>
     <string name="title_available_info">AVAILABLE INFO</string>
     <string name="title_operator_info">OPERATOR INFO</string>
     <string name="title_operator_detail">OPERATOR DETAIL</string>
@@ -18,10 +18,10 @@
     <string name="title_special_options" translatable="false">SPECIAL OPTIONS</string>
     <string name="title_production_report">PRODUCTION REPORT</string>
     <string name="title_push_info">PUSH MESSAGE INFO</string>
-    <string name="title_edit_pieces_pairs_count">EDIT PIECE(S) COUNT</string>
+    <string name="title_edit_pieces_pairs_count">EDIT PALLET COUNT</string>
     <string name="title_edit_defective_count" translatable="false">EDIT DEFECTIVE COUNT</string>
     <string name="title_design_info">DESIGN INFO</string>
-    <string name="title_pieces_info">PIECES INFO</string>
+    <string name="title_pieces_info">PALLET INFO</string>
     <string name="title_edit_count" translatable="false">EDIT COUNT Q\'ty</string>
     <string name="title_actual_count_edit">ACTUAL Q\'ty EDIT</string>
     <string name="title_actual_count_edit_input">EDIT ACTUAL Q\'ty</string>
@@ -33,12 +33,13 @@
     <string name="title_down_time_list">Down Time Input</string>
     <string name="title_product_list">Product List</string>
     <string name="title_time">TIME</string>
+    <string name="title_latest_version" translatable="false">VERSION INFO.</string>
     <string name="title_setting_info" translatable="false">SETTING INFO.</string>
 
     <!-- 카운트화면 -->
     <string name="button_total_count_view">Total Count View</string>
-    <string name="button_component_count_view">Component Count View</string>
-    <string name="button_select_component">Select Component</string>
+    <string name="button_component_count_view">Process Count View</string>
+    <string name="button_select_component">Select Process</string>
 
     <!-- SETTING 화면 -->
     <string name="label_wifi">WiFi</string>
@@ -54,7 +55,7 @@
     <string name="label_server_port">PORT</string>
     <string name="label_wos_name">WOS name to display</string>
     <string name="label_worksheet_display_time">WorkSheet Display Time</string>
-    <string name="label_count_trim_qty">Piece(s)</string>
+    <string name="label_count_trim_qty">Pallet</string>
     <string name="label_count_trim_pairs">Pair(s)</string>
     <string name="label_long_touch_enable">Long Touch Enable</string>
     <string name="label_message_enable">Message Enable</string>
@@ -68,13 +69,16 @@
     <string name="label_planned_count_process" translatable="false">Planned Time Actual Count</string>
     <string name="label_target_stop_when_downtime" translatable="false">Target Q\'ty Stop When DownTime</string>
     <string name="label_ask_when_clicking_defective" translatable="false">Open window when clicking Defective</string>
-    <string name="label_piece_pair_count_edit" translatable="false">Piece(s)/Pair(s) Count editing function</string>
+    <string name="label_piece_pair_count_edit" translatable="false">Pallet/Pair(s) Count editing function</string>
     <string name="label_target_by_group" translatable="false">Target by Group</string>
+    <string name="label_reverse_downtime_check" translatable="false">Reverse the Downtime Check</string>
     <string name="label_remaining_number">REMAINING NUMBER</string>
     <string name="label_from_server">FROM SERVER</string>
     <string name="label_from_device">FROM DEVICE</string>
     <string name="label_server_time">Server Time</string>
     <string name="label_device_time">Device Time</string>
+    <string name="label_server_version" translatable="false">Latest Version</string>
+    <string name="label_device_version" translatable="false">Device Version</string>
     <string name="label_automatic_time" translatable="false">Automatic date/time</string>
     <string name="label_from_cycle_time">FROM CYCLE TIME</string>
     <string name="label_target_per_shift">TARGET PER SHIFT</string>
@@ -99,11 +103,14 @@
 
     <!-- COMPONENT 화면 -->
     <string name="label_wos">WOS</string>
-    <string name="label_component">COMPONENT</string>
+    <string name="label_component">PROCESS</string>
     <string name="label_size">SIZE</string>
     <string name="label_layer">LAYER</string>
     <string name="label_layers">LAYER(S)</string>
     <string name="label_pairs">PAIR(S)</string>
+    <string name="label_pairs_lower">Pair(s)</string>
+    <string name="label_sec_per_pallet">(sec/pallet)</string>
+    <string name="label_sec_per_pairs">(sec/pairs)</string>
     <string name="label_model2">MODEL</string>
     <string name="label_style">STYLE</string>
     <string name="label_target">TARGET</string>
@@ -121,9 +128,13 @@
     <string name="list_header_model">Model</string>
     <string name="list_header_article">Article</string>
     <string name="list_header_material">Material</string>
-    <string name="list_header_component">Component</string>
-    <string name="list_header_cycle_time">Cycle Time</string>
-    <string name="label_pieces">Pieces</string>
+    <string name="list_header_component">Process</string>
+    <string name="list_header_cycle_time">CycleTime</string>
+    <string name="list_header_pallet" translatable="false">Pallet</string>
+    <string name="list_header_pairs" translatable="false">Pairs</string>
+    <string name="list_header_cycle_time_per_pallet">CycleTime / Pallet</string>
+    <string name="list_header_cycle_time_per_paris">CycleTime / Pair(s)</string>
+    <string name="label_pieces">Pallet</string>
     <string name="guide_pieces">= 1 Count</string>
 
     <!-- 액츄얼카운트화면 -->
@@ -153,6 +164,7 @@
     <string name="button_tab_target_setting">TARGET SETTING</string>
     <string name="button_tab_time_setting">TIME SETTING</string>
     <string name="button_tab_etc_setting">ETC SETTING</string>
+    <string name="button_tab_version_setting" translatable="false">APP VERSION</string>
 
     <!-- 홈화면 -->
     <string name="bottom_label_machine_info">MACHINE INFO</string>
@@ -174,7 +186,10 @@
     <string name="edit">EDIT</string>
     <string name="sop" translatable="false">SOP</string>
     <string name="cancel">Cancel</string>
+    <string name="mc_stop" translatable="false">M/C STOP</string>
+    <string name="mc_start" translatable="false">M/C START</string>
     <string name="check">Check</string>
+    <string name="start_update" translatable="false">Update</string>
     <string name="search">SEARCH</string>
     <string name="notice">Notice</string>
     <string name="defective">Defective</string>
@@ -211,10 +226,10 @@
 
     <string name="trim_count">TRIM COUNT</string>
     <string name="stitch_count">STITCH COUNT</string>
-    <string name="edit_pieces">EDIT PIECE(S) COUNT</string>
+    <string name="edit_pieces">EDIT PALLET COUNT</string>
     <string name="edit_pairs">EDIT PAIR(S) COUNT</string>
     <string name="delay_time">DELAY TIME</string>
-    <string name="pieces_count">PIECE(S) COUNT</string>
+    <string name="pieces_count">PALLET COUNT</string>
     <string name="pairs_count">PAIR(S) COUNT</string>
     <string name="defective_count" translatable="false">DEFECTIVE COUNT</string>
 
@@ -223,7 +238,7 @@
     <string name="msg_no_design" translatable="false">Design not found</string>
     <string name="msg_require_info">Info not complete</string>
     <string name="msg_select_layer1">Please select layer1 value</string>
-    <string name="msg_select_component">Please select a component</string>
+    <string name="msg_select_component">Please select a process</string>
     <string name="msg_select_design">Please select a Design</string>
     <string name="msg_require_target_quantity">Please enter a target quantity</string>
     <string name="msg_no_target_value_from_server" translatable="false">No target value was sent from the server.</string>
@@ -242,9 +257,11 @@
     <string name="msg_exit_shift">Do you want to exit?</string>
     <string name="msg_has_not_server_info">Cannot find server</string>
     <string name="msg_no_downtime">Downtime message not found</string>
+    <string name="warning_downtime_0" translatable="false">Warning! Time is set to 0 seconds.</string>
     <string name="msg_remain_out_of_range">Remaining value is out of range.</string>
     <string name="msg_require_pairs_info">Please enter a Pair(s) info.</string>
     <string name="msg_exit_automatically">Shift ends automatically</string>
+    <string name="msg_time_mismatch" translatable="false">Server and device time mismatch.</string>
 
     <string name="msg_edit_current_design" translatable="false">Adjust the Defect value of the currently selected design.</string>
 

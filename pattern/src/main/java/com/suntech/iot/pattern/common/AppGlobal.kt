@@ -22,9 +22,6 @@ import java.util.*
 class AppGlobal private constructor() {
 
     private var _context : Context? = null
-    var deviceToken : String = ""           // 디바이스 정보
-    var _server_state : Boolean = false
-    var _usb_state : Boolean = false
 
     private object Holder { val INSTANCE = AppGlobal() }
 
@@ -33,50 +30,160 @@ class AppGlobal private constructor() {
     }
     fun setContext(ctx : Context) { _context = ctx }
 
-    // millis value for Downtime
-    fun set_last_received(value: String) { UtilLocalStorage.setString(instance._context!!, "last_received", value) }
-    fun get_last_received() : String { return UtilLocalStorage.getString(instance._context!!, "last_received") }
-
     // Default Setting
-    fun set_factory_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_factory_idx", idx) }
-    fun get_factory_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_factory_idx") }
-    fun set_factory(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_factory", idx) }
-    fun get_factory() : String { return UtilLocalStorage.getString(instance._context!!, "current_factory") }
+    fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "server_ip", idx) }
+    fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "server_ip") }
+    fun set_server_port(idx: String) { UtilLocalStorage.setString(instance._context!!, "server_port", idx) }
+    fun get_server_port() : String { return UtilLocalStorage.getString(instance._context!!, "server_port") }
 
-    fun set_room_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_room_idx", idx) }
-    fun get_room_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_room_idx") }
-    fun set_room(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_room", idx) }
-    fun get_room() : String { return UtilLocalStorage.getString(instance._context!!, "current_room") }
+    fun set_factory_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "factory_idx", idx) }
+    fun get_factory_idx() : String { return UtilLocalStorage.getString(instance._context!!, "factory_idx") }
+    fun set_factory(idx: String) { UtilLocalStorage.setString(instance._context!!, "factory_name", idx) }
+    fun get_factory() : String { return UtilLocalStorage.getString(instance._context!!, "factory_name") }
 
-    fun set_line_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_line_idx", idx) }
-    fun get_line_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_line_idx") }
-    fun set_line(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_line", idx) }
-    fun get_line() : String { return UtilLocalStorage.getString(instance._context!!, "current_line") }
+    fun set_zone_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "zone_idx", idx) }
+    fun get_zone_idx() : String { return UtilLocalStorage.getString(instance._context!!, "zone_idx") }
+    fun set_zone(idx: String) { UtilLocalStorage.setString(instance._context!!, "zone_name", idx) }
+    fun get_zone() : String { return UtilLocalStorage.getString(instance._context!!, "zone_name") }
 
-    fun set_mc_no_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_no_idx", idx) }
-    fun get_mc_no_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_no_idx") }
-    fun set_mc_no1(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_no1", idx) }
-    fun get_mc_no1() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_no1") }
-    fun set_mc_serial(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_serial", idx) }
-    fun get_mc_serial() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_serial") }
+    fun set_line_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "line_idx", idx) }
+    fun get_line_idx() : String { return UtilLocalStorage.getString(instance._context!!, "line_idx") }
+    fun set_line(idx: String) { UtilLocalStorage.setString(instance._context!!, "line_name", idx) }
+    fun get_line() : String { return UtilLocalStorage.getString(instance._context!!, "line_name") }
 
-    fun set_mc_model_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_model_idx", idx) }
-    fun get_mc_model_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_model_idx") }
-    fun set_mc_model(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_mc_model", idx) }
-    fun get_mc_model() : String { return UtilLocalStorage.getString(instance._context!!, "current_mc_model") }
+    fun set_mc_model_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "mc_model_idx", idx) }
+    fun get_mc_model_idx() : String { return UtilLocalStorage.getString(instance._context!!, "mc_model_idx") }
+    fun set_mc_model(idx: String) { UtilLocalStorage.setString(instance._context!!, "mc_model_name", idx) }
+    fun get_mc_model() : String { return UtilLocalStorage.getString(instance._context!!, "mc_model_name") }
+
+    fun set_mc_no_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "mc_no_idx", idx) }
+    fun get_mc_no_idx() : String { return UtilLocalStorage.getString(instance._context!!, "mc_no_idx") }
+    fun set_mc_no(idx: String) { UtilLocalStorage.setString(instance._context!!, "mc_no", idx) }
+    fun get_mc_no() : String { return UtilLocalStorage.getString(instance._context!!, "mc_no") }
+
+    fun set_mc_serial(idx: String) { UtilLocalStorage.setString(instance._context!!, "mc_serial", idx) }
+    fun get_mc_serial() : String { return UtilLocalStorage.getString(instance._context!!, "mc_serial") }
+
+    // 디바이스
+    fun getMACAddress(): String? {
+        var mac = ""
+        try {
+            mac = loadFileAsString("/sys/class/net/eth0/address").toUpperCase().substring(0, 17)
+        } catch (e: IOException) {
+            //e.printStackTrace()
+        }
+        if (mac == "") {
+            mac = getMACAddress2()
+            if (mac == "") mac = "NO_MAC_ADDRESS"
+        }
+        return mac
+    }
+    @Throws(java.io.IOException::class)
+    fun loadFileAsString(filePath: String): String {
+        val data = StringBuffer(1024)
+        val reader = BufferedReader(FileReader(filePath))
+        val buf = CharArray(1024)
+        while (true) {
+            val numRead = reader.read(buf)
+            if (numRead == -1) break
+            val readData = String(buf, 0, numRead)
+            data.append(readData)
+        }
+        reader.close()
+        return data.toString()
+    }
+    fun getMACAddress2(): String {
+        val interfaceName = "wlan0"
+        try {
+            val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (intf in interfaces) {
+                if (!intf.getName().equals(interfaceName)) continue
+
+                val mac = intf.getHardwareAddress() ?: return ""
+                val buf = StringBuilder()
+                for (idx in mac.indices)
+                    buf.append(String.format("%02X:", mac[idx]))
+                if (buf.length > 0) buf.deleteCharAt(buf.length - 1)
+                return buf.toString()
+            }
+        } catch (ex: Exception) {
+            Log.e("Error", ex.toString())
+        }
+        return ""
+    }
+    fun isOnline(context: Context) : Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cm.activeNetworkInfo
+        return netInfo != null && netInfo.isConnectedOrConnecting
+    }
+
+    // 앱시작후 false로 세팅후 첫번째 Count가 들어오면 true로 변경됨.
+    // 첫 Count 들어오기전에 Downtime 체크를 하지 않기 위함.
+    fun set_first_count(state: Boolean) {
+        UtilLocalStorage.setBoolean(instance._context!!, "first_count", state)
+        if (state==false) {
+            set_stitch_type(false)       // Stitch 검사 모드 끔
+        }
+    }
+    fun get_first_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "first_count") }
+
+    fun set_server_connect(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "server_state", state) }
+    fun get_server_connect() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "server_state") }
+    fun set_usb_connect(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "usb_state", state) }
+    fun get_usb_connect() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "usb_state") }
 
     // Option Setting
-    fun set_long_touch(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_long_touch", state) }
-    fun get_long_touch() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_long_touch") }
+    fun set_long_touch(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "long_touch", state) }
+    fun get_long_touch() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "long_touch") }
+    fun set_message_enable(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "msg_enable", state) }
+    fun get_message_enable() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "msg_enable") }
+    fun set_sound_at_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "sound_count", state) }
+    fun get_sound_at_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "sound_count") }
+    fun set_worksheet_display_time(value: Int) { UtilLocalStorage.setInt(instance._context!!, "worksheet_disptime", value) }
+    fun get_worksheet_display_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "worksheet_disptime") }
 
-    fun set_message_enable(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_msg_enable", state) }
-    fun get_message_enable() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_msg_enable") }
+    fun set_sop_name(name: String) { UtilLocalStorage.setString(instance._context!!, "sop_name", name) }
+    fun get_sop_name() : String {
+        val name = UtilLocalStorage.getString(instance._context!!, "sop_name")
+        return if (name != "") name else "WORK SHEET"
+    }
 
-    fun set_sound_at_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_sound_count", state) }
-    fun get_sound_at_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_sound_count") }
+    fun set_screen_blink(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "screen_blink", state) }
+    fun get_screen_blink() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "screen_blink") }
+    fun set_blink_color(value: String) { UtilLocalStorage.setString(instance._context!!, "blink_color", value) }
+    fun get_blink_color() : String { return UtilLocalStorage.getString(instance._context!!, "blink_color") }
 
     fun set_start_at_target(value: Int) { UtilLocalStorage.setInt(instance._context!!, "start_at_target", value) }
     fun get_start_at_target() : Int { return UtilLocalStorage.getInt(instance._context!!, "start_at_target") }
+    fun set_planned_count_process(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "planned_count", state) }
+    fun get_planned_count_process() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "planned_count") }
+    fun set_target_stop_when_downtime(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_stop_downtime", state) }
+    fun get_target_stop_when_downtime() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_stop_downtime") }
+    fun set_ask_when_clicking_defective(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "ask_click_defective", state) }
+    fun get_ask_when_clicking_defective() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "ask_click_defective") }
+//    fun set_piece_pair_count_edit(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "piece_pair_edit", state) }
+//    fun get_piece_pair_count_edit() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "piece_pair_edit") }
+    fun set_target_by_group(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_by_group", state) }
+    fun get_target_by_group() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_by_group") }
+
+    fun set_reverse_downtime_check(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "reverse_downtime_check", state) }
+    fun get_reverse_downtime_check() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "reverse_downtime_check") }
+
+
+
+
+
+    // millis value for Downtime
+    fun set_last_count_received() { set_last_count_received(DateTime().toString("yyyy-MM-dd HH:mm:ss")) }
+    fun set_last_count_received(value: String) { UtilLocalStorage.setString(instance._context!!, "last_received", value) }
+    fun get_last_count_received() : String { return UtilLocalStorage.getString(instance._context!!, "last_received") }
+
+
+
+
+
+
+
 
 //    fun set_without_component(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_without_component", state) }
 //    fun get_without_component() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_without_component") }
@@ -86,71 +193,17 @@ class AppGlobal private constructor() {
 //        val name = UtilLocalStorage.getString(instance._context!!, "current_wos_name")
 //        return if (name != "") name else "WOS"
 //    }
-    fun set_sop_name(name: String) { UtilLocalStorage.setString(instance._context!!, "current_sop_name", name) }
-    fun get_sop_name() : String {
-        val name = UtilLocalStorage.getString(instance._context!!, "current_sop_name")
-        return if (name != "") name else "WORK SHEET"
-    }
 
-    fun set_worksheet_display_time(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_sheet_disptime", value) }
-    fun get_worksheet_display_time() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_sheet_disptime") }
 
-    fun set_screen_blink(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "current_screen_blink", state) }
-    fun get_screen_blink() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "current_screen_blink") }
-    fun set_blink_color(value: String) { UtilLocalStorage.setString(instance._context!!, "current_blink_color", value) }
-    fun get_blink_color() : String { return UtilLocalStorage.getString(instance._context!!, "current_blink_color") }
+
+
+
 //    fun set_remain_number(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_remain_number", value) }
 //    fun get_remain_number() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_remain_number") }
-    fun set_send_stitch_count(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "send_stitch_count", state) }
-    fun get_send_stitch_count() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "send_stitch_count") }
-    fun set_planned_count_process(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "planned_count", state) }
-    fun get_planned_count_process() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "planned_count") }
-    fun set_target_stop_when_downtime(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_stop_downtime", state) }
-    fun get_target_stop_when_downtime() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_stop_downtime") }
-
-    fun set_ask_when_clicking_defective(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "ask_click_defective", state) }
-    fun get_ask_when_clicking_defective() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "ask_click_defective") }
-    fun set_piece_pair_count_edit(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "piece_pair_edit", state) }
-    fun get_piece_pair_count_edit() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "piece_pair_edit") }
-    fun set_target_by_group(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "target_by_group", state) }
-    fun get_target_by_group() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "target_by_group") }
-
-    fun set_server_ip(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_ip", idx) }
-    fun get_server_ip() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_ip") }
-    fun set_server_port(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_server_port", idx) }
-    fun get_server_port() : String { return UtilLocalStorage.getString(instance._context!!, "current_server_port") }
 
 
-    // Component 필터 세팅값 (사라진 기능. 지워야 할것들)
-//    fun set_compo_sort_key(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_sort_key", value) }
-//    fun get_compo_sort_key() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_sort_key") }
-//
-//    fun set_compo_wos_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_wos_idx", idx) }
-//    fun get_compo_wos_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_wos_idx") }
-//    fun set_compo_wos(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_wos", value) }
-//    fun get_compo_wos() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_wos") }
-//
-//    fun set_compo_model(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_model", value) }
-//    fun get_compo_model() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_model") }
-//    fun set_compo_style(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_style", value) }
-//    fun get_compo_style() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_style") }
-//
-//    fun set_compo_component_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_component_idx", idx) }
-//    fun get_compo_component_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_component_idx") }
-//    fun set_compo_component(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_component", value) }
-//    fun get_compo_component() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_component") }
-    //
-//    fun set_compo_size_idx(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_size_idx", idx) }
-//    fun get_compo_size_idx() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_size_idx") }
-//    fun set_compo_size(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_size", value) }
-//    fun get_compo_size() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_size") }
-//    fun set_compo_target(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_compo_target", value) }
-//    fun get_compo_target() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_compo_target") }
-//
-//    fun set_compo_layer(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_layer", value) }
-//    fun get_compo_layer() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_layer") }
-//    fun set_compo_pairs(value: String) { UtilLocalStorage.setString(instance._context!!, "current_compo_pairs", value) }
-//    fun get_compo_pairs() : String { return UtilLocalStorage.getString(instance._context!!, "current_compo_pairs") }
+
+
 
 
     // 작업자 정보 설정
@@ -232,10 +285,14 @@ class AppGlobal private constructor() {
     fun set_stitch(data: String) { UtilLocalStorage.setString(instance._context!!, "current_stitch", data) }
     fun get_stitch() : String { return UtilLocalStorage.getString(instance._context!!, "current_stitch") }
 
-    fun set_pieces_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", idx) }
-    fun get_pieces_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
-    fun set_pairs_info(idx: String) { UtilLocalStorage.setString(instance._context!!, "current_pairs_info", idx) }
-    fun get_pairs_info() : String { return UtilLocalStorage.getString(instance._context!!, "current_pairs_info") }
+    fun set_pieces_text(txt: String) { UtilLocalStorage.setString(instance._context!!, "current_pieces_info", txt) }
+    fun get_pieces_text() : String { return UtilLocalStorage.getString(instance._context!!, "current_pieces_info") }
+    fun set_pieces_value(value: Int) { UtilLocalStorage.setInt(instance._context!!, "current_pieces_value", value) }
+    fun get_pieces_value() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_pieces_value") }
+    fun set_pairs_text(txt: String) { UtilLocalStorage.setString(instance._context!!, "current_pairs_info", txt) }
+    fun get_pairs_text() : String { return UtilLocalStorage.getString(instance._context!!, "current_pairs_info") }
+    fun set_pairs_value(value: Float) { UtilLocalStorage.setFloat(instance._context!!, "current_pairs_value", value) }
+    fun get_pairs_value() : Float { return UtilLocalStorage.getFloat(instance._context!!, "current_pairs_value") }
 
 
     // 작업 워크 고유값 설정 (커팅버전. 여기선 안씀)
@@ -252,16 +309,16 @@ class AppGlobal private constructor() {
     fun reset_product_idx() { UtilLocalStorage.setString(instance._context!!, "work_idx", "") }
 
     // 작업시간 설정
-    fun set_today_work_time(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "current_work_time", data) }      // 오늘의 shift 정보
-    fun get_today_work_time() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "current_work_time") }
-    fun set_prev_work_time(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "current_prev_work_time", data) }  // 어제의 shift 정보
-    fun get_prev_work_time() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "current_prev_work_time") }
+    fun set_today_work_time(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "today_work_time", data) }      // 오늘의 shift 정보
+    fun get_today_work_time() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "today_work_time") }
+    fun set_prev_work_time(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "prev_work_time", data) }  // 어제의 shift 정보
+    fun get_prev_work_time() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "prev_work_time") }
 
-    fun set_work_time_manual(data: JSONObject) { UtilLocalStorage.setJSONObject(instance._context!!, "current_work_time_manual", data) }
-    fun get_work_time_manual() : JSONObject? { return UtilLocalStorage.getJSONObject(instance._context!!, "current_work_time_manual") }
+    fun set_work_time_manual(data: JSONObject) { UtilLocalStorage.setJSONObject(instance._context!!, "work_time_manual", data) }
+    fun get_work_time_manual() : JSONObject? { return UtilLocalStorage.getJSONObject(instance._context!!, "work_time_manual") }
 
-    fun set_current_work_day(data: String) { UtilLocalStorage.setString(instance._context!!, "set_current_work_time", data) }
-    fun get_current_work_day() : String { return UtilLocalStorage.getString(instance._context!!, "set_current_work_time") }
+    fun set_current_work_day(data: String) { UtilLocalStorage.setString(instance._context!!, "work_day", data) }
+    fun get_current_work_day() : String { return UtilLocalStorage.getString(instance._context!!, "work_day") }
 
     // 어제시간과 오늘시간 중에 지나지 않은 날짜의 JSON을 선택해서 반환
     fun get_current_work_time() : JSONArray {
@@ -277,31 +334,36 @@ class AppGlobal private constructor() {
     // 현재 작업중인 Shift의 JSON object 반환
     fun get_current_shift_time() : JSONObject? {
         val list = get_current_work_time()
-        if (list.length() == 0) return null
+//        if (list.length() == 0) return null
         val now = DateTime().millis
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
-            var shift_stime = OEEUtil.parseDateTime(item["work_stime"].toString())
-            var shift_etime = OEEUtil.parseDateTime(item["work_etime"].toString())
-            if (shift_stime.millis <= now && now < shift_etime.millis) return item  // =list.getJSONObject(i)
+            if (OEEUtil.parseDateTime(item["work_stime"].toString()).millis <= now &&
+                now < OEEUtil.parseDateTime(item["work_etime"].toString()).millis)
+                return item
         }
         return null
     }
-    // 현재 작업중인 Shift Idx 값 반환. 작업중이 아니면 "" 리턴
-    fun get_current_shift_idx() : String {
+    // 현재 작업중인 Shift의 배열 index값 반환. 작업중이 아니면 -1 리턴
+    fun get_current_shift_pos() : Int {
         val list = get_current_work_time()
-        if (list.length() == 0) return ""
         val now = DateTime().millis
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
-            var shift_stime = OEEUtil.parseDateTime(item["work_stime"].toString())
-            var shift_etime = OEEUtil.parseDateTime(item["work_etime"].toString())
-            if (shift_stime.millis <= now && now < shift_etime.millis) return item["shift_idx"].toString()
+            if (OEEUtil.parseDateTime(item["work_stime"].toString()).millis <= now &&
+                now < OEEUtil.parseDateTime(item["work_etime"].toString()).millis)
+                return i
         }
-        return ""
+        return -1
+    }
+    // 현재 작업중인 Shift Idx 값 반환. 작업중이 아니면 "" 리턴
+    fun get_current_shift_idx() : String {
+//        val item: JSONObject = get_current_shift_time() ?: return "No-shift"
+        val item: JSONObject = get_current_shift_time() ?: return "0"
+        return item["shift_idx"].toString()
     }
     fun get_current_shift_name() : String {
-        var item: JSONObject = get_current_shift_time() ?: return "No-shift"
+        val item: JSONObject = get_current_shift_time() ?: return "No-shift"
         return item["shift_name"].toString()
     }
 
@@ -329,6 +391,15 @@ class AppGlobal private constructor() {
 
     fun set_downtime_sec(value: String) { UtilLocalStorage.setString(instance._context!!, "current_downtime_sec", value) }
     fun get_downtime_sec() : String { return UtilLocalStorage.getString(instance._context!!, "current_downtime_sec") }
+
+    // Stitch 가 들어왔을 때 계산되는 초
+    fun set_downtime_sec_for_stitch(value: String) { UtilLocalStorage.setString(instance._context!!, "downtime_sec_for_stitch", value) }
+    fun get_downtime_sec_for_stitch() : String { return UtilLocalStorage.getString(instance._context!!, "downtime_sec_for_stitch") }
+
+    // 바로 전에 Stitch 가 들어온 상태인지
+    fun set_stitch_type(state: Boolean) { UtilLocalStorage.setBoolean(instance._context!!, "stitch_type", state) }
+    fun get_stitch_type() : Boolean { return UtilLocalStorage.getBoolean(instance._context!!, "stitch_type") }
+
 
     fun set_downtime_list(data: JSONArray) { UtilLocalStorage.setJSONArray(instance._context!!, "downtime_list", data) }
     fun get_downtime_list() : JSONArray { return UtilLocalStorage.getJSONArray(instance._context!!, "downtime_list") }
@@ -375,12 +446,12 @@ class AppGlobal private constructor() {
 
     // 현 시프트의 토탈 타겟
     // From Server 와 From Device 사용
-    fun get_current_shift_target() : Int {
+    fun get_current_shift_target() : Float {
         val item = get_current_shift_time()
         if (item != null) {
             val shift_idx = item["shift_idx"].toString()
-            var target_type = get_target_type()
-            if (target_type.substring(0, 6) == "server") {
+            var target_type = get_target_type().substring(0, 6)
+            if (target_type == "server") {
                 var target = "0"
                 if (get_target_by_group()) {
                     target = get_target_server_shift(shift_idx)
@@ -395,36 +466,30 @@ class AppGlobal private constructor() {
 //                var target = item?.getString("target") ?: "0"
                     if (target == "") target = "0"
                 }
-                return target.trim().toInt()
-            } else if (target_type.substring(0, 6) == "device") {
+                return target.trim().toFloat()
+            } else if (target_type == "device") {
                 return when (shift_idx) {
-                    "1" -> get_target_manual_shift("1").trim().toInt()
-                    "2" -> get_target_manual_shift("2").trim().toInt()
-                    "3" -> get_target_manual_shift("3").trim().toInt()
-                    else -> 0
+                    "1" -> get_target_manual_shift("1").trim().toFloat()
+                    "2" -> get_target_manual_shift("2").trim().toFloat()
+                    "3" -> get_target_manual_shift("3").trim().toFloat()
+                    else -> 0f
                 }
             }
         }
-        return 0
+        return 0f
     }
 
     // 현 시프트에서 한개 만드는데 걸리는 시간
     // From Server 와 From Device 사용
     fun get_current_maketime_per_piece() : Float {
-
         val item = get_current_shift_time()
         if (item != null) {
             val target = get_current_shift_target()
-            if (target == 0) return 0F
 
-//            var shift_total_target = target
-
-            if (target > 0) {
+            if (target > 0f) {
                 // 시프트 기본 정보
-                val work_stime = item["work_stime"].toString()
-                val work_etime = item["work_etime"].toString()
-                val shift_stime = OEEUtil.parseDateTime(work_stime)
-                val shift_etime = OEEUtil.parseDateTime(work_etime)
+                val shift_stime = OEEUtil.parseDateTime(item["work_stime"].toString())
+                val shift_etime = OEEUtil.parseDateTime(item["work_etime"].toString())
 
                 // 휴식타임
                 val _planned1_stime = OEEUtil.parseDateTime(item["planned1_stime_dt"].toString())
@@ -440,7 +505,6 @@ class AppGlobal private constructor() {
                 val work_time = ((shift_etime.millis - shift_stime.millis) / 1000) - d1 - d2
 
                 return (work_time.toFloat() / target)
-//                return (work_time.toFloat() / shift_total_target)
             }
         }
         return 0F
@@ -448,7 +512,7 @@ class AppGlobal private constructor() {
 
     fun get_current_shift_target_cnt() : String {
         var total_target = ""
-        var target_type = get_target_type()
+        val target_type = get_target_type()
         val shift_idx = get_current_shift_idx()
         if (target_type.substring(0, 6) == "server") {
             total_target = "0"
@@ -467,8 +531,8 @@ class AppGlobal private constructor() {
         return total_target
     }
 
-    fun set_current_shift_actual_cnt(actual: Int) { UtilLocalStorage.setInt(instance._context!!, "current_shift_actual_cnt", actual) }
-    fun get_current_shift_actual_cnt() : Int { return UtilLocalStorage.getInt(instance._context!!, "current_shift_actual_cnt") }
+    fun set_current_shift_actual_cnt(value: Float) { UtilLocalStorage.setFloat(instance._context!!, "shift_actual_cnt", value) }
+    fun get_current_shift_actual_cnt() : Float { return UtilLocalStorage.getFloat(instance._context!!, "shift_actual_cnt") }
 
 
     // 작업 정보
@@ -537,22 +601,24 @@ class AppGlobal private constructor() {
 
     // 특정시간(기간)안에 휴식시간과 다운타임시간을 뺀 시간을 계산
     fun compute_work_time(stime:DateTime, etime:DateTime, is_downtime:Boolean = true, is_total:Boolean = true) : Int {
-        var item = get_current_shift_time()
-        if (item==null) return 0
+        val item = get_current_shift_time()
+        if (item == null) return 0
 
         var shift_stime = stime
         var shift_etime = etime
 
         // 작업시간내에서만 계산
-        var shift_stime_src = OEEUtil.parseDateTime(item["work_stime"].toString())
-        var shift_etime_src = OEEUtil.parseDateTime(item["work_etime"].toString())
+        val shift_stime_src = OEEUtil.parseDateTime(item["work_stime"].toString())
+        val shift_etime_src = OEEUtil.parseDateTime(item["work_etime"].toString())
 
-        if (shift_stime.millis < shift_stime_src.millis ) shift_stime = shift_stime_src
-        if (shift_etime.millis < shift_stime_src.millis ) return 0
-        if (shift_stime.millis > shift_etime_src.millis ) return 0
+        val shift_stime_millis = shift_stime_src.millis
+        val shift_etime_millis = shift_etime_src.millis
+
+        if (shift_stime.millis < shift_stime_millis) shift_stime = shift_stime_src
+        if (shift_etime.millis < shift_stime_millis || shift_stime.millis > shift_etime_millis) return 0
 
         if (is_total) {
-            var now = DateTime()
+            val now = DateTime()
             if (now.millis < shift_etime.millis ) shift_etime = now  // 작업종료시간보다 넘은경우, 현재시간은 종료시간으로 고정
             if (now.millis < shift_stime.millis ) shift_stime = now  // 작업시작시간보다 빠른경우, 현재시간은 시작시간으로 고정
         }
@@ -564,10 +630,10 @@ class AppGlobal private constructor() {
 
         // 휴식 시간 계산
 
-        var planned1_stime = OEEUtil.parseDateTime(item["planned1_stime_dt"].toString())
-        var planned1_etime = OEEUtil.parseDateTime(item["planned1_etime_dt"].toString())
-        var planned2_stime = OEEUtil.parseDateTime(item["planned2_stime_dt"].toString())
-        var planned2_etime = OEEUtil.parseDateTime(item["planned2_etime_dt"].toString())
+        val planned1_stime = OEEUtil.parseDateTime(item["planned1_stime_dt"].toString())
+        val planned1_etime = OEEUtil.parseDateTime(item["planned1_etime_dt"].toString())
+        val planned2_stime = OEEUtil.parseDateTime(item["planned2_stime_dt"].toString())
+        val planned2_etime = OEEUtil.parseDateTime(item["planned2_etime_dt"].toString())
 
         val d1 = compute_time(shift_stime, shift_etime, planned1_stime, planned1_etime)
         val d2 = compute_time(shift_stime, shift_etime, planned2_stime, planned2_etime)
@@ -611,60 +677,7 @@ class AppGlobal private constructor() {
         return dif.toInt()
     }
 
-//    fun get_mac_address(): String? {
-//        var mac = getMACAddress()
-//        if (mac == "") mac = "NO_MAC_ADDRESS"
-//        return mac
-//    }
 
-
-    // 디바이스
-    @Throws(java.io.IOException::class)
-    fun loadFileAsString(filePath: String): String {
-        val data = StringBuffer(1000)
-        val reader = BufferedReader(FileReader(filePath))
-        val buf = CharArray(1024)
-        while (true) {
-            val numRead = reader.read(buf)
-            if (numRead == -1) break
-            val readData = String(buf, 0, numRead)
-            data.append(readData)
-        }
-        reader.close()
-        return data.toString()
-    }
-    fun getMACAddress(): String? {
-        var mac = ""
-        try {
-            mac = loadFileAsString("/sys/class/net/eth0/address").toUpperCase().substring(0, 17)
-        } catch (e: IOException) {
-            //e.printStackTrace()
-        }
-        if (mac == "") {
-            mac = getMACAddress2()
-            if (mac == "") mac = "NO_MAC_ADDRESS"
-        }
-        return mac
-    }
-    fun getMACAddress2(): String {
-        val interfaceName = "wlan0"
-        try {
-            val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
-            for (intf in interfaces) {
-                if (!intf.getName().equals(interfaceName)) continue
-
-                val mac = intf.getHardwareAddress() ?: return ""
-                val buf = StringBuilder()
-                for (idx in mac.indices)
-                    buf.append(String.format("%02X:", mac[idx]))
-                if (buf.length > 0) buf.deleteCharAt(buf.length - 1)
-                return buf.toString()
-            }
-        } catch (ex: Exception) {
-            Log.e("Error", ex.toString())
-        }
-        return ""
-    }
 
     fun get_local_ip(): String {
         try {
@@ -728,9 +741,5 @@ class AppGlobal private constructor() {
         }
     }
 
-    fun isOnline(context: Context) : Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val netInfo = cm.activeNetworkInfo
-        return netInfo != null && netInfo.isConnectedOrConnecting
-    }
+
 }

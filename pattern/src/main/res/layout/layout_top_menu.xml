@@ -8,7 +8,7 @@
             android:layout_width="match_parent"
             android:layout_height="92dp"
             android:paddingLeft="30dp"
-            android:paddingRight="60dp"
+            android:paddingRight="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:background="@color/colorBackgroundTop">
@@ -21,19 +21,6 @@
                 android:src="@mipmap/brand_logo"
                 android:background="@color/transparent" />
 
-<!--        <ImageButton-->
-<!--                android:id="@+id/start_stitch"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_marginRight="30dp"-->
-<!--                android:layout_centerInParent="true"-->
-<!--                android:background="@drawable/btn_icon_server_state"/>-->
-<!--        <ImageButton-->
-<!--                android:id="@+id/start_count"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:background="@drawable/btn_icon_wifi_state"/>-->
-
         <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -43,10 +30,10 @@
                 android:orientation="horizontal">
             <TextView
                     android:id="@+id/tv_title"
-                    android:layout_width="520dp"
+                    android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:gravity="center"
-                    android:text=""
+                    android:text="ASDFSDF"
                     android:textSize="40sp"
                     android:textColor="@color/colorOrange"
                     android:textStyle="bold"
@@ -62,15 +49,15 @@
                 android:orientation="horizontal">
 
             <RelativeLayout
-                    android:layout_width="100dp"
+                    android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="0dp"
                     android:background="@color/transparent">
 
                 <ImageButton
                         android:id="@+id/btn_usb_state"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
                         android:layout_centerInParent="true"
                         android:background="@drawable/btn_icon_usb_state"/>
                 <TextView
@@ -86,7 +73,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                    android:layout_width="120dp"
+                    android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="20dp"
                     android:background="@color/transparent">
@@ -104,15 +91,15 @@
                         android:layout_centerInParent="true"
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="6dp"
-                        android:text="ms"
+                        android:text="- ms"
                         android:textSize="12sp"
                         android:textColor="@color/colorOrange"/>
             </RelativeLayout>
 
             <ImageButton
                     android:id="@+id/btn_wifi_state"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:background="@drawable/btn_icon_wifi_state"/>
 
         </LinearLayout>

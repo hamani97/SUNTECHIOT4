@@ -30,7 +30,7 @@ class PopupSelectList : BaseActivity() {
         btn_close.setOnClickListener {
             finish(false, 0, "ok", null)
         }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        val adapter = ArrayAdapter(this, R.layout.list_item_popup_simple1, list)
         lv_lists.adapter = adapter
         lv_lists.setOnItemClickListener { adapterView, view, i, l ->
             finish(true, i, "ok", hashMapOf("year" to ""+list[i]))

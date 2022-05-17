@@ -9,51 +9,33 @@ import com.suntech.iot.pattern.PopupSelectList
 import com.suntech.iot.pattern.R
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
+import com.suntech.iot.pattern.common.Constants
 import com.suntech.iot.pattern.db.DBHelperForDesign
+import com.suntech.iot.pattern.db.DBHelperForDownTime
+import com.suntech.iot.pattern.util.OEEUtil
 import kotlinx.android.synthetic.main.activity_piece_pair_count_edit.*
+import org.joda.time.DateTime
 
 class PiecePairCountEditActivity : BaseActivity() {
+
     private var _pieces = 0
-    private var _pairs = 0
+    private var _pairs = 0f
     private var _defective = 0
 
-    private var _max_pieces = 10
-    private var _max_pairs = 1
+    private var design_pieces_value: Int = 0
+    private var design_pairs_value: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_piece_pair_count_edit)
 
-        val pieces = intent.getStringExtra("pieces")
-        val pairs = intent.getStringExtra("pairs")
+        tv_design_pieces?.text = AppGlobal.instance.get_pieces_text()
+        tv_design_pairs?.text = AppGlobal.instance.get_pairs_text()
+        design_pieces_value = AppGlobal.instance.get_pieces_value()
+        design_pairs_value = AppGlobal.instance.get_pairs_value()
 
-        _pieces = pieces.toInt()
-        _pairs = pairs.toInt()
-
-        _max_pieces = AppGlobal.instance.get_pieces_info().toInt()
-        val tmp = AppGlobal.instance.get_pairs_info()
-        var pairs_str = ""
-        when (tmp) {
-            "1/2" -> { _max_pairs = 2; pairs_str = "/2" }
-            "1/3" -> { _max_pairs = 3; pairs_str = "/3" }
-            "1/4" -> { _max_pairs = 4; pairs_str = "/4" }
-            "1/5" -> { _max_pairs = 5; pairs_str = "/5" }
-            "1/6" -> { _max_pairs = 6; pairs_str = "/6" }
-            "1/7" -> { _max_pairs = 7; pairs_str = "/7" }
-            "1/8" -> { _max_pairs = 8; pairs_str = "/8" }
-        }
-
-        tv_design_pieces?.text = AppGlobal.instance.get_pieces_info()
-        tv_design_pairs?.text = AppGlobal.instance.get_pairs_info()
-
-        tv_pieces_count?.setText(pieces)
-        et_pieces_count?.setText(pieces)
-
-        tv_pairs_count?.setText(pairs + pairs_str)
-        et_pairs_count?.setText(pairs)
-
-        tv_design_pieces.setOnClickListener { fetchPiecesData() }
-        tv_design_pairs.setOnClickListener { fetchPairsData() }
+        //tv_design_pieces.setOnClickListener { fetchPiecesData() }
+        //tv_design_pairs.setOnClickListener { fetchPairsData() }
 
         // defective
         val work_idx = AppGlobal.instance.get_product_idx()
@@ -70,40 +52,6 @@ class PiecePairCountEditActivity : BaseActivity() {
         tv_defective_count?.setText(_defective.toString())
         et_defective_count?.setText(_defective.toString())
 
-        if (AppGlobal.instance.get_piece_pair_count_edit()) {
-            ll_pieces_block.visibility = View.VISIBLE
-            ll_pairs_block.visibility = View.VISIBLE
-            ll_pieces_pairs_sep_block.visibility = View.VISIBLE
-        } else {
-            ll_pieces_block.visibility = View.GONE
-            ll_pairs_block.visibility = View.GONE
-            ll_pieces_pairs_sep_block.visibility = View.GONE
-        }
-
-        btn_trim_count_plus.setOnClickListener {
-            if (_pieces + 1 < _max_pieces) {
-                _pieces++
-                et_pieces_count.setText(_pieces.toString())
-            }
-        }
-        btn_trim_count_minus.setOnClickListener {
-            if (_pieces > 0) {
-                _pieces--
-                et_pieces_count.setText(_pieces.toString())
-            }
-        }
-        btn_trim_pairs_plus.setOnClickListener {
-            if (_pairs + 1 < _max_pairs) {
-                _pairs++
-                et_pairs_count.setText(_pairs.toString())
-            }
-        }
-        btn_trim_pairs_minus.setOnClickListener {
-            if (_pairs > 0) {
-                _pairs--
-                et_pairs_count.setText(_pairs.toString())
-            }
-        }
         btn_defective_plus.setOnClickListener {
             _defective++
             et_defective_count?.setText(_defective.toString())
@@ -120,8 +68,10 @@ class PiecePairCountEditActivity : BaseActivity() {
                 ToastOut(this, R.string.msg_require_info, true)
                 return@setOnClickListener
             }
-            AppGlobal.instance.set_pieces_info(tv_design_pieces.text.toString())
-            AppGlobal.instance.set_pairs_info(tv_design_pairs.text.toString())
+            AppGlobal.instance.set_pieces_text(tv_design_pieces.text.toString())
+            AppGlobal.instance.set_pieces_value(design_pieces_value)
+            AppGlobal.instance.set_pairs_text(tv_design_pairs.text.toString())
+            AppGlobal.instance.set_pairs_value(design_pairs_value)
 
             // defective
             val work_idx = AppGlobal.instance.get_product_idx()
@@ -134,10 +84,56 @@ class PiecePairCountEditActivity : BaseActivity() {
                     val defective = row!!["defective"].toString().toInt()
                     var seq = row!!["seq"].toString().toInt()
                     if (seq == null) seq = 1
-
                     val cnt = (_defective - defective)
 
                     if (cnt != 0) {
+                        // 디펙티브에서도 카운트와 같은 값을 보내달라고 요청함.
+                        // 2020-12-03
+
+//                        // 현재시간
+//                        val now_millis = DateTime.now().millis
+//
+//                        var count_target = db.sum_target_count()            // 총 타겟
+//                        val count_defective = db.sum_defective_count()      // 현재 디펙티브 값
+//                        val sum_count = AppGlobal.instance.get_current_shift_actual_cnt()
+//
+//                        // Downtime
+//                        var param_rumtime = 0
+//                        var work_time = 0
+//
+//                        val shift_time = AppGlobal.instance.get_current_shift_time()
+//                        val shift_idx =
+//                            if (shift_time != null) {
+//                                // 시프트 시작/끝
+//                                val shift_stime_millis = OEEUtil.parseDateTime(shift_time["work_stime"].toString()).millis
+//                                val shift_etime_millis = OEEUtil.parseDateTime(shift_time["work_etime"].toString()).millis
+//
+//                                // 휴식시간
+//                                val planned1_stime_millis = OEEUtil.parseDateTime(shift_time["planned1_stime_dt"].toString()).millis
+//                                val planned1_etime_millis = OEEUtil.parseDateTime(shift_time["planned1_etime_dt"].toString()).millis
+//                                val planned2_stime_millis = OEEUtil.parseDateTime(shift_time["planned2_stime_dt"].toString()).millis
+//                                val planned2_etime_millis = OEEUtil.parseDateTime(shift_time["planned2_etime_dt"].toString()).millis
+//
+//                                val planned1_time = AppGlobal.instance.compute_time_millis(shift_stime_millis, now_millis, planned1_stime_millis, planned1_etime_millis)
+//                                val planned2_time = AppGlobal.instance.compute_time_millis(shift_stime_millis, now_millis, planned2_stime_millis, planned2_etime_millis)
+//
+//                                // 현재까지의 작업시간
+//                                work_time = ((now_millis - shift_stime_millis) / 1000).toInt() - planned1_time - planned2_time
+//
+//                                // Downtime
+//                                val down_db = DBHelperForDownTime(this)
+//                                val down_time = down_db.sum_real_millis_count()
+//                                val down_target = down_db.sum_target_count()
+//
+//                                if (down_target > 0f) count_target -= down_target
+//
+//                                param_rumtime = work_time - down_time
+//
+//                                shift_time["shift_idx"].toString()
+//                                // ctO 구하기 (현시점까지 작업시간 - 다운타임 시간)의 타겟
+//                            } else {
+//                                "0"
+//                            }
 
                         val uri = "/defectivedata.php"
                         var params = listOf(
@@ -147,9 +143,17 @@ class PiecePairCountEditActivity : BaseActivity() {
                             "cnt" to cnt.toString(),
                             "shift_idx" to AppGlobal.instance.get_current_shift_idx(),
                             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-                            "factory_idx" to AppGlobal.instance.get_room_idx(),
+                            "factory_idx" to AppGlobal.instance.get_zone_idx(),
                             "line_idx" to AppGlobal.instance.get_line_idx(),
                             "seq" to seq
+
+//                            "count_sum" to sum_count,               // 현 Actual
+//                            "worktime" to work_time,                // 워크타임
+//                            "runtime" to param_rumtime.toString(),
+//                            "actualO" to sum_count.toString(),
+//                            "ctO" to count_target.toString(),
+//                            "defective" to (count_defective + cnt).toString(),  // defective 총수
+//                            "worker" to AppGlobal.instance.get_worker_no()
                         )
                         request(this, uri, true, false, params, { result ->
                             val code = result.getString("code")
@@ -162,8 +166,7 @@ class PiecePairCountEditActivity : BaseActivity() {
                     }
                 }
             }
-
-            finish(true, 0, "ok", hashMapOf("pieces" to ""+_pieces, "pairs" to ""+_pairs))
+            finish(true, 0, "ok", null)
         }
         btn_cancel.setOnClickListener {
             finish(false, 1, "ok", null)
@@ -179,40 +182,22 @@ class PiecePairCountEditActivity : BaseActivity() {
     }
 
     private fun fetchPiecesData() {
-        var arr: java.util.ArrayList<String> = arrayListOf<String>()
-
-        for (i in 1..10) {
-            arr.add(i.toString())
-        }
-
         val intent = Intent(this, PopupSelectList::class.java)
-        intent.putStringArrayListExtra("list", arr)
+        intent.putStringArrayListExtra("list", Constants.arr_pieces)
         startActivity(intent, { r, c, m, d ->
             if (r) {
-                tv_design_pieces.text = arr[c]
+                tv_design_pieces.text = Constants.arr_pieces[c]
+                design_pieces_value = Constants.arr_pieces[c].toInt()
             }
         })
     }
     private fun fetchPairsData() {
-        var arr: java.util.ArrayList<String> = arrayListOf<String>()
-
-        arr.add("1/8")
-        arr.add("1/7")
-        arr.add("1/6")
-        arr.add("1/5")
-        arr.add("1/4")
-        arr.add("1/3")
-        arr.add("1/2")
-
-        for (i in 1..10) {
-            arr.add(i.toString())
-        }
-
         val intent = Intent(this, PopupSelectList::class.java)
-        intent.putStringArrayListExtra("list", arr)
+        intent.putStringArrayListExtra("list", Constants.arr_pairs)
         startActivity(intent, { r, c, m, d ->
             if (r) {
-                tv_design_pairs.text = arr[c]
+                tv_design_pairs.text = Constants.arr_pairs[c]
+                design_pairs_value = Constants.arr_pairs_value[c]
             }
         })
     }

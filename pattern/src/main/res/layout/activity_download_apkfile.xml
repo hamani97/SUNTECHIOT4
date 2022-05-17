@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/dialog_bg"
-                android:background="#88000000">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/dialog_bg"
+        android:background="#88000000">
 
     <LinearLayout
             android:id="@+id/ll_popup_background"
@@ -14,7 +14,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="60dp"
+            android:layout_margin="140dp"
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:background="#fff"
@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="Watching Value"
+                    android:text="Download APK"
                     android:textColor="#fff"
                     android:textSize="28dp"
                     android:textStyle="bold"/>
@@ -58,12 +58,6 @@
                 android:paddingBottom="20dp"
                 android:gravity="end"
                 android:orientation="horizontal">
-            <Button
-                    android:id="@+id/btn_delete_downtime"
-                    style="@style/btn_default"
-                    android:layout_width="230dp"
-                    android:stateListAnimator="@null"
-                    android:text="DATA CLEAR" />
             <Button
                     android:id="@+id/btn_confirm"
                     style="@style/btn_orange"

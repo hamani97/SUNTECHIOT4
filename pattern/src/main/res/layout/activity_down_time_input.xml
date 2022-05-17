@@ -13,7 +13,7 @@
 
     <LinearLayout
             android:id="@+id/ll_base_box"
-            android:layout_width="800dp"
+            android:layout_width="1000dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
@@ -43,21 +43,32 @@
                 android:id="@+id/ll_btn_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal"/>
+
+        <LinearLayout
+                    android:id="@+id/ll_btn_list2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal"/>
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
                 android:gravity="center"
                 android:orientation="horizontal">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_down_time"
-                    android:textSize="48sp"
+                    android:textSize="64sp"
                     android:textColor="@color/colorButtonRedFocus"
                     android:textStyle="bold" />
             <TextView
@@ -66,25 +77,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
                     android:text="00:00:00"
-                    android:textSize="48sp"
+                    android:textSize="64sp"
                     android:textColor="@color/colorButtonRedFocus"
                     android:textStyle="bold" />
+
+            <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="180dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="48dp"
+                    android:gravity="center"
+                    android:background="@drawable/shape_red_round_button"
+                    android:stateListAnimator="@null"
+                    android:text="@string/cancel"
+                    android:textSize="32sp"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <LinearLayout
-                    android:id="@+id/ll_btn_list2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginBottom="20dp"
-                    android:orientation="horizontal"/>
-        </LinearLayout>
+
 
         <!--<LinearLayout-->
                 <!--android:layout_width="match_parent"-->

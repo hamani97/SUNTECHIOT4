@@ -8,8 +8,8 @@ android {
         applicationId "com.suntech.iot.pattern"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 61
-        versionName "1.4.9"
+        versionCode 26
+        versionName "2.1.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorBackground">
+
+    <TextView style="@style/table_title" android:text="@string/title_target_type" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+        <!--From Cycle Time-->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+            <TextView
+                    android:id="@+id/tv_setting_target_type_cycle_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:gravity="center"
+                    android:background="@color/colorBackgroundTop"
+                    android:text="@string/label_from_cycle_time"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorGray"
+                    android:textStyle="bold" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="24dp"
+                    android:background="@color/colorButtonDefault"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_cycle_time_accumulate"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_cycle_time_accumulate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_accumulation_by_start"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_cycle_time_shifttotal"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_cycle_time_shifttotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_total_target_per_shift"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--From Server-->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="4dp"
+                android:orientation="vertical">
+            <TextView
+                    android:id="@+id/tv_setting_target_type_server"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:gravity="center"
+                    android:background="@color/colorBackgroundTop"
+                    android:text="@string/label_from_server"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorGray"
+                    android:textStyle="bold" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="24dp"
+                    android:background="@color/colorButtonDefault"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_server_accumulate"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_server_accumulate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_accumulation_by_start"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_server_shifttotal"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_server_shifttotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_total_target_per_shift"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--From Device-->
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="8dp"
+                android:orientation="vertical">
+            <TextView
+                    android:id="@+id/tv_setting_target_type_manual"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:gravity="center"
+                    android:background="@color/colorBackgroundTop"
+                    android:text="@string/label_from_device"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorGray"
+                    android:textStyle="bold" />
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="24dp"
+                    android:background="@color/colorButtonDefault"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_device_accumulate"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_device_accumulate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_accumulation_by_start"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal">
+                    <ImageView
+                            android:id="@+id/img_device_shifttotal"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="16dp"
+                            android:background="@drawable/btn_icon_check_box"/>
+                    <TextView
+                            android:id="@+id/tv_device_shifttotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/button_total_target_per_shift"
+                            android:textSize="22sp"
+                            android:textColor="@color/colorGray"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+        <!--Target Per Shift-->
+            <TextView
+                    android:id="@+id/tv_target_per_shift"
+                    android:layout_width="match_parent"
+                    android:layout_height="43dp"
+                    android:gravity="center"
+                    android:background="@color/colorBackgroundTop"
+                    android:text="@string/label_target_per_shift"
+                    android:textSize="20sp"
+                    android:textColor="@color/colorDarkGray"
+                    android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:background="@color/colorButtonDefault"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/tv_msg_target_per_shift"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="The following values ​​apply only when manually entered with the FROM DEVICE selection."
+                android:textColor="@color/colorGray"
+                android:textSize="21sp"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="60dp"
+                    android:orientation="horizontal">
+                <LinearLayout style="@style/table_row">
+                    <TextView android:id="@+id/tv_label_shift1"
+                            style="@style/table_row_title"
+                            android:text="@string/label_shift1"
+                            android:textColor="@color/colorGray"/>
+                    <EditText android:id="@+id/tv_shift_1"
+                            style="@style/table_row_data_editor1"
+                            android:text="0"
+                            android:singleLine="true"
+                            android:inputType="number"
+                            android:background="@color/colorEditor1Readonly"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="60dp"
+                    android:orientation="horizontal">
+                <LinearLayout style="@style/table_row">
+                    <TextView android:id="@+id/tv_label_shift2"
+                            style="@style/table_row_title"
+                            android:text="@string/label_shift2"
+                            android:textColor="@color/colorGray"/>
+                    <EditText android:id="@+id/tv_shift_2"
+                            style="@style/table_row_data_editor1"
+                            android:text="0"
+                            android:singleLine="true"
+                            android:inputType="number"
+                            android:background="@color/colorEditor1Readonly"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="60dp"
+                    android:orientation="horizontal">
+                <LinearLayout style="@style/table_row">
+                    <TextView android:id="@+id/tv_label_shift3"
+                            style="@style/table_row_title"
+                            android:text="@string/label_shift3"
+                            android:textColor="@color/colorGray"/>
+                    <EditText android:id="@+id/tv_shift_3"
+                            style="@style/table_row_data_editor1"
+                            android:text="0"
+                            android:singleLine="true"
+                            android:inputType="number"
+                            android:background="@color/colorEditor1Readonly"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
+
+        <!--                    <LinearLayout style="@style/table_row">-->
+        <!--                        <TextView-->
+        <!--                                android:id="@+id/tv_setting_target_type_server2"-->
+        <!--                                style="@style/table_row_title"-->
+        <!--                                android:layout_width="250dp"-->
+        <!--                                android:background="@color/colorBackgroundTop"-->
+        <!--                                android:text="@string/label_from_cycle_time"-->
+        <!--                                android:textColor="@color/colorGray"-->
+        <!--                                android:textStyle="bold" />-->
+        <!--                    </LinearLayout>-->
+
+        <!--                    <LinearLayout style="@style/tab_block" android:layout_marginTop="8dp">-->
+        <!--                        <Button-->
+        <!--                                android:id="@+id/btn_server_accumulate"-->
+        <!--                                style="@style/tab_btn_off"-->
+        <!--                                android:layout_width="0dp"-->
+        <!--                                android:layout_weight="1"-->
+        <!--                                android:stateListAnimator="@null"-->
+        <!--                                android:text="@string/button_accumulation_by_start" />-->
+        <!--                        <Button-->
+        <!--                                android:id="@+id/btn_server_shifttotal"-->
+        <!--                                style="@style/tab_btn_off"-->
+        <!--                                android:layout_width="0dp"-->
+        <!--                                android:layout_weight="1"-->
+        <!--                                android:stateListAnimator="@null"-->
+        <!--                                android:text="@string/button_total_target_per_shift" />-->
+        <!--                    </LinearLayout>-->
+
+        <!--                    <LinearLayout style="@style/table_row" android:layout_marginTop="20dp">-->
+        <!--                        <TextView-->
+        <!--                                android:id="@+id/tv_setting_target_type_manual2"-->
+        <!--                                style="@style/table_row_title"-->
+        <!--                                android:layout_width="200dp"-->
+        <!--                                android:background="@color/colorBackgroundTop"-->
+        <!--                                android:text="@string/label_from_device"-->
+        <!--                                android:textStyle="bold" />-->
+        <!--                    </LinearLayout>-->
+
+        <!--                    <LinearLayout style="@style/tab_block" android:layout_marginTop="8dp">-->
+        <!--                        <Button-->
+        <!--                                android:id="@+id/btn_manual_accumulate"-->
+        <!--                                style="@style/tab_btn_off"-->
+        <!--                                android:layout_width="0dp"-->
+        <!--                                android:layout_weight="1"-->
+        <!--                                android:stateListAnimator="@null"-->
+        <!--                                android:text="@string/button_accumulation_by_start" />-->
+        <!--                        <Button-->
+        <!--                                android:id="@+id/btn_manual_shifttotal"-->
+        <!--                                style="@style/tab_btn_off"-->
+        <!--                                android:layout_width="0dp"-->
+        <!--                                android:layout_weight="1"-->
+        <!--                                android:stateListAnimator="@null"-->
+        <!--                                android:text="@string/button_total_target_per_shift" />-->
+        <!--                    </LinearLayout>-->
+
+        <!--                    <LinearLayout style="@style/table_row" android:layout_marginTop="20dp">-->
+        <!--                        <TextView-->
+        <!--                                style="@style/table_row_title"-->
+        <!--                                android:layout_width="250dp"-->
+        <!--                                android:background="@color/colorBackgroundTop"-->
+        <!--                                android:text="@string/label_target_per_shift"-->
+        <!--                                android:textStyle="bold" />-->
+        <!--                    </LinearLayout>-->
+
+        <!--                    <LinearLayout-->
+        <!--                            android:layout_width="match_parent"-->
+        <!--                            android:layout_height="wrap_content"-->
+        <!--                            android:layout_marginTop="8dp"-->
+        <!--                            android:orientation="horizontal">-->
+        <!--                        <LinearLayout-->
+        <!--                                android:layout_width="300dp"-->
+        <!--                                android:layout_height="wrap_content"-->
+        <!--                                android:layout_marginRight="60dp"-->
+        <!--                                android:orientation="horizontal">-->
+        <!--                            <LinearLayout style="@style/table_row">-->
+        <!--                                <TextView style="@style/table_row_title" android:text="@string/label_shift1" />-->
+        <!--                                <EditText android:id="@+id/tv_shift_1" style="@style/table_row_data_editor1" android:singleLine="true" android:inputType="number" />-->
+        <!--                            </LinearLayout>-->
+        <!--                        </LinearLayout>-->
+        <!--                        <LinearLayout-->
+        <!--                                android:layout_width="300dp"-->
+        <!--                                android:layout_height="wrap_content"-->
+        <!--                                android:layout_marginRight="60dp"-->
+        <!--                                android:orientation="horizontal">-->
+        <!--                            <LinearLayout style="@style/table_row">-->
+        <!--                                <TextView style="@style/table_row_title" android:text="@string/label_shift2" />-->
+        <!--                                <EditText android:id="@+id/tv_shift_2" style="@style/table_row_data_editor1" android:text="0" android:singleLine="true" android:inputType="number" />-->
+        <!--                            </LinearLayout>-->
+        <!--                        </LinearLayout>-->
+        <!--                        <LinearLayout-->
+        <!--                                android:layout_width="300dp"-->
+        <!--                                android:layout_height="wrap_content"-->
+        <!--                                android:orientation="horizontal">-->
+        <!--                            <LinearLayout style="@style/table_row">-->
+        <!--                                <TextView style="@style/table_row_title" android:text="@string/label_shift3" />-->
+        <!--                                <EditText android:id="@+id/tv_shift_3" style="@style/table_row_data_editor1" android:text="0" android:singleLine="true" android:inputType="number" />-->
+        <!--                            </LinearLayout>-->
+        <!--                        </LinearLayout>-->
+        <!--                    </LinearLayout>-->
+
+    </LinearLayout>
+
+</LinearLayout>

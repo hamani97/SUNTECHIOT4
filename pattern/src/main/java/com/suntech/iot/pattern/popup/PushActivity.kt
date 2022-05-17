@@ -60,10 +60,10 @@ class PushActivity : BaseActivity() {
             "code" to "push_text_list",
             "mac_addr" to AppGlobal.instance.getMACAddress(),
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-            "factory_idx" to AppGlobal.instance.get_room_idx(),
+            "factory_idx" to AppGlobal.instance.get_zone_idx(),
             "line_idx" to AppGlobal.instance.get_line_idx(),
             "shift_idx" to  AppGlobal.instance.get_current_shift_idx(),
-            "machine_no" to AppGlobal.instance.get_mc_no1(),
+            "machine_no" to AppGlobal.instance.get_mc_no(),
             "mc_model" to AppGlobal.instance.get_mc_model(),
             "text_idx" to item["idx"],
             "seq" to i,
@@ -71,10 +71,10 @@ class PushActivity : BaseActivity() {
 
 Log.e("pushcall", "code=push_text_list&"+"&mac_addr="+AppGlobal.instance.getMACAddress()+
         "&factory_parent_idx=" + AppGlobal.instance.get_factory_idx()+
-        "&factory_idx=" + AppGlobal.instance.get_room_idx()+
+        "&factory_idx=" + AppGlobal.instance.get_zone_idx()+
         "&line_idx=" + AppGlobal.instance.get_line_idx()+
         "&shift_idx=" +  AppGlobal.instance.get_current_shift_idx()+
-        "&machine_no=" + AppGlobal.instance.get_mc_no1()+
+        "&machine_no=" + AppGlobal.instance.get_mc_no()+
         "&mc_model=" + AppGlobal.instance.get_mc_model()+
         "&text_idx=" + item["idx"]+
         "&seq=" + i+

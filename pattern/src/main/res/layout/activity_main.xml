@@ -24,7 +24,7 @@
             <include
                     android:id="@+id/ll_inc_side_menu"
                     layout="@layout/layout_side_menu"
-                    android:layout_width="90dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:visibility="visible" />
 

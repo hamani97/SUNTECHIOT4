@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.util.Log
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,25 +60,23 @@ class ProductionReportActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
+
+        btn_wifi_state.isSelected = AppGlobal.instance.isOnline(this)
+        btn_server_state.isSelected = AppGlobal.instance.get_server_connect()
+        is_loop = true
+
         updateView()
     }
 
     public override fun onPause() {
         super.onPause()
         unregisterReceiver(_broadcastReceiver)
+        is_loop = false
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cancel_timer()
-    }
-
-    private fun onlineCheck() {
-        if (AppGlobal.instance._server_state) btn_server_state.isSelected = true
-        else btn_server_state.isSelected = false
-
-        if (AppGlobal.instance.isOnline(this)) btn_wifi_state.isSelected = true
-        else btn_wifi_state.isSelected = false
     }
 
     private fun outputBlank() {
@@ -103,21 +101,14 @@ class ProductionReportActivity : BaseActivity() {
     }
 
     private fun updateView() {
-        onlineCheck()
-        val row1 = _target_db.gets()
-        Log.e("DB", row1.toString())
-//        val row = _report_db.gets()
-//        Log.e("DB", row.toString())
-        var current_dt = _current_time.toString("yyyy-MM-dd")
-//        var current_tommorow_dt = _current_time.plusDays(1).toString("yyyy-MM-dd")
+        val current_dt = _current_time.toString("yyyy-MM-dd")
 
         // 해당 날짜의 Shift 별 타겟 수량
         val target_data = _target_db.gets(current_dt)
         val target_size = target_data?.size ?: 0
 
         if (target_size == 0) {
-            outputBlank()
-            return
+            outputBlank(); return
         }
 
         _list.removeAll(_list)
@@ -126,6 +117,7 @@ class ProductionReportActivity : BaseActivity() {
         var index = 0
 
         for (i in 0..(target_size-1)) {
+
             val item = target_data?.get(i)
 
             if (item != null) {
@@ -137,7 +129,8 @@ class ProductionReportActivity : BaseActivity() {
                     "type" to "HEAD",
                     "name" to item.get("shift_name").toString(),
                     "target" to "Target : " + target_txt,
-                    "actual" to "", "accumulate" to "", "rate" to ""
+                    "actual" to "", "accumulate" to "",
+                    "rate" to ""
                 )
 
                 // Shift가 두개만 있으면 각 Shift가 좌우로 표시되고 세개면 계산해서 12개씩 표시한다.
@@ -159,9 +152,8 @@ class ProductionReportActivity : BaseActivity() {
                 val work_stime = item.get("work_stime").toString()
                 var work_time_dt = OEEUtil.parseDateTime(work_stime)    // 2019-04-05 06:01:00
 
-                val target = item.get("target").toString().toInt()
-                var actual = 0
-                var accumulate = 0
+                val target = item.get("target").toString().toFloat()
+                var accumulate = 0f
 
                 var blank_yn = false        // 아직 작업 시간이 안된 시간은 빈칸으로 표시하기 위함.
 
@@ -175,12 +167,13 @@ class ProductionReportActivity : BaseActivity() {
 
                     val row = _report_db.get(current_dt, stime, shift_idx)
 
-                    actual = if (row != null && row["actual"]!= null) row["actual"].toString().toInt() else 0
+                    val actual = if (row != null && row["actual"]!= null) row["actual"].toString().toFloat() else 0f
 
 //                    if (actual == 0) continue
 
                     accumulate += actual
-                    val rate = if (target != 0) (accumulate.toFloat() / target.toFloat() * 100).toInt().toString() + "%" else ""
+
+                    val rate = if (target != 0f) (accumulate / target * 100).toInt().toString() + "%" else ""
 
                     // 아직 해당 시간이 안됐으면 공백으로 표시
                     val time_row = hashMapOf(
@@ -243,38 +236,22 @@ class ProductionReportActivity : BaseActivity() {
         btn_production_report_exit.setOnClickListener { finish() }
     }
 
-    private fun sendPing() {
-        if (AppGlobal.instance.get_server_ip() == "") return
-        val uri = "/ping.php"
-        request(this, uri, false, false, null, { result ->
-            var code = result.getString("code")
-            var msg = result.getString("msg")
-            if (code == "00") {
-                btn_server_state.isSelected = true
-                AppGlobal.instance._server_state = true
-            } else {
-                ToastOut(this, msg)
-            }
-        }, {
-            btn_server_state.isSelected = false
-        })
-    }
-
     /////// 쓰레드
-    private val _timer_task1 = Timer()          // 서버 접속 체크 ping test.
+    private val _timer_task2 = Timer()
+    private var is_loop = true
 
     private fun start_timer() {
-        val task1 = object : TimerTask() {
+        val task2 = object : TimerTask() {
             override fun run() {
                 runOnUiThread {
-                    sendPing()
+                    if (is_loop) btn_usb_state2.isSelected = AppGlobal.instance.get_usb_connect()
                 }
             }
         }
-        _timer_task1.schedule(task1, 5000, 10000)
+        _timer_task2.schedule(task2, 500, 1000)
     }
     private fun cancel_timer () {
-        _timer_task1.cancel()
+        _timer_task2.cancel()
     }
 
     class ListAdapter(context: Context, list: ArrayList<HashMap<String, String>>) : BaseAdapter() {
@@ -322,6 +299,22 @@ class ProductionReportActivity : BaseActivity() {
                 vh.tv_report_item_target.text = _list[position]["actual"]
                 vh.tv_report_item_product.text = _list[position]["accumulate"]
                 vh.tv_report_item_rate.text = _list[position]["rate"]
+
+                if (_list[position]["actual"].toString() != "" && _list[position]["actual"].toString().toFloat() != 0f) {
+                    if (_list[position]["actual"].toString().toFloat() > 0f) {
+                        vh.tv_report_item_target.setTextColor(ContextCompat.getColor(_context, R.color.list_item_filtering_text_color))
+                        vh.tv_report_item_product.setTextColor(ContextCompat.getColor(_context, R.color.list_item_filtering_text_color))
+                        vh.tv_report_item_rate.setTextColor(ContextCompat.getColor(_context, R.color.list_item_filtering_text_color))
+                    } else {
+                        vh.tv_report_item_target.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                        vh.tv_report_item_product.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                        vh.tv_report_item_rate.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
+                    }
+                } else {
+                    vh.tv_report_item_target.setTextColor(ContextCompat.getColor(_context, R.color.colorWhite))
+                    vh.tv_report_item_product.setTextColor(ContextCompat.getColor(_context, R.color.colorWhite))
+                    vh.tv_report_item_rate.setTextColor(ContextCompat.getColor(_context, R.color.colorWhite))
+                }
 
             } else {
                 vh.ll_report_head.visibility = View.GONE

@@ -177,4 +177,9 @@
     <string name="filename">文件名称</string>
     <string name="label_start_at_target_1">开始目标1</string>
     <string name="title_down_time">停机时间</string>
+    <string name="label_pairs_lower">双（复数形式）</string>
+    <string name="list_header_cycle_time_per_pallet">循环时间</string>
+    <string name="list_header_cycle_time_per_paris">循环时间</string>
+    <string name="label_sec_per_pairs">(sec/pairs)</string>
+    <string name="label_sec_per_pallet">(sec/pallet)</string>
 </resources>

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,11 @@ import android.widget.TextView
 import com.suntech.iot.pattern.base.BaseActivity
 import com.suntech.iot.pattern.common.AppGlobal
 import com.suntech.iot.pattern.util.OEEUtil
-import kotlinx.android.synthetic.main.activity_work_info.*
+import kotlinx.android.synthetic.main.activity_workinfo.*
 import kotlinx.android.synthetic.main.layout_top_menu_2.*
+import kotlinx.android.synthetic.main.layout_workinfo_manual.*
+import kotlinx.android.synthetic.main.layout_workinfo_server.*
+import org.joda.time.DateTime
 import org.json.JSONObject
 import java.util.*
 
@@ -31,8 +35,6 @@ class WorkInfoActivity : BaseActivity() {
     private var list_adapter: ListAdapter? = null
     private var _list: ArrayList<HashMap<String, String>> = arrayListOf()
     var _selected_index = -1
-
-//    private var _list_json: JSONArray? = null
 
     private var list_for_operator_adapter: ListOperatorAdapter? = null
     private var _list_for_operator: ArrayList<HashMap<String, String>> = arrayListOf()
@@ -56,8 +58,8 @@ class WorkInfoActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_work_info)
-        fetchShiftData()
+        setContentView(R.layout.activity_workinfo)
+        initShiftData()
         fetchOperatorData(false)
         initLastWorkers()
         initView()
@@ -77,9 +79,11 @@ class WorkInfoActivity : BaseActivity() {
         registerReceiver(_broadcastReceiver, IntentFilter(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION))
 
         // USB state
-        btn_usb_state2.isSelected = AppGlobal.instance._usb_state
+        btn_usb_state2.isSelected = AppGlobal.instance.get_usb_connect()
 
-        updateView()
+        btn_server_state.isSelected = AppGlobal.instance.get_server_connect()
+        btn_wifi_state.isSelected = AppGlobal.instance.isOnline(this)
+
         is_loop = true
     }
 
@@ -94,25 +98,14 @@ class WorkInfoActivity : BaseActivity() {
         cancel_timer()
     }
 
-    private fun updateView() {
-        if (AppGlobal.instance._server_state) btn_server_state.isSelected = true
-        else btn_server_state.isSelected = false
-
-        if (AppGlobal.instance.isOnline(this)) btn_wifi_state.isSelected = true
-        else btn_wifi_state.isSelected = false
-    }
-
     private fun initView() {
-
         tv_title.setText(R.string.title_operator_detail)
-//        "OPERATOR DETAIL"
 
         // Shift info
         list_adapter = ListAdapter(this, _list)
         lv_available_info.adapter = list_adapter
 
-        val idx = AppGlobal.instance.get_current_shift_idx()
-        _selected_index = if (idx == "") -1 else (idx.toInt()-1)
+        _selected_index = AppGlobal.instance.get_current_shift_pos()
 
         // worker info
         list_for_operator_adapter = ListOperatorAdapter(this, _filtered_list_for_operator)
@@ -172,8 +165,7 @@ class WorkInfoActivity : BaseActivity() {
             fetchOperatorData(true)
             initLastWorkers()
 
-            val idx = AppGlobal.instance.get_current_shift_idx()
-            _selected_index = if (idx == "") -1 else (idx.toInt()-1)
+            _selected_index = AppGlobal.instance.get_current_shift_pos()
         }
         btn_setting_confirm.setOnClickListener {
             val selected_index = list_for_operator_adapter?.getSelected() ?:-1
@@ -194,10 +186,7 @@ class WorkInfoActivity : BaseActivity() {
             }
             saveWorkTime()
         }
-        btn_setting_cancel.setOnClickListener {
-//            AppGlobal.instance.set_auto_setting(false)
-            finish()
-        }
+        btn_setting_cancel.setOnClickListener { finish() }
     }
 
     private fun saveWorkTime() {
@@ -251,11 +240,13 @@ class WorkInfoActivity : BaseActivity() {
         finish(true, 1, "ok", null)
     }
 
-    private fun fetchShiftData() {
+    private fun initShiftData() {
         val list = AppGlobal.instance.get_current_work_time()
-        if (list == null) return
+        if (list.length() == 0) return
 
-        var tmp: ArrayList<HashMap<String, String>> = arrayListOf()
+        Log.e("WorkInfo", " " + list.toString())
+
+        _list.removeAll(_list)
 
         for (i in 0..(list.length() - 1)) {
             val item = list.getJSONObject(i)
@@ -278,12 +269,113 @@ class WorkInfoActivity : BaseActivity() {
                 "shift_idx" to item.getString("shift_idx"),
                 "shift_name" to item.getString("shift_name")
             )
-            tmp.add(map)
+            _list.add(map)
         }
-        _list = tmp
         list_adapter?.notifyDataSetChanged()
 
         initViewManual()
+    }
+
+    private fun fetchManualShift(): JSONObject? {
+        // manual 데이터가 있으면 가져온다.
+        val manual = AppGlobal.instance.get_work_time_manual()
+        if (manual != null && manual.length()>0) {
+            val available_stime = manual.getString("available_stime") ?: ""
+            val available_etime = manual.getString("available_etime") ?: ""
+            var planned1_stime = manual.getString("planned1_stime") ?: ""
+            var planned1_etime = manual.getString("planned1_etime") ?: ""
+
+            if (available_stime != "" && available_etime != "") {
+                if (planned1_stime == "" || planned1_etime == "") {
+                    planned1_stime = ""
+                    planned1_etime = ""
+                }
+                var shift3 = JSONObject()
+                shift3.put("idx", "0")
+//                shift3.put("date", dt.toString("yyyy-MM-dd"))
+                shift3.put("available_stime", available_stime)
+                shift3.put("available_etime", available_etime)
+                shift3.put("planned1_stime", planned1_stime)
+                shift3.put("planned1_etime", planned1_etime)
+                shift3.put("planned2_stime", "")
+                shift3.put("planned2_etime", "")
+                shift3.put("planned3_stime", "")
+                shift3.put("planned3_etime", "")
+                shift3.put("over_time", "0")
+//                shift3.put("line_idx", "0")
+//                shift3.put("line_name", "")
+                shift3.put("shift_idx", "3")
+                shift3.put("shift_name", "SHIFT 3")
+//                shift3.put("work_stime", "600")
+//                shift3.put("work_etime", "600")
+//                shift3.put("planned1_stime_dt", "600")
+//                shift3.put("planned1_etime_dt", "600")
+//                shift3.put("planned2_stime_dt", "600")
+//                shift3.put("planned2_etime_dt", "600")
+                return shift3
+            }
+        }
+        return null
+    }
+
+    private fun fetchShiftData() {
+
+        val dt = DateTime()
+        val shift3: JSONObject? = fetchManualShift()      // manual 데이터가 있으면 가져온다.
+        val line_idx = if (AppGlobal.instance.get_line_idx() != "") AppGlobal.instance.get_line_idx() else "0"
+
+        val uri = "/getlist1.php"
+        var params = listOf(
+            "code" to "work_time2",
+            "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
+            "factory_idx" to AppGlobal.instance.get_zone_idx(),
+            "line_idx" to line_idx,
+            "today" to dt.toString("yyyy-MM-dd"),
+            "yesterday" to dt.minusDays(1).toString("yyyy-MM-dd"))  // 전일 데이터
+
+        request(this, uri, false, params, { result ->
+            val code = result.getString("code")
+            if (code == "00") {
+                var list1 = result.getJSONArray("item1")
+                var list2 = result.getJSONArray("item2")
+                if (shift3 != null) {
+                    val today_shift = shift3
+                    if (list1.length()>0) {
+                        val item = list1.getJSONObject(0)
+                        today_shift.put("date", item["date"])
+                        today_shift.put("line_idx", item["line_idx"])
+                        today_shift.put("line_name", item["line_name"])
+                    } else {
+                        today_shift.put("date", dt.toString("yyyy-MM-dd"))
+                        today_shift.put("line_idx", line_idx)
+                        today_shift.put("line_name", "Manual")
+                    }
+                    list1.put(today_shift)
+
+                    val yester_shift = shift3
+                    if (list2.length()>0) {
+                        val item = list2.getJSONObject(0)
+                        yester_shift.put("date", item["date"])
+                        yester_shift.put("line_idx", item["line_idx"])
+                        yester_shift.put("line_name", item["line_name"])
+                    } else {
+                        yester_shift.put("date", dt.minusDays(1).toString("yyyy-MM-dd"))
+                        yester_shift.put("line_idx", line_idx)
+                        yester_shift.put("line_name", "Manual")
+                    }
+                    list2.put(yester_shift)
+                }
+                list1 = OEEUtil.handleWorkData(list1)
+                list2 = OEEUtil.handleWorkData(list2)
+
+                AppGlobal.instance.set_today_work_time(list1)
+                AppGlobal.instance.set_prev_work_time(list2)
+
+                initShiftData()
+            } else {
+                ToastOut(this, result.getString("msg"), true)
+            }
+        })
     }
 
     private fun initViewManual() {
@@ -386,8 +478,7 @@ class WorkInfoActivity : BaseActivity() {
         var params = listOf(
             "code" to "worker",
             "factory_parent_idx" to AppGlobal.instance.get_factory_idx(),
-            "factory_idx" to AppGlobal.instance.get_room_idx())
-
+            "factory_idx" to AppGlobal.instance.get_zone_idx())
         request(this, uri, progress, params, { result ->
             var code = result.getString("code")
             if (code == "00") {
@@ -429,7 +520,7 @@ class WorkInfoActivity : BaseActivity() {
             var code = result.getString("code")
             if (code == "00") {
                 btn_server_state.isSelected = true
-                AppGlobal.instance._server_state = true
+                AppGlobal.instance.set_server_connect(true)
             } else {
                 ToastOut(this, result.getString("msg"))
             }
@@ -468,8 +559,8 @@ class WorkInfoActivity : BaseActivity() {
     }
 
     private fun checkUSB() {
-        if (usb_state != AppGlobal.instance._usb_state) {
-            usb_state = AppGlobal.instance._usb_state
+        if (usb_state != AppGlobal.instance.get_usb_connect()) {
+            usb_state = AppGlobal.instance.get_usb_connect()
             btn_usb_state2.isSelected = usb_state
         }
     }
@@ -545,7 +636,7 @@ class WorkInfoActivity : BaseActivity() {
         private var _list: ArrayList<HashMap<String, String>>
         private val _inflator: LayoutInflater
         private var _context : Context? =null
-        private var _selected_index = -1
+        private var _selected_op_index = -1
 
         init {
             this._inflator = LayoutInflater.from(context)
@@ -553,8 +644,8 @@ class WorkInfoActivity : BaseActivity() {
             this._context = context
         }
 
-        fun select(index:Int) {_selected_index=index}
-        fun getSelected(): Int { return _selected_index }
+        fun select(index:Int) { _selected_op_index=index }
+        fun getSelected(): Int { return _selected_op_index }
 
         override fun getCount(): Int { return _list.size }
         override fun getItem(position: Int): Any { return _list[position] }
@@ -575,7 +666,7 @@ class WorkInfoActivity : BaseActivity() {
             vh.tv_item_employee_number.text = _list[position]["number"]
             vh.tv_item_name.text = _list[position]["name"]
 
-            if (_selected_index==position) {
+            if (_selected_op_index==position) {
                 vh.tv_item_employee_number.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
                 vh.tv_item_name.setTextColor(ContextCompat.getColor(_context, R.color.list_item_highlight_text_color))
             } else {
